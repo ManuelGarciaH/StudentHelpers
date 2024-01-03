@@ -1,7 +1,7 @@
 import { StyleSheet, Text, Image, ImageBackground, View, Touchable, TouchableOpacity, Button } from 'react-native'
 import React, { Component } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { BlurView } from '@react-native-community/blur';
+import {globalStyles} from './globalStyles';
 
 export default class Inicio extends Component {
   render() {
@@ -15,21 +15,21 @@ export default class Inicio extends Component {
       <View> 
         <ImageBackground style={styles.imgBackGround} source={require("./Img/background.jpeg")}>
           {/* <Text>Student Helpers</Text> */}
-          <View style={styles.centrar}> 
+          <View style={globalStyles.centrar}> 
             <Image 
               style={styles.imgLogo}
               source={require("./Img/Logo.png")}
             />
               <View style={styles.contenedorLogin}>
                 <TouchableOpacity onPress={cambiarVentanaLogin}>
-                  <View style={[styles.boton, styles.botonIniciarSesion]}>
-                    <Text style={styles.txtBoton}>Iniciar Sesion</Text>
+                  <View style={[globalStyles.boton, styles.botonIniciarSesion]}>
+                    <Text style={globalStyles.txtBoton}>Iniciar Sesion</Text>
                   </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={cambiarVentanaSingUp}>
-                  <View style={[styles.boton, styles.botonRegistrarme]}>
-                    <Text style={styles.txtBoton}>Registrarme</Text>
+                  <View style={globalStyles.boton}>
+                    <Text style={globalStyles.txtBoton}>Registrarme</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -42,23 +42,14 @@ export default class Inicio extends Component {
   }
 }
 const styles = StyleSheet.create({
-  centrar:{
-    flex: 1,
-    alignItems: 'center', // Esto centra horizontalmente el contenido
-  },
   imgBackGround:{
     width: wp('100%'),
     height: hp('100%'),
-    // flex: 1,
-    // alignItems: 'center', // Esto centra horizontalmente el contenido
-    // justifyContent: 'flex-start', // Esto alinea el contenido en la parte superior
   },
   imgLogo:{
     width: wp('70%'),
     height: hp('30%'),
     marginTop: 70
-    // width: 400,
-    // height: 400,
   },
   contenedorLogin:{
     justifyContent: 'center', // Centra verticalmente
@@ -77,10 +68,7 @@ const styles = StyleSheet.create({
   },
   botonIniciarSesion:{
     
-    marginBottom: 30,
-  },
-  botonRegistrarme:{
-    
+    marginBottom: 15,
   },
   txtBoton:{
     fontSize: 25,
@@ -89,13 +77,5 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     color: '#000000',
     fontWeight: 'bold',
-  },
-  overlay: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: wp('90%'),
-    height: hp('25%'),
-    marginTop: 100,
-    borderRadius: 25,
   },
 });
