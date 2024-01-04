@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Image, ImageBackground, View, Touchable, TouchableOpacity, Button } from 'react-native'
+import { StyleSheet, Text, Image, ImageBackground, View, TouchableOpacity, Button } from 'react-native'
 import React, { Component } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import {globalStyles} from './globalStyles';

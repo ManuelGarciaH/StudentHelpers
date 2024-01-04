@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import INICIO from './Inicio.js';
 import SINGUP from './SingUp.js';
 import LOGIN from './Login.js';
+import PUBLICACIONES from './Publicaciones.js';
 //La importacion de lo que usemos
 
 export default class Inicio extends Component {
@@ -25,6 +26,7 @@ export default class Inicio extends Component {
                 <Stack.Screen name="Inicio" component={INICIO} options={{headerShown:false}}></Stack.Screen>
                 <Stack.Screen name="SingUp" component={SINGUP} options={{headerShown:false}}></Stack.Screen>
                 <Stack.Screen name="Login" component={LOGIN} options={{headerShown:false}}></Stack.Screen>
+                <Stack.Screen name="Publicaciones" component={PUBLICACIONES} options={{headerShown:false}}></Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     );

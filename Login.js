@@ -1,48 +1,38 @@
-import { StyleSheet, Text, Image, ImageBackground, View, TextInput, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
 import React, { Component } from 'react'
+import Header from './Header';
 import {globalStyles} from './globalStyles';
 
 export default class Login extends Component {
     render() {
-        const cambiarVentanaInicio= () =>{
-            this.props.navigation.navigate('Inicio')
-        }
+        const clickIniciarSesion= () =>{
+            this.props.navigation.navigate('Publicaciones');
+          }
         return (
-          <View>
-            <ImageBackground style={globalStyles.imgBackGround} source={require("./Img/background.jpeg")}>
-                <View style={globalStyles.header}>
-                    <TouchableOpacity onPress={cambiarVentanaInicio}>
-                        <Image
-                            style={globalStyles.imgHeaderRetroceso}
-                            source={require("./Img/Flecha-verde.png")}
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.title}>Login</Text>
-                    <Image 
-                        style={globalStyles.imgHeaderLogo}
-                        source={require("./Img/Logo.png")}
+            <View>
+                <Header navigation={this.props.navigation} 
+                    title="Login" 
+                    customStyles={styles.title} // Puedes personalizar los estilos aquí 
                     />
-                </View>
-            </ImageBackground>
     
-            <View style={globalStyles.form}>
-                <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
-                <View style={globalStyles.input}>
-                    <TextInput style={globalStyles.txtInput}></TextInput>
-                </View>
-    
-                <Text style={globalStyles.txtBasic}>Contraseña</Text>
-                <View style={globalStyles.input}>
-                    <TextInput style={globalStyles.txtInput}></TextInput>
-                </View>
-    
-                <TouchableOpacity>
-                    <View style={globalStyles.boton}>
-                        <Text style={globalStyles.txtBoton}>Crear cuenta</Text>
+                <View style={globalStyles.form}>
+                    <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
+                    <View style={globalStyles.input}>
+                        <TextInput style={globalStyles.txtInput}></TextInput>
                     </View>
-                </TouchableOpacity>
-    
-            </View>
+        
+                    <Text style={globalStyles.txtBasic}>Contraseña</Text>
+                    <View style={globalStyles.input}>
+                        <TextInput style={globalStyles.txtInput}></TextInput>
+                    </View>
+        
+                    <TouchableOpacity onPress={clickIniciarSesion}>
+                        <View style={globalStyles.boton}>
+                            <Text style={globalStyles.txtBoton}>Iniciar Sesión</Text>
+                        </View>
+                    </TouchableOpacity>
+        
+                </View>
 
           </View>
         )
