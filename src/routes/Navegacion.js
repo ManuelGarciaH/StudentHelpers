@@ -3,10 +3,10 @@ import { View, Text, NativeEventEmitter } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import INICIO from './Inicio.js';
-import SINGUP from './SingUp.js';
-import LOGIN from './Login.js';
-import PUBLICACIONES from './Publicaciones.js';
+import INICIO from '../views/Inicio.js';
+import SINGUP from '../views/SingUp.js';
+import LOGIN from '../views/Login.js';
+import PUBLICACIONES from '../views/Publicaciones.js';
 //La importacion de lo que usemos
 
 export default class Inicio extends Component {

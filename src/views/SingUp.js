@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
 import React, { Component } from 'react'
-import Header from './Header';
-import {globalStyles} from './globalStyles';
+import Header from '../components/Header';
+import {globalStyles} from '../../globalStyles';
 
 export default class SingUp extends Component {
     render() {

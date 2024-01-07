@@ -25,9 +25,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-//import INICIO from "./Inicio";
-//import INICIO from "./SingUp.js";
-import INICIO from "./Navegacion";
+import INICIO from "./src/routes/Navegacion";
 
 type SectionProps = PropsWithChildren<{
   title: string;

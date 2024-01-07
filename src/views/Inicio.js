@@ -1,7 +1,7 @@
 import { StyleSheet, Text, Image, ImageBackground, View, TouchableOpacity, Button } from 'react-native'
 import React, { Component } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import {globalStyles} from './globalStyles';
+import {globalStyles} from '../../globalStyles';
 
 export default class Inicio extends Component {
   render() {
@@ -13,12 +13,12 @@ export default class Inicio extends Component {
     }
     return (
       <View> 
-        <ImageBackground style={styles.imgBackGround} source={require("./Img/background.jpeg")}>
+        <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
           {/* <Text>Student Helpers</Text> */}
           <View style={globalStyles.centrar}> 
             <Image 
               style={styles.imgLogo}
-              source={require("./Img/Logo.png")}
+              source={require("../../Img/Logo.png")}
             />
               <View style={styles.contenedorLogin}>
                 <TouchableOpacity onPress={cambiarVentanaLogin}>

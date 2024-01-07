@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
-import Header from './Header';
-import {globalStyles} from './globalStyles';
+import Header from '../components/Header';
+import {globalStyles} from '../../globalStyles';
 
 export default class Publicaciones extends Component {
   constructor(props) {
