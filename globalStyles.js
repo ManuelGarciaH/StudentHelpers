@@ -64,5 +64,8 @@ export const globalStyles = StyleSheet.create({
         textAlignVertical: 'center',
         color: '#000000',
         fontWeight: 'bold',
+    },
+    container:{
+        flex: 1,
     }
 });
