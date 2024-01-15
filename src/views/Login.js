@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react
 import React, { Component } from 'react'
 import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
+// firebase
 import { FIREBASE_AUTH } from '../../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -19,15 +20,14 @@ export default class Login extends Component {
         const clickIniciarSesion= async () => {
             let loading = this.state.loading;
             loading = true;
-            let nombre = this.state.nombre;
             let correo = this.state.correo;
             let password = this.state.password;
             let auth = this.state.auth;
-            console.log(nombre, correo, password)
+            //console.log( correo, password)
 
             try {
                 const respuesta = await signInWithEmailAndPassword(auth, correo, password);
-                console.log(respuesta);
+                //console.log(respuesta);
                 this.props.navigation.navigate('Publicaciones');
             } catch (error) {
                 Alert.alert(error.message);

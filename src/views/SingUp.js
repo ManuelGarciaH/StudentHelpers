@@ -2,8 +2,11 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingVi
 import React, { Component } from 'react'
 import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
+// firebase
 import { FIREBASE_AUTH } from '../../Firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { FIREBASE_DB } from '../../Firebase';
+import { addDoc, collection } from "firebase/firestore";
 
 export default class SingUp extends Component {
     constructor(props){
@@ -14,6 +17,7 @@ export default class SingUp extends Component {
             password: '',
             loading: false,
             auth: FIREBASE_AUTH,
+            db: FIREBASE_DB
         };
     }
     render() {
@@ -23,16 +27,23 @@ export default class SingUp extends Component {
             let nombre = this.state.nombre;
             let correo = this.state.correo;
             let password = this.state.password;
-            let auth = this.state.auth;
-            console.log(nombre, correo, password)
+            let auth = this.state.auth;         //Firebase autenticacion 
+            let db = this.state.db;             //Firebase base de datos
+            //console.log(nombre, correo, password)
 
             try {
-                const respuesta = await createUserWithEmailAndPassword(auth, correo, password);
-                console.log(respuesta);
+                await createUserWithEmailAndPassword(auth, correo, password);
+                const respuesta = await addDoc(collection(db, 'usuarios'),{
+                    Nombre: nombre,
+                    Email: correo,
+                    Carrera: "INCO" 
+                });
+                console.log(respuesta.id);
                 Alert.alert('Usuario creado.');
                 this.props.navigation.navigate('Inicio');
             } catch (error) {
                 Alert.alert(error.message);
+                console.log(error.message)
             } finally{
                 loading = false;
             }
