@@ -17,23 +17,26 @@ export default class Login extends Component {
         };
     }
     render() {
-        const clickIniciarSesion= async () => {
+        const clickIniciarSesion = async () => {
             let loading = this.state.loading;
             loading = true;
             let correo = this.state.correo;
             let password = this.state.password;
             let auth = this.state.auth;
-            //console.log( correo, password)
 
-            try {
-                const respuesta = await signInWithEmailAndPassword(auth, correo, password);
-                //console.log(respuesta);
-                this.props.navigation.navigate('Publicaciones');
-            } catch (error) {
-                Alert.alert(error.message);
-            } finally{
-                loading = false;
-            }
+            signInWithEmailAndPassword(auth, correo, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    const user = userCredential.user;
+                    console.log(user.displayName);
+                    console.log(user);
+                    this.props.navigation.navigate('Publicaciones');
+                    // ...
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    Alert.alert(`${errorMessage}`)
+                });
         }
         return (
             <View>

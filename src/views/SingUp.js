@@ -4,9 +4,7 @@ import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
 // firebase
 import { FIREBASE_AUTH } from '../../Firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { FIREBASE_DB } from '../../Firebase';
-import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export default class SingUp extends Component {
     constructor(props){
@@ -17,36 +15,42 @@ export default class SingUp extends Component {
             password: '',
             loading: false,
             auth: FIREBASE_AUTH,
-            db: FIREBASE_DB
         };
     }
     render() {
         const createUser = async () => {
-            let loading = this.state.loading;
             loading = true;
             let nombre = this.state.nombre;
             let correo = this.state.correo;
             let password = this.state.password;
             let auth = this.state.auth;         //Firebase autenticacion 
-            let db = this.state.db;             //Firebase base de datos
-            //console.log(nombre, correo, password)
-
-            try {
-                await createUserWithEmailAndPassword(auth, correo, password);
-                const respuesta = await addDoc(collection(db, 'usuarios'),{
-                    Nombre: nombre,
-                    Email: correo,
-                    Carrera: "INCO" 
+            
+            createUserWithEmailAndPassword(auth, correo, password)
+                .then((userCredential) => {
+                    // Signed up 
+                    const user = userCredential.user;
+                    console.log(nombre);
+                    updateProfile(user, {
+                        displayName: nombre,
+                        photoURL: null
+                    }).then(() => {
+                        // Actualización de perfil exitosa
+                        console.log("Nombre actualizado correctamente:", nombre);
+                        console.log("Usuario actualizado:", user);
+                        Alert.alert("Usuario registrado");
+                        _this.props.navigation.goBack()
+                    }).catch((error) => {
+                        // Error al actualizar el perfil
+                        console.error("Error al actualizar el nombre:", error);
+                    });
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    Alert.alert(`${errorCode}: ${errorMessage}`)
+                    this.props.navigation.navigate('Publicaciones');
                 });
-                console.log(respuesta.id);
-                Alert.alert('Usuario creado.');
-                this.props.navigation.navigate('Inicio');
-            } catch (error) {
-                Alert.alert(error.message);
-                console.log(error.message)
-            } finally{
-                loading = false;
-            }
         };
 
         return (
