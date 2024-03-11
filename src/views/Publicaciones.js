@@ -2,27 +2,17 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
 import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
+import BuscadorHeader from '../components/BuscadorHeader';
 
-export default class Publicaciones extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
-
-  render() {
+const Publicaciones = ({ navigation }) => {
     return (
       <View>
-        <Header navigation={this.props.navigation} 
-            title="Publicaciones" 
-            customStyles={styles.title} // Puedes personalizar los estilos aquí 
-            />
+        <BuscadorHeader/>
         <View style={globalStyles.form}>
 
         </View>
       </View>
     );
-  }
 }
 const styles = StyleSheet.create({
     title:{                     //Titulo de la ventana
@@ -37,3 +27,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
+export default Publicaciones;

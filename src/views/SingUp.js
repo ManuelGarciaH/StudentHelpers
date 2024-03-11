@@ -12,7 +12,6 @@ const SingUp = ({ navigation }) => {
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const auth = FIREBASE_AUTH;
 
     const createUser = async () => {
         // let loading = this.state.loading;
@@ -22,7 +21,7 @@ const SingUp = ({ navigation }) => {
         // let password = this.state.password;
         // let auth = this.state.auth;         //Firebase autenticacion 
 
-        createUserWithEmailAndPassword(auth, correo, password)
+        createUserWithEmailAndPassword(FIREBASE_AUTH, correo, password)
             .then((userCredential) => {
                 // Signed up 
                 const user = userCredential.user;

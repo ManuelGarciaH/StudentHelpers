@@ -12,7 +12,6 @@ const Login = ({ navigation }) => {
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const auth = FIREBASE_AUTH;
 
     const clickIniciarSesion = async () => {
         // let loading = this.state.loading;
@@ -21,7 +20,7 @@ const Login = ({ navigation }) => {
         // let password = this.state.password;
         // let auth = this.state.auth;
 
-        signInWithEmailAndPassword(auth, correo, password)
+        signInWithEmailAndPassword(FIREBASE_AUTH, correo, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
