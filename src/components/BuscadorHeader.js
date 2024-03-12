@@ -6,11 +6,8 @@ import { globalStyles } from './globalStyles';
 import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const BuscadorHeader = ({ navigation}) => {
+const BuscadorHeader = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const goBack = () => {
-    navigation.navigate('Inicio');
-  };
 
   const handleSearch = (query) => {
     console.log(query); // Imprime el texto en la consola
@@ -20,12 +17,6 @@ const BuscadorHeader = ({ navigation}) => {
   return (
     <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
         <View style={styles.header}>
-            <TouchableOpacity onPress={goBack}>
-                <Image
-                style={styles.imgHeaderRetroceso}
-                source={require('../../Img/Flecha-verde.png')}
-                />
-            </TouchableOpacity>
             <View style={styles.buscador}>
                 <Searchbar
                     placeholder="Search"
@@ -55,20 +46,16 @@ const styles = StyleSheet.create({
         height: hp('9%'),
         margin: 10
     },
-    imgHeaderRetroceso:{
-        width: wp('12%'),
-        height: hp('5%'),
-        margin: 10
-    },
     imgBackGround:{
         width: wp('100%'),
         height: hp('10%'),
     },
     buscador:{
-        width: wp('60%'),
-        height: hp('6%'),
+        width: wp('78%'),
+        height: hp('5%'),
         borderRadius: 15,
         marginLeft: 5,
+        marginBottom: 15
     },
 });
 

@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
                 const user = userCredential.user;
                 console.log(user.displayName);
                 console.log(user);
-                navigation.navigate('Publicaciones');
+                navigation.navigate('TabNavigator');
                 // ...
             })
             .catch((error) => {

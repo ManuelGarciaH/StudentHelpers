@@ -39,8 +39,12 @@ abrir el build gradle(module app)
 Y al final lo agregamos y damos Sync Now
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
+https://oblador.github.io/react-native-vector-icons/
+
 Para poner fondo difuminado
 npm install @react-native-community/blur
 
 
-npm install @react-native-async-storage/async-storage
+
+
+npm install @react-navigation/bottom-tabs
