@@ -1,5 +1,5 @@
 // Header.js
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput, Image, TouchableOpacity, ImageBackground, View, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { globalStyles } from './globalStyles';
@@ -7,7 +7,7 @@ import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const BuscadorHeader = () => {
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (query) => {
     console.log(query); // Imprime el texto en la consola

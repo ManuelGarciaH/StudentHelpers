@@ -3,6 +3,7 @@ import PUBLICACIONES from '../views/Publicaciones.js';
 import VIAJES from '../views/Viajes.js';
 import PERFIL from '../views/Perfil.js';
 import MENU from '../views/Menu.js';
+import SERVICIOS from '../views/Servicios.js';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
@@ -29,6 +30,13 @@ function TabNavigator({navigation}) {
         
       />
       <Tab.Screen name="Perfil" component={PERFIL} 
+        options={{
+            headerShown:false,
+            tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
+                <Icon name="account-box" color={color} size={size} />
+            ),
+        }}/>
+      <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
             headerShown:false,
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
