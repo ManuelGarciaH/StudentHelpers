@@ -18,7 +18,6 @@ const Publicaciones = ({ navigation }) => {
         const json = await response.json();
         setData(json.results);
         setFilteredData(json.results);
-        console.log(json.results);
       }catch(error){
         console.error(error);
       }

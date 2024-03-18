@@ -68,3 +68,5 @@ allprojects {
         }
     }
 }
+
+npm install @react-native-community/geolocation
