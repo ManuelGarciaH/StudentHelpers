@@ -19,12 +19,12 @@ export default class SingUp extends Component {
     }
     render() {
         const createUser = async () => {
-            let loading = this.state.loading;
             loading = true;
             let nombre = this.state.nombre;
             let correo = this.state.correo;
             let password = this.state.password;
             let auth = this.state.auth;         //Firebase autenticacion 
+            
             createUserWithEmailAndPassword(auth, correo, password)
                 .then((userCredential) => {
                     // Signed up 
@@ -37,6 +37,8 @@ export default class SingUp extends Component {
                         // Actualización de perfil exitosa
                         console.log("Nombre actualizado correctamente:", nombre);
                         console.log("Usuario actualizado:", user);
+                        Alert.alert("Usuario registrado");
+                        _this.props.navigation.goBack()
                     }).catch((error) => {
                         // Error al actualizar el perfil
                         console.error("Error al actualizar el nombre:", error);
@@ -47,7 +49,7 @@ export default class SingUp extends Component {
                     const errorCode = error.code;
                     const errorMessage = error.message;
                     Alert.alert(`${errorCode}: ${errorMessage}`)
-                    // ..
+                    this.props.navigation.navigate('Publicaciones');
                 });
         };
 
