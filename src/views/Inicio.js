@@ -1,46 +1,42 @@
 import { StyleSheet, Text, Image, ImageBackground, View, TouchableOpacity, Button } from 'react-native'
-import React, { Component } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import {globalStyles} from '../../globalStyles';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default class Inicio extends Component {
-  render() {
-    const cambiarVentanaLogin= () =>{
-      this.props.navigation.navigate('Login')
-    }
-    const cambiarVentanaSingUp= () =>{
-      this.props.navigation.navigate('SingUp')
-    }
+const INICIO = ({ navigation }) => {
+    const cambiarVentanaLogin = () => navigation.navigate('Login');
+    const cambiarVentanaSingUp = () => navigation.navigate('SingUp');
     return (
-      <View> 
-        <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
-          {/* <Text>Student Helpers</Text> */}
-          <View style={globalStyles.centrar}> 
-            <Image 
-              style={styles.imgLogo}
-              source={require("../../Img/Logo.png")}
-            />
-              <View style={styles.contenedorLogin}>
-                <TouchableOpacity onPress={cambiarVentanaLogin}>
-                  <View style={[globalStyles.boton, styles.botonIniciarSesion]}>
-                    <Text style={globalStyles.txtBoton}>Iniciar Sesion</Text>
-                  </View>
-                </TouchableOpacity>
+      <SafeAreaView>
+        <View> 
+          <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
+            {/* <Text>Student Helpers</Text> */}
+            <View style={globalStyles.centrar}> 
+              <Image 
+                style={styles.imgLogo}
+                source={require("../../Img/Logo.png")}
+              />
+                <View style={styles.contenedorLogin}>
+                  <TouchableOpacity onPress={cambiarVentanaLogin}>
+                    <View style={[globalStyles.boton, styles.botonIniciarSesion]}>
+                      <Text style={globalStyles.txtBoton}>Iniciar Sesion</Text>
+                    </View>
+                  </TouchableOpacity>
 
-                <TouchableOpacity onPress={cambiarVentanaSingUp}>
-                  <View style={globalStyles.boton}>
-                    <Text style={globalStyles.txtBoton}>Registrarme</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            
-          </View>
-        </ImageBackground>
-       
-      </View>
-    )
-  }
-}
+                  <TouchableOpacity onPress={cambiarVentanaSingUp}>
+                    <View style={globalStyles.boton}>
+                      <Text style={globalStyles.txtBoton}>Registrarme</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              
+            </View>
+          </ImageBackground>
+        
+        </View>
+      </SafeAreaView>
+    );
+};
 const styles = StyleSheet.create({
   imgBackGround:{
     width: wp('100%'),
@@ -79,3 +75,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default INICIO;
