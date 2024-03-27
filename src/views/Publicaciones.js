@@ -31,7 +31,7 @@ const Publicaciones = ({ navigation }) => {
       <View>
         <BuscadorHeader/>
         <View style={[globalStyles.form, {padding: 3},]}>
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
               {
                 filteredData.map((item, index) =>{
                   return (

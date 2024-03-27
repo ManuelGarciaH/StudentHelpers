@@ -45,6 +45,6 @@ Para poner fondo difuminado
 npm install @react-native-community/blur
 
 
-
+npm install react-native-date-picker
 
 npm install @react-navigation/bottom-tabs
