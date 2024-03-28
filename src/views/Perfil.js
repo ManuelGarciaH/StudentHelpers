@@ -5,9 +5,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
 import { Alert } from 'react-native';
-import { Button, TextInput  } from 'react-native-paper';
+import { Button, TextInput} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker'
 import ModalSelector from 'react-native-modal-selector';
+import {Controller, useForm} from 'react-hook-form';
 
 const Perfil = () => {
   //States for modals
@@ -60,7 +61,9 @@ const Perfil = () => {
 
   const buttonConfirmDays = () =>{
     setShowDays(selectedDays);
+    setValue('dias', selectedDays)
     setModalDays(!modalDays);
+    trigger('dias')
   }
 
   //Run when window opens
@@ -85,6 +88,21 @@ const Perfil = () => {
     setModulesList(moduleOptions);
   }, [])
 
+  const { handleSubmit, control, getValues, setValue, formState: { errors }, trigger } = useForm();
+
+  const onSubmit = (data) => {
+    // Validar que al menos una categoría haya sido seleccionada
+    // if (!selectedCategory) {
+    //   console.log("hola")
+    //   setError('category', { type: 'required', message: 'Selecciona al menos una categoría' });
+    //   return;
+    // }
+
+    // Aquí puedes continuar con el envío del formulario si todo está bien
+    console.log(data);
+  };
+
+  //console.log('errors ', errors)
   return (
     <View>
         {/*Perfil screen*/}
@@ -99,7 +117,6 @@ const Perfil = () => {
             <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
           </View>
           <Text style={styles.titleName}>Publicaciones</Text>
-          <input defaultValue="test" {...register("example")} />
           <View style={styles.descriptionContainer}>
             <View style={[globalStyles.centrar, styles.buttonCreatePost]}>
               <Icon.Button name="plus"
@@ -119,58 +136,108 @@ const Perfil = () => {
                 <Text style={styles.tituloModal}>Crear Publicación</Text>
                 <ScrollView showsVerticalScrollIndicator={false}>
                   <Text style={styles.textModal}>Elige una categoria</Text>
-                  <View style={styles.buttonContainer}>
-                    <Button mode={selectedCategory === 'Comida' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Comida')} style={styles.boton}
-                    >Comida</Button>
+                  <Controller
+                    name="category"
+                    control={control}
+                    rules={{ required: "Selecciona una categoria" }}
+                    defaultValue=""
+                    render={({ field: { value, onChange } }) => (
+                      <>
+                        <View style={styles.buttonContainer}>
+                          <Button mode={value === 'Comida' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Comida')} style={styles.boton}
+                          >Comida</Button>
 
-                    <Button mode={selectedCategory === 'Accesorios' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Accesorios')} style={styles.boton}
-                    >Accesorios</Button>
+                          <Button mode={value === 'Accesorios' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Accesorios')} style={styles.boton}
+                          >Accesorios</Button>
 
-                    <Button mode={selectedCategory === 'Viaje' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Viaje')} style={[styles.boton, {width: wp("26%")}]}
-                    >Viaje</Button>
-                  </View>
+                          <Button mode={value === 'Viaje' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Viaje')} style={[styles.boton, {width: wp("26%")}]}
+                          >Viaje</Button>
+                        </View>
 
-                  <View style={styles.buttonContainer}>
-                    <Button mode={selectedCategory === 'Intercambio' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Intercambio')} style={styles.boton}
-                    >Intercambio</Button>
+                        <View style={styles.buttonContainer}>
+                          <Button mode={value === 'Intercambio' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Intercambio')} style={styles.boton}
+                          >Intercambio</Button>
 
-                    <Button  mode={selectedCategory === 'Producto' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Producto')} style={styles.boton}
-                    >Producto</Button>
+                          <Button mode={value === 'Producto' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Producto')} style={styles.boton}
+                          >Producto</Button>
 
-                    <Button mode={selectedCategory === 'Otro' ? 'contained' : 'outlined'}
-                      onPress={() => handleCategorySelect('Otro')} style={[styles.boton, {width: wp("26%")}]}
-                    >Otro</Button>
-                  </View>
+                          <Button mode={value === 'Otro' ? 'contained' : 'outlined'}
+                            onPress={() => onChange('Otro')} style={[styles.boton, {width: wp("26%")}]}
+                          >Otro</Button>
+                        </View>
 
-                  <Text>Opción seleccionada: {selectedCategory}</Text>
-
+                        <Text>Opción seleccionada: {value}</Text>
+                        {errors.category && <Text style={{ color: 'red' }}>{errors.category.message}</Text>}
+                      </>
+                    )}
+                  />
                   <Text>Titulo</Text>
-                  <TextInput onChangeText={handleTitleInput} value={selectedTitle}></TextInput>
+                  <Controller
+                    name="titulo"
+                    control={control}
+                    rules={{ required: "Campo requerido", minLength: 2 }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <TextInput
+                          value={value}
+                          onChangeText={(text) => onChange(text)}
+                        />
+                        {errors.titulo && <Text style={{ color: 'red' }}>{errors.titulo.message}</Text>}
+                      </>
+                    )}
+                  />
+                  {/* <TextInput onChangeText={handleTitleInput} value={selectedTitle}></TextInput> */}
 
                   <Text>Detalles</Text>
-                  <TextInput multiline={true} numberOfLines={3} onChangeText={handleDetailsInput} value={selectedDetails}>
-                  </TextInput>
+                  <Controller
+                    name="detalles"
+                    control={control}
+                    rules={{ required: "Campo requerido" }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <TextInput multiline={true} numberOfLines={3}
+                          value={value}
+                          onChangeText={(text) => onChange(text)}
+                        />
+                        {errors.detalles && <Text style={{ color: 'red' }}>{errors.detalles.message}</Text>}
+                      </>
+                    )}
+                  />
+                  
 
                   <View style={[styles.buttonContainer, {marginTop: 15}]}>
                     <View style={globalStyles.centrar}>
                       <Icon.Button name="clock-o" style={styles.botonDatos} borderRadius={13}
                       onPress={() => setOpen(true)}>Horarios</Icon.Button>
-                      <Text>{selectedSchedule}</Text>
                       {/*Open datePicker schedule*/}
-                      <DatePicker modal open={open} date={date} mode="time"
-                        onConfirm={(date) => {
-                          setOpen(false)
-                          setDate(date)
-                          setSelectedSchedule(date.toLocaleTimeString());
-                        }}
-                        onCancel={() => {
-                          setOpen(false)
-                        }}
+                      <Controller
+                        name="horario"
+                        control={control}
+                        rules={{required: "Campo requerido"}}
+                        defaultValue=""
+                        render={({field: {onChange, value}})=>(
+                          <>
+                            <DatePicker modal open={open} date={date} mode="time"
+                              onConfirm={(date) => {
+                                setOpen(false)
+                                setDate(date)
+                                onChange(date.toLocaleTimeString());
+                              }}
+                              onCancel={() => {
+                                setOpen(false)
+                              }}
+                            />
+                            <Text>{value}</Text> 
+                            {errors.horario && <Text style={{ color: 'red' }}>{errors.horario.message}</Text>}
+                          </>
+                        )}
                       />
                       {/*Close datePicker schedule*/}
                     </View>
@@ -187,17 +254,43 @@ const Perfil = () => {
                           onChange={option => {
                             setSelectedLocation(option.label);
                             setModalLocation(false); // Cierra el modal después de seleccionar una opción
-                        }}
-                      />
+                            setValue("lugar", option.label);
+                            trigger('lugar')
+                          }}
+                        />
                       )}
+                      <Controller
+                        name="lugar"
+                        control={control}
+                        rules={{ required: "Campo requerido" }}
+                        defaultValue=""
+                        render={({ field: { value } }) => (
+                          <>
+                            <Text>{value}</Text>
+                            {errors.lugar && <Text style={{ color: 'red' }}>{errors.lugar.message}</Text>}
+                          </>
+                        )}
+                      />
                       {/*Close modal selector location*/}
-                      <Text>{selectedLocation}</Text>
+                      
                     </View>
                     
                     <View style={globalStyles.centrar}>
                       <Icon.Button name="calendar" style={styles.botonDatos} borderRadius={13}
                       onPress={() => setModalDays(true)}>Días</Icon.Button>
-                      <Text>{showDays.join(' - ')}</Text>
+                      <Controller
+                        name="dias"
+                        control={control}
+                        defaultValue={""}
+                        rules={{required: "Campo requerido"}}
+                        render={({field:{value}})=> (
+                          <>
+                            <Text>{value ? value.join(' - ') : ''}</Text>
+                            {errors.dias && <Text style={{ color: 'red' }}>{errors.dias.message}</Text>}
+                          </>
+                        )}
+                      />
+                      
                     </View>
                   </View>
 
@@ -205,13 +298,24 @@ const Perfil = () => {
                     <View style={globalStyles.centrar}>
                       <Icon.Button name="mobile-phone" style={styles.botonDatos} borderRadius={13}
                       onPress={() => setModalContact(true)}>Contacto</Icon.Button>
-                      <Text>{showContact}</Text>
+                      <Controller
+                        name="contacto"
+                        control={control}
+                        rules={{ required: "Campo requerido" }}
+                        defaultValue=""
+                        render={({ field: { value } }) => (
+                          <>
+                            <Text>{value}</Text>
+                            {errors.contacto && <Text style={{ color: 'red' }}>{errors.contacto.message}</Text>}
+                          </>
+                        )}
+                      />
                     </View>
                     <View style={{ marginHorizontal: -15}}></View>
                     <View style={globalStyles.centrar}>
                       <Icon.Button name="image" style={styles.botonDatos} borderRadius={13}
                       onPress={() => setModalImage(true)}>Imagen</Icon.Button>
-                      <Text>{selectedSchedule}</Text>
+                      <Text>{showContact}</Text>
                     </View>
                   </View>
 
@@ -223,7 +327,8 @@ const Perfil = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={[styles.button, styles.buttonClose]}
-                      onPress={() => setModalCreatePost(false)}>
+                      // onPress={() => setModalCreatePost(false)}>
+                      onPress={handleSubmit(onSubmit)}>
                       <Text style={styles.textStyle}>Crear Publicación</Text>
                     </TouchableOpacity>
                   </View>
@@ -322,7 +427,7 @@ const Perfil = () => {
                     
                     <TouchableOpacity
                       style={[styles.button, styles.buttonClose]}
-                      onPress={() => {setModalContact(false); setShowContact(selectedContact)}}>
+                      onPress={() => {setModalContact(false); setShowContact(selectedContact); setValue("contacto", selectedContact), trigger("contacto")}}>
                       <Text style={styles.textStyle}>Guardar contacto</Text>
                     </TouchableOpacity>
                   </View>
