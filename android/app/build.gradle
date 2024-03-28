@@ -81,9 +81,13 @@ android {
         versionCode 1
         versionName "1.0"
 
-        manifestPlaceholders = [
-            MY_API_KEY: myApiKeyFromGradleProperties
-        ]
+        buildConfigField "String", "API_KEY_MAPS", "\"${System.getenv("API_KEY_MAPS")}\""
+
+        gradle.taskGraph.whenReady { taskGraph ->
+            if (taskGraph.hasTask(':app:compileDebugJavaWithJavac')) {
+                println "API_KEY_MAPS: " + buildConfigField("String", "API_KEY_MAPS", "\"\"")
+            }
+        }
     }
     signingConfigs {
         debug {
