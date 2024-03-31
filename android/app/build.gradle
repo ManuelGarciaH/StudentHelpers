@@ -80,6 +80,14 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "API_KEY_MAPS", "\"${System.getenv("API_KEY_MAPS")}\""
+
+        gradle.taskGraph.whenReady { taskGraph ->
+            if (taskGraph.hasTask(':app:compileDebugJavaWithJavac')) {
+                println "API_KEY_MAPS: " + buildConfigField("String", "API_KEY_MAPS", "\"\"")
+            }
+        }
     }
     signingConfigs {
         debug {
