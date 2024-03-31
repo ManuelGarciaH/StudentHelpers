@@ -26,7 +26,7 @@ function InsideView() {
   )
 }
 
-function outsideView() {
+function OutsideView() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Inicio" component={INICIO} options={{headerShown:false}} />
@@ -52,7 +52,7 @@ const Navegacion = () =>{
           {user ? (
             <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
           ) : (
-            <Stack.Screen name="Inicio" component={outsideView} options={{headerShown:false}} />
+            <Stack.Screen name="Inicio" component={OutsideView} options={{headerShown:false}} />
           )}
         </Stack.Navigator>
     </NavigationContainer>
