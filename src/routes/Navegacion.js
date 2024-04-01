@@ -9,6 +9,7 @@ import INICIO from '../views/Inicio.js';
 import SINGUP from '../views/SingUp.js';
 import LOGIN from '../views/Login.js';
 import VERPUBLICACION from '../views/VerPublicacion.js';
+import PROFILE from '../views/Perfil.js';
 import PUBLICACIONES from '../views/Publicaciones.js';
 import TAB_NAVIGATOR from '../routes/TabNavigator.js';
 //La importacion de lo que usemos
@@ -22,6 +23,7 @@ function InsideView() {
       <Stack.Screen name="TabNavigator" component={TAB_NAVIGATOR} options={{headerShown:false}}></Stack.Screen>
       <Stack.Screen name="VerPublicacion" component={VERPUBLICACION} options={{headerShown:false}}></Stack.Screen>
       <Stack.Screen name="Publicaciones" component={PUBLICACIONES} options={{headerShown:false}}></Stack.Screen>
+      <Stack.Screen name="Profile" component={PROFILE} options={{headerShown:false}}></Stack.Screen>
     </Insidestack.Navigator>
   )
 }

@@ -1,21 +1,89 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
 import CreatePostModal from './ProfileModals/CreatePostModal';
-// import { Button } from 'react-native-paper';
 
-const Perfil = () => {
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
+
+const Perfil = ({ navigation }) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
+  const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+
+  const userName = "Manuel Antonio Garcia";
+
+  useEffect(() => {
+    setDownloadedPosts([]);
+
+    const showPosts = async () => {
+      try {
+        const postsCollection = collection(FIREBASE_DB, "publicaciones");
+        const querySnapshot = await getDocs(query(postsCollection, where("nombreUsuario", "==", userName)));
+        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+        if (querySnapshot.empty) {
+          console.log("No hay documentos en la colección 'modulos'");
+        } else {
+          const newPosts = [];
+          querySnapshot.forEach(async (doc) => {
+            console.log("Datos del documento:", doc.data());
+            const postData = {
+              id: doc.id,
+              userName: doc.data().nombreUsuario,
+              title: doc.data().titulo,
+              details: doc.data().detalles,
+              category: doc.data().category,
+              schedule: doc.data().horario,
+              location: doc.data().lugar,
+              days: doc.data().dias,
+              contact: doc.data().contacto,
+              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+            };
+            newPosts.push(postData);
+          });
+          // console.log(newPosts);
+          console.log("Base de datos")
+          console.log(downloadedPosts);
+          console.log(downloadedPosts.length)
+          setDownloadedPosts(newPosts);
+        }
+      } catch (error) {
+        console.error("Error al obtener documentos:", error);
+      }
+    }
+    showPosts();
+    
+  }, []); // Se ejecuta solo una vez al montar el componente
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      mostrar()
+    }, 5000);
+    return () => clearTimeout(timeout);
+  });
+
+  const verPublicacion = (item) => {
+    navigation.navigate("VerPublicacion", { datos: item })
+  };
+
+  const mostrar = () => {
+    if (downloadedPosts.length === 0) {
+      setShowNoPostsMessage(true);
+    }else{
+      setShowNoPostsMessage(false);
+    }
+    console.log(downloadedPosts.length)
+  }
 
   return (
     <View>
         <PerfilHeader/>
         <View style={[globalStyles.form, {padding: 5}]}>
-          <Text style={styles.titleName}>Nombre de Usuario</Text>
+          <Text style={styles.titleName}>{userName}</Text>
           <View style={styles.descriptionContainer}>
             <Image
               source={require("../../Img/Sin-foto-Perfil.png")}
@@ -35,8 +103,37 @@ const Perfil = () => {
             </View>
           </View>
 
-          <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} />
+          <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
 
+          {showNoPostsMessage ? (
+            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+          ) : (
+            <>
+              {downloadedPosts.length === 0 ? (
+                <ActivityIndicator size="large" color="#0000ff" />
+              ) : (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {downloadedPosts.map((item, index) => (
+                    <View key={index} > 
+                      <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                        <Image
+                          source={{ uri: item.images[0] }}
+                          style={styles.image}
+                        />
+                        <View>
+                          <Text style={styles.textTitle}>{item.title}</Text>
+                          <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                          <Text style={styles.textEmail}>Días: L-V</Text>
+                          <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
+                          <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+            </>
+          )}
         </View>
     </View>
   )
@@ -89,6 +186,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "white",
     fontWeight: "bold",
+  },
+  itemConteiner:{
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 0.5,
+    elevation: 5,
+    marginBottom: 10,
+    width: wp("96%"),
+  },
+  image:{
+    margin: 7,
+    marginRight: 5,
+    marginLeft: 10,
+    width: wp("30%"),
+    height: hp("15%"),
+  },
+  textTitle:{
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  textEmail:{
+    fontSize: 14,
   }
 });
 

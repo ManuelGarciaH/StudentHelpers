@@ -10,9 +10,9 @@ const VerPublicacion = ({navigation, route}) => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const imagenes = [
-        { uri: datos.picture.large },
-        { uri: datos.picture.large },
-        { uri: datos.picture.large }
+        { uri: datos.images[0] },
+        { uri: datos.images[0] },
+        { uri: datos.images[0] }
     ];
 
     return (
@@ -30,11 +30,11 @@ const VerPublicacion = ({navigation, route}) => {
                     </Swiper>
                 </View>
                 <View style={{width: wp("80%")}}>
-                    <Text style={styles.textoDatos}>Lugar: {datos.location.state} </Text>
-                    <Text style={styles.textoDatos}>Días L-V</Text>
-                    <Text style={styles.textoDatos}>Horario: {datos.registered.date}</Text>
-                    <Text style={styles.textoDatos}>Contacto Externo: {datos.cell}</Text>
-                    <Text style={styles.textoDatos} multiline={true}>Detalles: In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+                    <Text style={styles.textoDatos}>Lugar: {datos.location} </Text>
+                    <Text style={styles.textoDatos}>Días: {datos.days.join('-')}</Text>
+                    <Text style={styles.textoDatos}>Horario: {datos.schedule}</Text>
+                    <Text style={styles.textoDatos}>Contacto Externo: {datos.contact}</Text>
+                    <Text style={styles.textoDatos} multiline={true}>Detalles: {datos.details}</Text>
                 </View>
                 
             </View>

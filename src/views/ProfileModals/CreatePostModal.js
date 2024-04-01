@@ -4,6 +4,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Button, TextInput} from 'react-native-paper';
 import { globalStyles } from '../../../globalStyles';
+import { FIREBASE_DB } from '../../../Firebase';
+import { collection, addDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -11,17 +14,55 @@ import DaysButton from './DaysButton'
 import ContactButton from './ContactButton';
 import ImageButton from './ImageButton';
 
-const CreatePostModal = ({ visible, onClose}) => {
-    const { handleSubmit, control, setValue, formState: { errors }, trigger } = useForm();
-  
-    const onSubmit = (data) => {
+const CreatePostModal = ({ visible, onClose, userName}) => {
+    const { handleSubmit, control, reset, setValue, formState: { errors }, trigger } = useForm();
+    const storage = getStorage();
+
+    const subirImagenesABaseDeDatos = async (imageUris, title) => {
+      try {
+        const newImagePaths = [];
+        // Iterar sobre cada URI de imagen y subirla a la base de datos
+        await Promise.all(
+          imageUris.map(async (uri, index) => {
+            // Obtener la referencia de almacenamiento para la imagen
+            const storageRef = ref(storage, `publicaciones/${userName}/${title}/image_${index}.png`);
+    
+            // Convertir la imagen a bytes
+            const response = await fetch(uri);
+            const blob = await response.blob();
+    
+            // Subir la imagen a Firebase Storage
+            await uploadBytes(storageRef, blob);
+
+            // Obtener la URL de descarga de la imagen y agregarla al array
+            const downloadURL = await getDownloadURL(storageRef);
+            newImagePaths.push(downloadURL);
+          })
+        );
+        console.log("Imágenes subidas exitosamente.");
+        return newImagePaths;
+      } catch (error) {
+        console.error("Error al subir las imágenes:", error);
+      }
+    };
+
+    const onSubmit = async (data) => {
         if (Object.keys(errors).length === 0) {
-            console.log(data);
+            const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
+            const newData = { ...data, image: newImagePaths, nombreUsuario: userName};
+
+            await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            //reset();
             onClose();
         } else {
             console.log(errors);
         }
     };
+
+    const onCancel = () => {
+      reset(); // Limpiar los datos del formulario
+      onClose();
+  };
   
     return (
       <Modal animationType="fade" transparent={true} visible={visible}
@@ -143,7 +184,7 @@ const CreatePostModal = ({ visible, onClose}) => {
                 <View style={[styles.buttonContainer, {justifyContent: "center"}]}>
                     <TouchableOpacity
                         style={[styles.button, styles.buttonClose, { marginHorizontal: 0}]}
-                        onPress={onClose}>
+                        onPress={onCancel}>
                         <Text style={styles.textStyle}>Cancelar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
