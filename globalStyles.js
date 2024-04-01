@@ -67,5 +67,38 @@ export const globalStyles = StyleSheet.create({
     },
     container:{
         flex: 1,
-    }
+    },
+    showInfoSelected:{
+        color: "black",
+        fontSize: 17,
+    },
+    errorMessage:{
+        color: "red",
+        fontSize: 17,
+    },
+    dataButton:{
+        flexDirection: "row",
+        backgroundColor: "green",
+        padding: 7,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        width: wp("39%"),
+    },
+    dataIcon:{
+        color: "white",
+        fontSize: 17,
+        marginRight: 10
+    },
+    dataTxtButton:{
+        fontSize: 18,
+        color: "white",
+        fontWeight: "bold",
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
 });

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {Controller} from 'react-hook-form';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalStyles } from '../../../globalStyles';
 import DatePicker from 'react-native-date-picker';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ScheduleButton = ({ control, errors, name }) => {
     const [open, setOpen] = useState(false);
@@ -12,8 +12,12 @@ const ScheduleButton = ({ control, errors, name }) => {
 
     return (
         <View style={globalStyles.centrar}>
-            <Icon.Button name="clock-o" style={styles.botonDatos} borderRadius={13}
-            onPress={() => setOpen(true)}>Horarios</Icon.Button>
+            <TouchableOpacity onPress={() => setOpen(true)}>
+            <View style={globalStyles.dataButton}>
+                <Icon name="clock-o" style={globalStyles.dataIcon}/>
+                <Text style={globalStyles.dataTxtButton}>Horario</Text>
+            </View>
+            </TouchableOpacity>
             {/*Open datePicker schedule*/}
             <Controller
                 name={name}
@@ -31,9 +35,12 @@ const ScheduleButton = ({ control, errors, name }) => {
                             onCancel={() => {
                                 setOpen(false)
                             }}
+                            onRequestClose={() => {
+                                setOpen(false);
+                            }}
                         />
-                        <Text>{value}</Text> 
-                        {errors[name] && <Text style={{ color: 'red' }}>{errors[name].message}</Text>}
+                        {!errors[name] && <Text style={globalStyles.showInfoSelected}>{value}</Text>}
+                        {errors[name] && <Text style={globalStyles.errorMessage}>{errors[name].message}</Text>}
                     </>
                 )}
             />

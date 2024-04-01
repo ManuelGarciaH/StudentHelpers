@@ -29,8 +29,12 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
 
   return (
     <View style={globalStyles.centrar}>
-        <Icon.Button name="calendar" style={styles.botonDatos} borderRadius={13}
-        onPress={() => setModalDays(true)}>Días</Icon.Button>
+        <TouchableOpacity onPress={() => setModalDays(true)}>
+          <View style={globalStyles.dataButton}>
+            <Icon name="calendar" style={globalStyles.dataIcon}/>
+            <Text style={globalStyles.dataTxtButton}>Días</Text>
+          </View>
+        </TouchableOpacity>
         <Controller
             name={name}
             control={control}
@@ -38,8 +42,8 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
             rules={{required: "Campo requerido"}}
             render={({field:{value}})=> (
             <>
-                <Text>{value ? value.join(' - ') : ''}</Text>
-                {errors[name] && <Text style={{ color: 'red' }}>{errors[name].message}</Text>}
+                {!errors[name] && <Text style={globalStyles.showInfoSelected}>{value ? value.join(' - ') : ''}</Text>}
+                {errors[name] && <Text style={globalStyles.errorMessage}>{errors[name].message}</Text>}
             </>
         )}
         />
@@ -48,9 +52,9 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
             onRequestClose={() => {
               setModalDays(!modalDays);
             }}>
-              <View style={[styles.centerContainer, {backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: "center"}]}>
+              <View style={globalStyles.centerContainer}>
                 <View style={[styles.modalContainerDays, {justifyContent: "center"}]}>
-                  <Text style={styles.textModal}>Escoge los días que estarás disponible</Text>
+                  <Text style={[styles.textModal, {fontWeight: "bold"}]}>Escoge los días que estarás disponible</Text>
 
                   <View style={styles.buttonContainer}>
                     <TouchableOpacity onPress={() => filterDaysSelector('L')}>
@@ -93,6 +97,8 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
                       </View>
                     </TouchableOpacity>
                   </View>
+
+                  <Text style={styles.textModal}>Días seleccionados: {selectedDays.join('-')}</Text>
                   
                   <View style={[styles.buttonContainer, {justifyContent: "flex-end"}]}>
                     <TouchableOpacity
@@ -123,24 +129,19 @@ const styles = StyleSheet.create({
         backgroundColor: "green",
         textAlign: "center",
     },
-    centerContainer: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
-        marginBottom: 55,
-    },
     modalContainerDays: {
-        backgroundColor: 'white',
-        height: hp("35%"),
-        width: wp("90%"),
+        backgroundColor: '#B5D8C3',
+        height: hp("42%"),
+        width: wp("88%"),
         padding: 10,
         elevation: 5,
         alignItems: "center",
     },
     textModal: {
         textAlign: "center",
-        fontSize: 14,
-        color: "grey",
+        fontSize: 18,
+        color: "black",
+        marginBottom: 10,
     },
     buttonContainer:{
         flexDirection: "row",
@@ -151,18 +152,19 @@ const styles = StyleSheet.create({
     dayButton: {
         alignItems: "center",
         paddingVertical: 8,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: 'black',
+        borderWidth: 2,
+        borderRadius: 20,
+        borderColor: 'grey',
         marginBottom: 10,
         width: wp("30%"),
     },
     selectedDay: {
-        backgroundColor: 'lightblue',
+        backgroundColor: '#8CD1A9',
     },
     dayText: {
         fontSize: 16,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
+        color: "black",
     },
     button: {
         padding: 10,
@@ -171,7 +173,12 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     buttonClose: {
-        backgroundColor: '#2196F3',
+        backgroundColor: '#0ABEDC',
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
     },
 })
 

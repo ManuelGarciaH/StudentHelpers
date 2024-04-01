@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import {Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalStyles } from '../../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ModalSelector from 'react-native-modal-selector';
+import { Button } from 'react-native-paper';
 
 const LocationButton = ({ control, errors, name, setValue, trigger }) => {
   //List for modalSelector
@@ -36,10 +37,16 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
 
   return (
     <View style={globalStyles.centrar}>
-        <Icon.Button name="map-marker"style={styles.botonDatos} borderRadius={13}
-        onPress={() => setModalLocation(true)}>Lugar</Icon.Button>
+        <TouchableOpacity onPress={() => setModalLocation(true)}>
+        <View style={globalStyles.dataButton}>
+            <Icon name="map-marker" style={globalStyles.dataIcon}/>
+            <Text style={globalStyles.dataTxtButton}>Lugar</Text>
+        </View>
+        </TouchableOpacity>
         {modalLocation && (
-        <ModalSelector data={modulesList} visible={true} style={{height: hp("0%"), width: wp("0%")}}
+        <ModalSelector animationType="fade" data={modulesList} visible={true} 
+          optionTextStyle={styles.optionText}
+          style={styles.modalSelector}
             onModalClose={() => {
                 setModalLocation(false)
             }}
@@ -48,6 +55,9 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
                 setModalLocation(false); // Cierra el modal después de seleccionar una opción
                 setValue(name, option.label);
                 trigger(name)
+            }}
+            onRequestClose={() => {
+              setModalLocation(false);
             }}
         />
         )}
@@ -58,8 +68,8 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
             defaultValue=""
             render={({ field: { value } }) => (
             <>
-                <Text>{value}</Text>
-                {errors[name] && <Text style={{ color: 'red' }}>{errors[name].message}</Text>}
+                {!errors[name] && <Text style={globalStyles.showInfoSelected}>{value}</Text>}
+                {errors[name] && <Text style={globalStyles.errorMessage}>{errors[name].message}</Text>}
             </>
         )}
         />
@@ -68,11 +78,19 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
 }
 
 styles = StyleSheet.create({
-    botonDatos:{
-        width: wp("27%"),
-        backgroundColor: "green",
-        textAlign: "center",
-    },
+  botonDatos:{
+    width: wp("27%"),
+    backgroundColor: "green",
+    textAlign: "center",
+  },
+  modalSelector:{
+    height: hp("0%"), 
+    width: wp("0%"),
+    backgroundColor: "black",
+  },
+  optionText:{
+    fontSize: 25,
+  },
 })
 
 export default LocationButton;

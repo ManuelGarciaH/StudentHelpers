@@ -3,6 +3,7 @@ import { Modal, View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'rea
 import { Controller, useForm } from 'react-hook-form';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Button, TextInput} from 'react-native-paper';
+import { globalStyles } from '../../../globalStyles';
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -23,10 +24,14 @@ const CreatePostModal = ({ visible, onClose}) => {
     };
   
     return (
-      <Modal animationType="slide" transparent={true} visible={visible}>
-        <View style={styles.centerContainer}>
+      <Modal animationType="fade" transparent={true} visible={visible}
+        onRequestClose={() => {
+          onClose()
+        }}>
+        <View style={[globalStyles.centerContainer, {justifyContent: "flex-end"}]}>
           <View style={styles.modalContainer}>
             <Text style={styles.tituloModal}>Crear Publicación</Text>
+            <View style={styles.delimitador}></View>
             <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.textModal}>Elige una categoria</Text>
                 <Controller
@@ -37,35 +42,43 @@ const CreatePostModal = ({ visible, onClose}) => {
                     render={({ field: { value, onChange } }) => (
                       <>
                         <View style={styles.buttonContainer}>
-                          <Button mode={value === 'Comida' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Comida')} style={styles.boton}
-                          >Comida</Button>
-
-                          <Button mode={value === 'Accesorios' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Accesorios')} style={styles.boton}
-                          >Accesorios</Button>
-
-                          <Button mode={value === 'Viaje' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Viaje')} style={[styles.boton, {width: wp("26%")}]}
-                          >Viaje</Button>
+                          <TouchableOpacity onPress={() => onChange('Comida')}>
+                            <View style={[styles.notSelectedButton, value === 'Comida' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Comida</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => onChange('Accesorios')}>
+                            <View style={[styles.notSelectedButton, value === 'Accesorios' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Accesorios</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => onChange('Viaje')}>
+                            <View style={[styles.notSelectedButton, value === 'Viaje' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Viaje</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
 
-                        <View style={styles.buttonContainer}>
-                          <Button mode={value === 'Intercambio' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Intercambio')} style={styles.boton}
-                          >Intercambio</Button>
-
-                          <Button mode={value === 'Producto' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Producto')} style={styles.boton}
-                          >Producto</Button>
-
-                          <Button mode={value === 'Otro' ? 'contained' : 'outlined'}
-                            onPress={() => onChange('Otro')} style={[styles.boton, {width: wp("26%")}]}
-                          >Otro</Button>
+                        <View style={[styles.buttonContainer, {marginBottom: 5}]}>
+                          <TouchableOpacity onPress={() => onChange('Intercambio')}>
+                            <View style={[styles.notSelectedButton, value === 'Intercambio' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Intercambio</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => onChange('Producto')}>
+                            <View style={[styles.notSelectedButton, value === 'Producto' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Producto</Text>
+                            </View>
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={() => onChange('Otro')}>
+                            <View style={[styles.notSelectedButton, value === 'Otro' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Otro</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
-
-                        <Text>Opción seleccionada: {value}</Text>
-                        {errors.category && <Text style={{ color: 'red' }}>{errors.category.message}</Text>}
+                        {!errors.category && <Text style={styles.textModal}>Opción seleccionada: {value}</Text>}
+                        {errors.category && <Text style={globalStyles.errorMessage}>{errors.category.message}</Text>}
+                        <View style={[styles.delimitador, {height: 1}]}></View>
                       </>
                     )}
                 />
@@ -80,8 +93,11 @@ const CreatePostModal = ({ visible, onClose}) => {
                           value={value}
                           onChangeText={(text) => onChange(text)}
                           placeholder="Titulo"
+                          style={{marginTop: 10}}
                         />
-                        {errors.titulo && <Text style={{ color: 'red' }}>{errors.titulo.message}</Text>}
+                        {errors.titulo && <Text style={globalStyles.errorMessage}>{errors.titulo.message}</Text>}
+                        {!errors.titulo && <Text style={globalStyles.showInfoSelected}></Text>}
+                        
                       </>
                     )}
                 />
@@ -96,27 +112,34 @@ const CreatePostModal = ({ visible, onClose}) => {
                           value={value}
                           onChangeText={(text) => onChange(text)}
                           placeholder="Detalles"
+                          style={{marginTop: 10}}
                         />
-                        {errors.detalles && <Text style={{ color: 'red' }}>{errors.detalles.message}</Text>}
+                        {errors.detalles && <Text style={globalStyles.errorMessage}>{errors.detalles.message}</Text>}
+                        {!errors.detalles && <Text style={globalStyles.showInfoSelected}></Text>}
                       </>
                     )}
                 />
-                <View style={[styles.buttonContainer, {marginTop: 15}]}>
+                <View style={[styles.delimitador, {height: 1}]}></View>
+                <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     <ScheduleButton control={control} errors={errors} name="horario"/>
                     <LocationButton control={control} errors={errors} name="lugar" 
                         setValue={setValue} trigger={trigger}/>
-                    
+                </View>
+
+                <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     <DaysButton control={control} errors={errors} name="dias" 
                         setValue={setValue} trigger={trigger}/>
-                </View>
-                <View style={[styles.buttonContainer, {marginTop: 15}]}>
                     <ContactButton control={control} errors={errors} name="contacto" 
                         setValue={setValue} trigger={trigger}/>
-                    <View style={{ marginHorizontal: -15}}></View>
+
+                </View>
+
+                <View style={[styles.buttonContainer, ]}>
                     <ImageButton control={control} errors={errors} name="image" 
                         setValue={setValue} trigger={trigger}/>
                 </View>
-
+                
+                <View style={[styles.delimitador, {height: 1, marginBottom: 5}]}></View>
                 <View style={[styles.buttonContainer, {justifyContent: "center"}]}>
                     <TouchableOpacity
                         style={[styles.button, styles.buttonClose, { marginHorizontal: 0}]}
@@ -138,55 +161,73 @@ const CreatePostModal = ({ visible, onClose}) => {
   };
   
 const styles = StyleSheet.create({
-    centerContainer: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
-        marginBottom: 55,
-    },
-    modalContainer: {
-        backgroundColor: 'white',
-        borderRadius: 20,
-        height: hp("60%"),
-        width: wp("97%"),
-        padding: 10,
-        elevation: 5,
-    },
-    tituloModal: {
-        marginBottom: 8,
-        textAlign: "left",
-        fontWeight: 'bold',
-        color: "black",
-        fontSize: 30,
-    },
-    textModal: {
-        textAlign: "center",
-        fontSize: 14,
-        color: "grey",
-    },
-    buttonContainer:{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between", // Distribuye automáticamente el espacio entre los botones
-        marginVertical: 5
-    },
-    boton:{
-        width: wp("32%"),
-    },
-    button: {
-        padding: 10,
-        elevation: 2,
-        marginLeft: 20,
-        marginRight: 10,
-    },
-    buttonClose: {
-        backgroundColor: '#2196F3',
-    },
-    textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
+  modalContainer: {
+      backgroundColor: '#B5D8C3',
+      borderRadius: 20,
+      height: hp("60%"),
+      width: wp("97%"),
+      padding: 10,
+      elevation: 5,
+      marginBottom: 60,
+  },
+  tituloModal: {
+      marginBottom: 8,
+      textAlign: "left",
+      fontWeight: 'bold',
+      color: "black",
+      fontSize: 30,
+  },
+  textModal: {
+      fontSize: 16,
+      color: "grey",
+  },
+  buttonContainer:{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between", // Distribuye automáticamente el espacio entre los botones
+      marginVertical: 5,
+  },
+  boton:{
+      width: wp("32%"),
+      // backgroundColor:"#B0EFDB"
+  },
+  button: {
+      padding: 10,
+      elevation: 2,
+      marginLeft: 20,
+      marginRight: 10,
+  },
+  buttonClose: {
+      backgroundColor: '#0ABEDC',
+  },
+  textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+  },
+  txtButton:{
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  },
+  notSelectedButton:{
+    backgroundColor: "#6E9F85",
+    padding: 7,
+    borderRadius: 20,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    width: wp("30%"),
+    borderColor: 'grey',
+  },
+  selectedButton:{
+    backgroundColor: "#8CD1A9"
+  },
+  delimitador:{
+    height: 2, 
+    width: wp("100%"), 
+    backgroundColor: "grey"
+  }
 })
 
   export default CreatePostModal;

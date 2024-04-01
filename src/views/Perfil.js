@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image} from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
 import CreatePostModal from './ProfileModals/CreatePostModal';
+// import { Button } from 'react-native-paper';
 
 const Perfil = () => {
   //States for modals
@@ -24,9 +25,13 @@ const Perfil = () => {
           </View>
           <Text style={styles.titleName}>Publicaciones</Text>
           <View style={styles.descriptionContainer}>
-            <View style={[globalStyles.centrar, styles.buttonCreatePost]}>
-              <Icon.Button name="plus" onPress={() => setModalCreatePost(true)}
-              >Crear Publicación</Icon.Button>
+            <View style={[globalStyles.centrar, ]}>
+              <TouchableOpacity onPress={() => setModalCreatePost(true)}>
+                <View style={styles.buttonCreatePost}>
+                  <Icon name="plus" style={styles.iconCreatePost}/>
+                  <Text style={styles.txtButton}>Crear Publicación</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -67,8 +72,24 @@ const styles = StyleSheet.create({
     height: hp("20%"),
   },
   buttonCreatePost:{
+    flexDirection: "row",
     margin: 5,
+    backgroundColor: "#0ABEDC",
+    padding: 10,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
+  iconCreatePost:{
+    color: "white",
+    fontSize: 17,
+    marginRight: 10
+  },
+  txtButton:{
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
+  }
 });
 
 export default Perfil;
