@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Platform} from 'react-native'
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
@@ -42,20 +42,12 @@ const SingUp = ({ navigation }) => {
             });
     };
 
-    const onSubmit = (data) => {
-        // Validar que al menos una categoría haya sido seleccionada
-        // if (!selectedCategory) {
-        //   console.log("hola")
-        //   setError('category', { type: 'required', message: 'Selecciona al menos una categoría' });
-        //   return;
-        // }
-    
-        // Aquí puedes continuar con el envío del formulario si todo está bien
-        console.log(data);
-      };
-
     return (
-        <KeyboardAvoidingView behavior='padding' >
+        <KeyboardAvoidingView 
+            behavior='padding'
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+            style={{flex: 1}}
+        >
             <Header navigation={navigation} 
                 title="SingUp" 
                 customStyles={styles.title} // Puedes personalizar los estilos aquí 
@@ -78,7 +70,10 @@ const SingUp = ({ navigation }) => {
                         <>
                             <TextInput 
                                 value={value}
-                                onChangeText={(text) => onChange(text)}
+                                onChangeText={(text) => {
+                                    onChange(text)
+                                    setNombre(text)
+                                }}
                                 style={globalStyles.input}
                                 placeholder='Nombre'
                             />
@@ -86,12 +81,6 @@ const SingUp = ({ navigation }) => {
                         </>
                     )}
                 />
-                {/* <View style={globalStyles.input}>
-                    <TextInput 
-                        style={globalStyles.txtInput}
-                        onChangeText={(nombre) => setNombre(nombre)}
-                    ></TextInput>
-                </View> */}
 
                 <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
                 <Controller
@@ -109,21 +98,18 @@ const SingUp = ({ navigation }) => {
                         <>
                             <TextInput 
                                 value={value}
-                                onChangeText={(text) => onChange(text)}
+                                onChangeText={(text) => {
+                                    onChange(text)
+                                    setCorreo(text)
+                                }}
                                 placeholder='correo.ejemplo1234@alumnos.udg.mx'
+                                inputMode='email'
                                 style={globalStyles.input}
                             />
                             {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
                         </>
                     )}
                 />
-                {/* <TextInput 
-                    style={globalStyles.txtInput}
-                    onChangeText={(correo) => setCorreo(correo)}
-                    placeholder='Email'
-                    autoCapitalize='none'
-                    inputMode='email'
-                ></TextInput> */}
 
                 <Text style={globalStyles.txtBasic}>Contraseña</Text>
                 <Controller
@@ -158,14 +144,7 @@ const SingUp = ({ navigation }) => {
                     )}
                 />
                 <Text>{password}</Text>
-                {/* <View style={globalStyles.input}>
-                    <TextInput 
-                        style={globalStyles.txtInput}
-                        onChangeText={(password) => setPassword(password)}
-                        placeholder='Password'
-                        secureTextEntry={true}
-                    ></TextInput>
-                </View> */}
+                {/* Implementar boton para ocultar */}
 
                 <Text style={globalStyles.txtBasic}>Confirmar Contraseña</Text>
                 <Controller
@@ -183,6 +162,7 @@ const SingUp = ({ navigation }) => {
                         <>
                             <TextInput 
                                 value={value}
+                                secureTextEntry={true}
                                 onChangeText={(text) => onChange(text)}
                                 style={globalStyles.input}
                             />
@@ -190,15 +170,12 @@ const SingUp = ({ navigation }) => {
                         </>
                     )}
                 />
-                {/* <View style={globalStyles.input}>
-                    <TextInput style={globalStyles.txtInput}></TextInput>
-                </View> */}
 
                 {   // Codigo de carga para esperar respuesta del servidor
                     loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
                     (
                         // <TouchableOpacity onPress={createUser}>
-                        <TouchableOpacity onPress={handleSubmit(onSubmit)} style={globalStyles.centrar} >
+                        <TouchableOpacity onPress={handleSubmit(createUser)} style={globalStyles.centrar} >
                             <View style={globalStyles.boton}>
                                 <Text style={globalStyles.txtBoton}>Crear cuenta</Text>
                             </View>
