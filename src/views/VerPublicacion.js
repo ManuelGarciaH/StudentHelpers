@@ -1,27 +1,28 @@
-import { View, Text, StyleSheet, Image, FlatList  } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity  } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import React, { useState } from 'react';
 import { globalStyles } from '../../globalStyles'
 import PerfilHeader from '../components/PerfilHeader';
 import Swiper from 'react-native-swiper';
+import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
     const [currentPage, setCurrentPage] = useState(0);
 
-    const imagenes = [
-        { uri: datos.images[0] },
-        { uri: datos.images[0] },
-        { uri: datos.images[0] }
-    ];
+    const imagenes = datos.images.map(image => ({ uri: image }));
+
+    
 
     return (
         <View>
             <PerfilHeader/>
             <View style={globalStyles.form}>
-                <Text style={styles.titulo}>Tostilocos preparados al gusto</Text>
+                <Text style={styles.titulo}>{datos.title}</Text>
                 <View style={styles.contendorImagenes}>
-                    <Swiper style={styles.wrapper} showsButtons={false}>
+                    <Swiper style={styles.wrapper} showsButtons={false} 
+                        loop={false}
+                        loopClonesPerSide={1}>
                         {imagenes.map((imagen, index) => (
                             <View key={index} style={styles.slide}>
                                 <Image source={imagen} style={styles.image} />
@@ -30,11 +31,14 @@ const VerPublicacion = ({navigation, route}) => {
                     </Swiper>
                 </View>
                 <View style={{width: wp("80%")}}>
-                    <Text style={styles.textoDatos}>Lugar: {datos.location} </Text>
+                    <Text style={styles.textoDatos} multiline={true}>Detalles: {datos.details}</Text>
                     <Text style={styles.textoDatos}>Días: {datos.days.join('-')}</Text>
                     <Text style={styles.textoDatos}>Horario: {datos.schedule}</Text>
                     <Text style={styles.textoDatos}>Contacto Externo: {datos.contact}</Text>
-                    <Text style={styles.textoDatos} multiline={true}>Detalles: {datos.details}</Text>
+                    <Text style={styles.textoDatos}>Lugar: {datos.location} </Text> 
+                    
+                    <TraceRouteBotton modulo={datos.location}/>
+                    
                 </View>
                 
             </View>
