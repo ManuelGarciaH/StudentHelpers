@@ -5,6 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
 import CreatePostModal from './ProfileModals/CreatePostModal';
+import ModalLoading from '../components/ModalLoading';
 
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -76,7 +77,6 @@ const Perfil = ({ navigation }) => {
     }else{
       setShowNoPostsMessage(false);
     }
-    console.log(downloadedPosts.length)
   }
 
   return (
@@ -110,16 +110,19 @@ const Perfil = ({ navigation }) => {
           ) : (
             <>
               {downloadedPosts.length === 0 ? (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ModalLoading visible={true}/>
               ) : (
                 <ScrollView showsVerticalScrollIndicator={false}>
                   {downloadedPosts.map((item, index) => (
                     <View key={index} > 
                       <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                        <Image
-                          source={{ uri: item.images[0] }}
-                          style={styles.image}
-                        />
+                        <View style={styles.imageContainer}> 
+                          <Image
+                            source={{ uri: item.images[0] }}
+                            style={styles.imageStyle}
+                          />
+                        </View>
+                        
                         <View>
                           <Text style={styles.textTitle}>{item.title}</Text>
                           <Text style={styles.textEmail}>Lugar: {item.location}</Text>
@@ -161,12 +164,17 @@ const styles = StyleSheet.create({
    marginRight: 4,
    textAlign: "justify",
   },
-  image:{
-    marginTop: 5,
-    marginBottom: 5,
+  imageStyle: {
+    width: wp("28%"),
+    height: hp("13%"),
+  },
+  imageContainer: {
+    width: wp("30%"),
+    height: hp("16%"),
+    padding: 10,
     marginLeft: 5,
-    width: wp("40%"),
-    height: hp("20%"),
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonCreatePost:{
     flexDirection: "row",

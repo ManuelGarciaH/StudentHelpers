@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity,
   ScrollView, Image, ActivityIndicator} from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import BuscadorHeader from '../components/BuscadorHeader';
+import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
@@ -61,16 +62,20 @@ const Publicaciones = ({ navigation }) => {
         <View style={[globalStyles.form, {padding: 3},]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {downloadedPosts.length === 0 ? (
-              <ActivityIndicator size="large" color="#0000ff" />
+              // <ActivityIndicator size="large" color="#0000ff" />
+                <ModalLoading visible={true}/>
               ) : (
                 <ScrollView showsVerticalScrollIndicator={false}>
                   {downloadedPosts.map((item, index) => (
                     <View key={index} > 
                       <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                        <Image
-                          source={{ uri: item.images[0] }}
-                          style={styles.image}
-                        />
+                        <View style={styles.imageContainer}>
+                          <Image
+                            source={{ uri: item.images[0] }}
+                            style={styles.image}
+                          />
+                        </View>
+                        
                         <View>
                           <Text style={styles.textTitle}>{item.title}</Text>
                           <Text style={styles.textEmail}>Lugar: {item.location}</Text>
@@ -97,12 +102,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: wp("96%"),
   },
-  image:{
-    margin: 7,
-    marginRight: 5,
-    marginLeft: 10,
+  image: {
+    width: wp("28%"),
+    height: hp("13%"),
+    //resizeMode: "contain",
+  },
+  imageContainer: {
     width: wp("30%"),
-    height: hp("15%"),
+    height: hp("16%"),
+    padding: 10,
+    marginLeft: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   textName:{
     fontSize: 17,
@@ -110,7 +121,11 @@ const styles = StyleSheet.create({
   },
   textEmail:{
     fontSize: 14,
-  }
+  },
+  textTitle:{
+    fontSize: 17,
+    fontWeight: "600",
+  },
 });
 
 export default Publicaciones;
