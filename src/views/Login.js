@@ -37,10 +37,6 @@ const Login = ({ navigation }) => {
         return (
             <SafeAreaView>
                 <View>
-                    <Header navigation={navigation} 
-                        title="Login" 
-                        customStyles={styles.title} // Puedes personalizar los estilos aquí 
-                        />
         
                     <View style={globalStyles.form}>
                         <Text style={globalStyles.txtBasic}>Correo Institucional</Text>

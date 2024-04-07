@@ -2,7 +2,6 @@ import React, { Component, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, 
   ScrollView, Image, ActivityIndicator} from 'react-native'
 import {globalStyles} from '../../globalStyles';
-import BuscadorHeader from '../components/BuscadorHeader';
 import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
@@ -58,7 +57,6 @@ const Publicaciones = ({ navigation }) => {
 
     return (
       <View>
-        <BuscadorHeader/>
         <View style={[globalStyles.form, {padding: 3},]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {downloadedPosts.length === 0 ? (

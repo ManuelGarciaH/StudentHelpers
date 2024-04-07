@@ -49,10 +49,6 @@ const SingUp = ({ navigation }) => {
 
     return (
         <KeyboardAvoidingView behavior='padding' style={globalStyles.container} >
-            <Header navigation={navigation} 
-                title="SingUp" 
-                customStyles={styles.title} // Puedes personalizar los estilos aquí 
-            />
 
             <View style={globalStyles.form}>
                 <Text style={globalStyles.txtBasic}>Nombre</Text>

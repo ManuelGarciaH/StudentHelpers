@@ -81,7 +81,6 @@ const Perfil = ({ navigation }) => {
 
   return (
     <View>
-        <PerfilHeader/>
         <View style={[globalStyles.form, {padding: 5}]}>
           <Text style={styles.titleName}>{userName}</Text>
           <View style={styles.descriptionContainer}>
