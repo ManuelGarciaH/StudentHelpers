@@ -2,82 +2,95 @@ import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import React from 'react';
 import { globalStyles } from '../../globalStyles';
 
-// Array de ejemplo con información de servicios
+
 const serviciosData = [
   { 
     nombre: 'Biblioteca', 
     descripcion: 'Descripción de la biblioteca', 
-    imagen: require('../../Img/biblioteca.png') // Ruta de la imagen para el servicio 1
+    imagen: require('../../Img/biblioteca.png') 
   },
   { 
     nombre: 'Rectoria', 
     descripcion: 'Descripción de la rectoría', 
-    imagen: require('../../Img/rectoria.png') // Ruta de la imagen para el servicio 2
+    imagen: require('../../Img/rectoria.png') 
   },
   { 
     nombre: 'Complejo Deportivo Universitario (CDU)', 
     descripcion: 'Descripción del CDU', 
-    imagen: require('../../Img/cdu.png') // Ruta de la imagen para el servicio 3
+    imagen: require('../../Img/cdu.png') 
   },
   { 
     nombre: 'Enfermeria', 
     descripcion: 'Descripción de la enfermería', 
-    imagen: require('../../Img/enfermeria.png') // Ruta de la imagen para el servicio 3
+    imagen: require('../../Img/enfermeria.png') 
   },
   { 
     nombre: 'Coordinacion INCO (Ingenieria en Computacion)', 
     descripcion: 'Descripción de la coordinación INCO', 
-    imagen: require('../../Img/inco.png') // Ruta de la imagen para el servicio 3
+    imagen: require('../../Img/inco.png') 
   },
   { 
     nombre: 'Servicio 3', 
     descripcion: 'Descripción del servicio 3', 
-    imagen: require('../../Img/Logo.png') // Ruta de la imagen para el servicio 3
+    imagen: require('../../Img/Logo.png')
   },
 ];
 
 const Servicios = () => {
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={globalStyles.form}>
-        <Text style={styles.titulo}>Servicios Generales</Text>
-        {/* Mapeamos el array de serviciosData para crear un cuadro por cada servicio */}
-        {serviciosData.map((servicio, index) => (
-          <View key={index} style={styles.cuadro}>
-            <View style={styles.contenido}>
-              <Text style={styles.nombre}>{servicio.nombre}</Text>
-              <Text>{servicio.descripcion}</Text>
+    <View style={styles.scrollContainer}>
+      <ScrollView >
+        <View style={styles.content}>
+          <Text style={styles.titulo}>Servicios Generales</Text>
+          {serviciosData.map((servicio, index) => (
+            <View key={index} style={styles.cuadro}>
+              <View style={styles.contenido}>
+                <Text style={styles.nombre}>{servicio.nombre}</Text>
+                <Text>{servicio.descripcion}</Text>
+              </View>
+              <Image source={servicio.imagen} style={styles.imagen} />
             </View>
-            <Image source={servicio.imagen} style={styles.imagen} />
-          </View>
-        ))}
-      </View>
-    </ScrollView>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
-// Estilos
+
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    backgroundColor: '#A7DBCB',
+  },
+  content: {
+    padding: 20,
+    alignItems: 'center',
   },
   titulo: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: 'grey',
   },
   cuadro: {
-    flexDirection: 'row', // Para alinear la imagen a la derecha
-    alignItems: 'center', // Para alinear la imagen verticalmente con el texto
-    backgroundColor: '#fff',
+    flexDirection: 'row', 
+    alignItems: 'center',
+    backgroundColor: 'grey',
     padding: 20,
-    marginBottom: 20,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    marginBottom: 25,
+    borderRadius: 10,
+    shadowColor: 'blue',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 0,
+    elevation: 10,
   },
   contenido: {
-    flex: 1, // Para que el contenido ocupe todo el espacio disponible
+    flex: 1, 
   },
   nombre: {
     fontSize: 18,
