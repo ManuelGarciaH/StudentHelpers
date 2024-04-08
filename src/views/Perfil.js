@@ -1,159 +1,149 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Modal} from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
-import { Alert } from 'react-native';
-import { Button, TextInput  } from 'react-native-paper';
+import CreatePostModal from './ProfileModals/CreatePostModal';
+import ModalLoading from '../components/ModalLoading';
 
-const Perfil = () => {
-  const [modalCrearPublicacion, setModalCrearPublicacion] = useState(false);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [selectedTitle, setSelectedTitle] = useState('');
-  const [selectedDetails, setSelectedDetails] = useState('');
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-  const handleOptionSelect = (option) => {
-    console.log(option);
-    setSelectedOption(option);
+const Perfil = ({ navigation }) => {
+  //States for modals
+  const [modalCreatePost, setModalCreatePost] = useState(false);
+  const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+
+  const userName = "Manuel Antonio Garcia";
+
+  useEffect(() => {
+    setDownloadedPosts([]);
+
+    const showPosts = async () => {
+      try {
+        const postsCollection = collection(FIREBASE_DB, "publicaciones");
+        const querySnapshot = await getDocs(query(postsCollection, where("nombreUsuario", "==", userName)));
+        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+        if (querySnapshot.empty) {
+          console.log("No hay documentos en la colección 'modulos'");
+        } else {
+          const newPosts = [];
+          querySnapshot.forEach(async (doc) => {
+            console.log("Datos del documento:", doc.data());
+            const postData = {
+              id: doc.id,
+              userName: doc.data().nombreUsuario,
+              title: doc.data().titulo,
+              details: doc.data().detalles,
+              category: doc.data().category,
+              schedule: doc.data().horario,
+              location: doc.data().lugar,
+              days: doc.data().dias,
+              contact: doc.data().contacto,
+              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+            };
+            newPosts.push(postData);
+          });
+          // console.log(newPosts);
+          console.log("Base de datos")
+          console.log(downloadedPosts);
+          console.log(downloadedPosts.length)
+          setDownloadedPosts(newPosts);
+        }
+      } catch (error) {
+        console.error("Error al obtener documentos:", error);
+      }
+    }
+    showPosts();
+    
+  }, []); // Se ejecuta solo una vez al montar el componente
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      mostrar()
+    }, 5000);
+    return () => clearTimeout(timeout);
+  });
+
+  const verPublicacion = (item) => {
+    navigation.navigate("VerPublicacion", { datos: item })
   };
-  const handleTitleInput = (texto) => {
-    console.log(texto);
-    setSelectedTitle(texto);
-  };
-  const handleDetailsInput = (texto) => {
-    console.log(texto);
-    setSelectedDetails(texto);
-  };
+
+  const mostrar = () => {
+    if (downloadedPosts.length === 0) {
+      setShowNoPostsMessage(true);
+    }else{
+      setShowNoPostsMessage(false);
+    }
+  }
 
   return (
     <View>
         <PerfilHeader/>
         <View style={[globalStyles.form, {padding: 5}]}>
-          <Text style={styles.nombreTitulo}>Nombre de Usuario</Text>
-          <View style={styles.contenedorDescripcion}>
+          <Text style={styles.titleName}>{userName}</Text>
+          <View style={styles.descriptionContainer}>
             <Image
               source={require("../../Img/Sin-foto-Perfil.png")}
               style={styles.image}
             />
-            <Text style={styles.textoDescripcion}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+            <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
           </View>
-          <Text style={styles.nombreTitulo}>Publicaciones</Text>
-          <View style={styles.contenedorDescripcion}>
-            <View style={[globalStyles.centrar, styles.botonCrearPublicacion]}>
-              <Icon.Button 
-                name="plus"
-                onPress={() => setModalCrearPublicacion(true)}
-              >Crear Publicación</Icon.Button>
+          <Text style={styles.titleName}>Publicaciones</Text>
+          <View style={styles.descriptionContainer}>
+            <View style={[globalStyles.centrar, ]}>
+              <TouchableOpacity onPress={() => setModalCreatePost(true)}>
+                <View style={styles.buttonCreatePost}>
+                  <Icon name="plus" style={styles.iconCreatePost}/>
+                  <Text style={styles.txtButton}>Crear Publicación</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalCrearPublicacion}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-              setModalCrearPublicacion(!modalCrearPublicacion);
-            }}>
-            <View style={styles.centrarContenedor}>
-              <View style={styles.contenedorModal}>
-                <Text style={styles.tituloModal}>Crear Publicación</Text>
-                <Text style={styles.textoModal}>Elige una categoria</Text>
-                <View style={styles.contendorBotones}>
-                  <Button
-                    mode={selectedOption === 'Comida' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Comida')}
-                    style={styles.boton}
-                  >
-                    Comida
-                  </Button>
 
-                  <Button
-                    mode={selectedOption === 'Accesorios' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Accesorios')}
-                    style={styles.boton}
-                  >
-                    Accesorios
-                  </Button>
+          <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
 
-                  <Button
-                    mode={selectedOption === 'Viaje' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Viaje')}
-                    style={[styles.boton, {width: wp("26%")}]}
-                  >
-                    Viaje
-                  </Button>
-                  
-                  
-                </View>
-
-                <View style={styles.contendorBotones}>
-                  <Button
-                    mode={selectedOption === 'Intercambio' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Intercambio')}
-                    style={styles.boton}
-                  >
-                    Intercambio
-                  </Button>
-                  <Button
-                    mode={selectedOption === 'Producto' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Producto')}
-                    style={styles.boton}
-                  >
-                    Producto
-                  </Button>
-                  <Button
-                    mode={selectedOption === 'Otro' ? 'contained' : 'outlined'}
-                    onPress={() => handleOptionSelect('Otro')}
-                    style={[styles.boton, {width: wp("26%")}]}
-                  >
-                    Otro
-                  </Button>
-                </View>
-
-                <Text>Opción seleccionada: {selectedOption}</Text>
-
-                <Text>Titulo</Text>
-                <TextInput onChangeText={handleTitleInput} value={selectedTitle}></TextInput>
-
-                <Text>Detalles</Text>
-                <TextInput multiline={true} numberOfLines={3} onChangeText={handleDetailsInput} value={selectedDetails}></TextInput>
-
-                <View style={styles.contendorBotones}>
-                  <Icon.Button name="clock-o" style={styles.botonDatos} borderRadius={13}>Horario</Icon.Button>
-                  <Icon.Button name="map-marker" style={styles.botonDatos} borderRadius={13}>Lugar</Icon.Button>
-                  <Icon.Button name="calendar" style={styles.botonDatos} borderRadius={13}>Días</Icon.Button>
-                </View>
-                <View style={[styles.contendorBotones, {justifyContent: "center"}]}>
-                  <Icon.Button name="mobile-phone" style={styles.botonDatos} borderRadius={13}>Contacto</Icon.Button>
-                  <View style={{ marginHorizontal: 10}}></View>
-                  <Icon.Button name="image" style={styles.botonDatos} borderRadius={13}>Imagen</Icon.Button>
-                </View>
-
-                <View style={[styles.contendorBotones, {justifyContent: "center"}]}>
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose, { marginHorizontal: 0}]}
-                    onPress={() => setModalCrearPublicacion(false)}>
-                    <Text style={styles.textStyle}>Cancelar</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalCrearPublicacion(false)}>
-                    <Text style={styles.textStyle}>Crear Publicación</Text>
-                  </TouchableOpacity>
-                </View>
-                
-              </View>
-            </View>
-          </Modal>
-
+          {showNoPostsMessage ? (
+            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+          ) : (
+            <>
+              {downloadedPosts.length === 0 ? (
+                <ModalLoading visible={true}/>
+              ) : (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {downloadedPosts.map((item, index) => (
+                    <View key={index} > 
+                      <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                        <View style={styles.imageContainer}> 
+                          <Image
+                            source={{ uri: item.images[0] }}
+                            style={styles.imageStyle}
+                          />
+                        </View>
+                        
+                        <View>
+                          <Text style={styles.textTitle}>{item.title}</Text>
+                          <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                          <Text style={styles.textEmail}>Días: L-V</Text>
+                          <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
+                          <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+            </>
+          )}
         </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  contenedorDescripcion:{
+  descriptionContainer:{
     flexDirection: "row",
     alignItems: "center",
     width: wp("100%"),
@@ -161,88 +151,72 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "grey",
   },
-  nombreTitulo:{
+  titleName:{
     fontSize: 30,
     fontWeight: "bold",
     marginBottom: 4,
     color: "black",
   },
-  textoDescripcion:{
+  textDescription:{
    // marginRight: 150,
    width: wp("55%"),
    marginLeft: 5,
    marginRight: 4,
    textAlign: "justify",
   },
-  image:{
-    marginTop: 5,
-    marginBottom: 5,
+  imageStyle: {
+    width: wp("28%"),
+    height: hp("13%"),
+  },
+  imageContainer: {
+    width: wp("30%"),
+    height: hp("16%"),
+    padding: 10,
     marginLeft: 5,
-    width: wp("40%"),
-    height: hp("20%"),
-  },
-  contenedorCrearPubliacion:{
-    flexDirection: "row",
     alignItems: "center",
-    height: 45,
+    justifyContent: "center",
   },
-  botonCrearPublicacion:{
+  buttonCreatePost:{
+    flexDirection: "row",
     margin: 5,
-  },
-  centrarContenedor: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginBottom: 55,
-  },
-  contenedorModal: {
-    backgroundColor: 'white',
+    backgroundColor: "#0ABEDC",
+    padding: 10,
     borderRadius: 20,
-    height: hp("68%"),
-    width: wp("97%"),
-    padding: 10,
-    elevation: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  button: {
-    padding: 10,
-    elevation: 2,
-    marginLeft: 20,
-    marginRight: 10,
+  iconCreatePost:{
+    color: "white",
+    fontSize: 17,
+    marginRight: 10
   },
-  buttonClose: {
-    backgroundColor: '#2196F3',
+  txtButton:{
+    fontSize: 18,
+    color: "white",
+    fontWeight: "bold",
   },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  tituloModal: {
-    marginBottom: 5,
-    textAlign: "left",
-    fontWeight: 'bold',
-    color: "black",
-    fontSize: 30,
-  },
-  textoModal: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "grey",
-  },
-  contendorBotones:{
+  itemConteiner:{
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between", // Distribuye automáticamente el espacio entre los botones
-    marginVertical: 5
+    borderWidth: 0.5,
+    elevation: 5,
+    marginBottom: 10,
+    width: wp("96%"),
   },
-  boton:{
-    width: wp("32%"),
+  image:{
+    margin: 7,
+    marginRight: 5,
+    marginLeft: 10,
+    width: wp("30%"),
+    height: hp("15%"),
   },
-  botonDatos:{
-    width: wp("27%"),
-    backgroundColor: "green",
-    textAlign: "center",
+  textTitle:{
+    fontSize: 17,
+    fontWeight: "600",
   },
+  textEmail:{
+    fontSize: 14,
+  }
 });
 
 export default Perfil;
