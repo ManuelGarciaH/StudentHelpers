@@ -5,6 +5,7 @@ import { globalStyles } from '../../globalStyles'
 import PerfilHeader from '../components/PerfilHeader';
 import Swiper from 'react-native-swiper';
 import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
+import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
@@ -12,11 +13,8 @@ const VerPublicacion = ({navigation, route}) => {
 
     const imagenes = datos.images.map(image => ({ uri: image }));
 
-    
-
     return (
         <View>
-            <PerfilHeader/>
             <View style={globalStyles.form}>
                 <Text style={styles.titulo}>{datos.title}</Text>
                 <View style={styles.contendorImagenes}>
@@ -51,12 +49,14 @@ const VerPublicacion = ({navigation, route}) => {
                         <Text style={styles.textoDatos}>{datos.contact}</Text>   
                     </View>
                     
-                    <View style={styles.centerText}>
-                        <Text style={[styles.textoDatos, styles.bold]}>Lugar: </Text> 
-                        <Text style={styles.textoDatos}>{datos.location} </Text> 
-                    </View>
-
-                    <TraceRouteBotton modulo={datos.location}/>
+                    {datos.category !="Viaje" && (
+                        <View style={styles.centerText}>
+                            <Text style={[styles.textoDatos, styles.bold]}>Lugar: </Text> 
+                            <Text style={styles.textoDatos}>{datos.location} </Text> 
+                        </View>
+                    )}
+                    {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
+                    {datos.category =="Viaje" && <SeeRouteTravel location={datos.location} />}
                     
                 </View>
                 

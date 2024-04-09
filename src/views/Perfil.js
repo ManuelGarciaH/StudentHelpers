@@ -124,7 +124,7 @@ const Perfil = ({ navigation }) => {
                         
                         <View>
                           <Text style={styles.textTitle}>{item.title}</Text>
-                          <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                          {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
                           <Text style={styles.textEmail}>Días: L-V</Text>
                           <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
                           <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>

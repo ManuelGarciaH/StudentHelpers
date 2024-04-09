@@ -31,10 +31,8 @@ function InsideView({navigation}) {
           headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
           headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
           headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name="arrow-left" size={20} color="white" />
-            </TouchableOpacity>
+          header: () => (
+            <Header navigation={navigation} back={true}/>
           ),
         }} />
       <Stack.Screen name="Publicaciones" component={PUBLICACIONES}/>

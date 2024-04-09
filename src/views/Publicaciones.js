@@ -6,7 +6,7 @@ import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, getDocs} from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Publicaciones = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
@@ -18,8 +18,9 @@ const Publicaciones = ({ navigation }) => {
       setDownloadedPosts([]);
       try {
         const postsCollection = collection(FIREBASE_DB, "publicaciones");
-        const querySnapshot = await getDocs(postsCollection);
+        const querySnapshot = await getDocs(query(postsCollection, where("category", "!=", "Viaje")));
         console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+        
         if (querySnapshot.empty) {
           console.log("No hay documentos en la colección 'modulos'");
         } else {
