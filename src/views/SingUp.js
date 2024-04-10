@@ -48,10 +48,6 @@ const SingUp = ({ navigation }) => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
             style={{flex: 1}}
         >
-            <Header navigation={navigation} 
-                title="SingUp" 
-                customStyles={styles.title} // Puedes personalizar los estilos aquí 
-            />
 
             <View style={globalStyles.form}>
                 <Text style={globalStyles.txtBasic}>Nombre</Text>

@@ -16,47 +16,64 @@ const BuscadorHeader = () => {
 
   return (
     <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
-        <View style={styles.header}>
-            <View style={styles.buscador}>
-                <Searchbar
-                    placeholder="Search"
-                    onChangeText={handleSearch}
-                    value={searchQuery}
-                    icon={({ color, size }) => ( // Define el icono dentro de una función
-                        <Icon name="search" color={color} size={size} />
-                    )}
-                />
-                {/* <TextInput style={styles.txtInput}></TextInput> */}
-            </View>
+        <View style={styles.container}>
+            <Searchbar
+                placeholder="Search"
+                onChangeText={handleSearch}
+                value={searchQuery}
+                style={styles.searchBar}
+                inputStyle={styles.inputStyle}
+                icon={({ color, size }) => ( // Define el icono dentro de una función
+                    <Icon name="search" color={color} size={size} />
+                )}
+            />
             <Image style={styles.imgHeaderLogo} source={require('../../Img/Logo.png')} />
         </View>
     </ImageBackground>
+    
+    // <View style={{flexDirection: "row"}}>
+    //     <Searchbar
+    //         placeholder="Search"
+    //         onChangeText={handleSearch}
+    //         value={searchQuery}
+    //         style={styles.searchBar}
+    //         inputStyle={styles.inputStyle}
+    //         icon={({ color, size }) => ( // Define el icono dentro de una función
+    //             <Icon name="search" color={color} size={size} />
+    //         )}
+    //     />
+    //     <Image style={styles.imgHeaderLogo} source={require('../../Img/Logo.png')} />
+    // </View>
     
   );
 };
 
 const styles = StyleSheet.create({
-    header:{                    //Header contiene el logo, titulo de la ventana
-        flexDirection: 'row', 
-        alignItems: 'center',
-        flex: 1,
+    searchBar: {
+        marginLeft: "2%",
+        borderRadius: 20,
+        width: wp("80%"),
+        height: hp("6%"),
+    },
+    inputStyle: {
+        fontSize: 16,
+        alignSelf: "center",
     },
     imgHeaderLogo:{
-        width: wp('18%'),
-        height: hp('9%'),
-        margin: 10
+        marginLeft: "4%",
+        width: wp('12%'),
+        height: hp('6%'),
     },
     imgBackGround:{
         width: wp('100%'),
-        height: hp('10%'),
+        height: hp('7.5%'),
     },
-    buscador:{
-        width: wp('78%'),
-        height: hp('5%'),
-        borderRadius: 15,
-        marginLeft: 5,
-        marginBottom: 15
-    },
+    container: {
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 6,
+      },
 });
 
 export default BuscadorHeader;

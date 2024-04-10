@@ -9,22 +9,33 @@ import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors
 const PerfilHeader = () => {
   return (
     <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
-            <View style={styles.editarPerfil}>
-                <TouchableOpacity>
-                    <Icon name="edit" size={50} color={"white"}></Icon>
-                </TouchableOpacity>
-            </View>
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.editarPerfil}>
+                <Icon name="edit" size={50} color="white" />
+            </TouchableOpacity>
+        </View>
     </ImageBackground>
+
+    // <View style={styles.container}>
+    //     <TouchableOpacity style={styles.editarPerfil}>
+    //         <Icon name="edit" size={50} color="white" />
+    //     </TouchableOpacity>
+    // </View>
   )
 }
 
 const styles = StyleSheet.create({
     imgBackGround:{
         width: wp('100%'),
-        height: hp('7%'),
+        height: hp('7.5%'),
+    },
+    container: {
+        justifyContent: 'center',
+        alignItems: 'flex-end',
     },
     editarPerfil:{
-        alignItems: "flex-end",
+        alignItems: "center",
+        justifyContent: "flex-end",
     },
 });
 

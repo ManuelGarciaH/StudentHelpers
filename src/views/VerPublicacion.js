@@ -1,27 +1,26 @@
-import { View, Text, StyleSheet, Image, FlatList  } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity  } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import React, { useState } from 'react';
 import { globalStyles } from '../../globalStyles'
 import PerfilHeader from '../components/PerfilHeader';
 import Swiper from 'react-native-swiper';
+import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
+import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
     const [currentPage, setCurrentPage] = useState(0);
 
-    const imagenes = [
-        { uri: datos.picture.large },
-        { uri: datos.picture.large },
-        { uri: datos.picture.large }
-    ];
+    const imagenes = datos.images.map(image => ({ uri: image }));
 
     return (
         <View>
-            <PerfilHeader/>
             <View style={globalStyles.form}>
-                <Text style={styles.titulo}>Tostilocos preparados al gusto</Text>
+                <Text style={styles.titulo}>{datos.title}</Text>
                 <View style={styles.contendorImagenes}>
-                    <Swiper style={styles.wrapper} showsButtons={false}>
+                    <Swiper style={styles.wrapper} showsButtons={false} 
+                        loop={false}
+                        loopClonesPerSide={1}>
                         {imagenes.map((imagen, index) => (
                             <View key={index} style={styles.slide}>
                                 <Image source={imagen} style={styles.image} />
@@ -29,12 +28,36 @@ const VerPublicacion = ({navigation, route}) => {
                         ))}
                     </Swiper>
                 </View>
-                <View style={{width: wp("80%")}}>
-                    <Text style={styles.textoDatos}>Lugar: {datos.location.state} </Text>
-                    <Text style={styles.textoDatos}>Días L-V</Text>
-                    <Text style={styles.textoDatos}>Horario: {datos.registered.date}</Text>
-                    <Text style={styles.textoDatos}>Contacto Externo: {datos.cell}</Text>
-                    <Text style={styles.textoDatos} multiline={true}>Detalles: In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+                <View style={{width: wp("95%")}}>
+                    <View style={styles.centerText}>
+                        <Text style={[styles.textoDatos, styles.bold]}>Detalles: </Text>
+                        <Text style={styles.textoDatos} multiline={true}>{datos.details}</Text>
+                    </View>
+
+                    <View style={styles.centerText}>
+                        <Text style={[styles.textoDatos, styles.bold]}>Días: </Text>
+                        <Text style={styles.textoDatos}>{datos.days.join('-')}</Text>
+                    </View>
+
+                    <View style={styles.centerText}>
+                        <Text style={[styles.textoDatos, styles.bold]}>Horario: </Text>
+                        <Text style={styles.textoDatos}>{datos.schedule}</Text>
+                    </View>
+
+                    <View style={styles.centerText}>
+                        <Text style={[styles.textoDatos, styles.bold]}>Contacto: </Text>   
+                        <Text style={styles.textoDatos}>{datos.contact}</Text>   
+                    </View>
+                    
+                    {datos.category !="Viaje" && (
+                        <View style={styles.centerText}>
+                            <Text style={[styles.textoDatos, styles.bold]}>Lugar: </Text> 
+                            <Text style={styles.textoDatos}>{datos.location} </Text> 
+                        </View>
+                    )}
+                    {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
+                    {datos.category =="Viaje" && <SeeRouteTravel location={datos.location} />}
+                    
                 </View>
                 
             </View>
@@ -44,7 +67,7 @@ const VerPublicacion = ({navigation, route}) => {
 
 const styles = StyleSheet.create({
     contendorImagenes:{
-        width: wp("80%"),
+        width: wp("96%"),
         height: hp("40%"),
     },
     titulo:{
@@ -52,21 +75,30 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 4,
         color: "black",
-        textAlign: "center",
+        textAlign: "justify",
+        alignSelf: "flex-start",
     },
     textoDatos:{
         fontSize: 18,
         color: "black",
         textAlign: "justify",
+        // borderWidth: 2,
     },
     image: {
-        width: wp("80%"),
-        height: hp("40%"),
+        width: wp("95%"),
+        height: hp("39%"),
     },
     slide: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    centerText:{
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    bold:{
+        fontWeight: "bold"
     },
 })
 

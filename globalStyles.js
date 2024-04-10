@@ -13,12 +13,12 @@ export const globalStyles = StyleSheet.create({
     },
     imgBackGround:{
         width: wp('100%'),
-        height: hp('15%'),
+        height: hp('7.5%'),
     },
     imgHeaderLogo:{
-        width: wp('23%'),
-        height: hp('13%'),
-        margin: 10
+        marginLeft: "4%",
+        width: wp('12%'),
+        height: hp('6%'),
     },
     imgHeaderRetroceso:{
         width: wp('20%'),
@@ -70,5 +70,38 @@ export const globalStyles = StyleSheet.create({
     },
     container:{
         flex: 1,
-    }
+    },
+    showInfoSelected:{
+        color: "black",
+        fontSize: 17,
+    },
+    errorMessage:{
+        color: "red",
+        fontSize: 17,
+    },
+    dataButton:{
+        flexDirection: "row",
+        backgroundColor: "green",
+        padding: 7,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        width: wp("39%"),
+    },
+    dataIcon:{
+        color: "white",
+        fontSize: 17,
+        marginRight: 10
+    },
+    dataTxtButton:{
+        fontSize: 18,
+        color: "white",
+        fontWeight: "bold",
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
 });
