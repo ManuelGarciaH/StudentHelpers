@@ -77,6 +77,7 @@ const Perfil = ({ navigation }) => {
     }else{
       setShowNoPostsMessage(false);
     }
+    console.log("algo")
   }
 
   return (

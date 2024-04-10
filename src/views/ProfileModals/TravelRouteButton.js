@@ -143,12 +143,6 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
                             language: 'es',
                         }}
                         fetchDetails={true}
-                        // styles={{
-                        //     container: styles.containerAutoComplete,
-                        //     textInputContainer: styles.textInputContainerAutoComplete,
-                        //     listView: styles.listViewAutoComplete,
-                        //     separator: styles.separatorAutoComplete,
-                        // }}
                         textInputStyle={{
                             fontSize: 16,
                         }}
@@ -167,7 +161,6 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
                       region={mapRegion}
                       minZoomPreference={1} // Ajusta este valor según tus necesidades
                       maxZoomPreference={6} // Ajusta este valor según tus necesidades
-                      showsUserLocation={true}
                       followsUserLocation={true}
                   >
                   {coordinatesParkingStudents != null && (    

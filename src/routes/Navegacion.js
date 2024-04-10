@@ -40,7 +40,7 @@ function InsideView({navigation}) {
   )
 }
 
-function outsideView({navigation}) {
+function OutsideView({navigation}) {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Inicio" component={INICIO} options={{headerShown:false}} />
@@ -79,7 +79,7 @@ const Navegacion = () =>{
           {user ? (
             <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
           ) : (
-            <Stack.Screen name="Inicio" component={outsideView} options={{headerShown:false}} />
+            <Stack.Screen name="Inici" component={OutsideView} options={{headerShown:false}} />
           )}
         </Stack.Navigator>
     </NavigationContainer>

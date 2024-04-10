@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, StyleSheet, PermissionsAndroid  } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, StyleSheet, PermissionsAndroid, Alert } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -32,36 +32,41 @@ const TraceRouteBotton = ({modulo}) => {
   }, [])
 
   useEffect(() => {
-    const intervalId = setInterval(getCurrentLocation, 15000); // Actualizar la ubicación cada 15 segundos
+    const intervalId = setInterval(getCurrentLocation, 60000); // Actualizar la ubicación cada 60 segundos
     return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar el componente
   }, []); // Ejecutar solo una vez al montar el componente
 
   const getCoordinates = async () => {
-    setLoading(true);
-    try {
-      console.log("Realizando consulta a la colección 'modulos'");
-      const modulesCollection = collection(FIREBASE_DB, "modulos");
-      const querySnapshot = await getDocs(query(modulesCollection, where("nombre", "==", modulo)));
-      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-      if (querySnapshot.empty) {
-        console.log("No hay documentos en la colección 'modulos'");
-      } else {
-        // Solo estamos obteniendo un documento, por lo que no necesitamos iterar
-        const doc = querySnapshot.docs[0];
-        console.log("Datos del documento:", doc.data());
-        const newCoordinate = {
-          id: doc.id,
-          latitude: doc.data().latitud,
-          longitude: doc.data().longitud,
-          nombre: doc.data().nombre,
-          descripcion: 'Descripción del nuevo lugar',
-        };
-        setCoordinatesModule(newCoordinate);
-        //getCurrentLocation();
-        setModalTraceRoute(true)
+    if(!permissionDenied){
+      setLoading(true);
+      try {
+        console.log("Realizando consulta a la colección 'modulos'");
+        const modulesCollection = collection(FIREBASE_DB, "modulos");
+        const querySnapshot = await getDocs(query(modulesCollection, where("nombre", "==", modulo)));
+        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+        if (querySnapshot.empty) {
+          console.log("No hay documentos en la colección 'modulos'");
+        } else {
+          // Solo estamos obteniendo un documento, por lo que no necesitamos iterar
+          const doc = querySnapshot.docs[0];
+          console.log("Datos del documento:", doc.data());
+          const newCoordinate = {
+            id: doc.id,
+            latitude: doc.data().latitud,
+            longitude: doc.data().longitud,
+            nombre: doc.data().nombre,
+            descripcion: 'Descripción del nuevo lugar',
+          };
+          setCoordinatesModule(newCoordinate);
+          //getCurrentLocation();
+          setModalTraceRoute(true)
+        }
+      } catch (error) {
+        console.error("Error al obtener documentos:", error);
       }
-    } catch (error) {
-      console.error("Error al obtener documentos:", error);
+    }else{
+      //setLoading(false);
+      Alert.alert('Permisos de ubicación negados, favor de activarlos para utilizar esta opción')
     }
   };
 
@@ -120,7 +125,7 @@ const centerMapOnUser = () => {
   }
 };
 
-  return (
+return (
     <View>
       <TouchableOpacity onPress={() => {getCoordinates()}}>
           <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose]}>
@@ -129,68 +134,69 @@ const centerMapOnUser = () => {
           </View>
       </TouchableOpacity>
 
-      <ModalLoading visible={loading} />
-
+      {loading && <ModalLoading visible={loading} />}
+      
       {(coordinatesModule && currentLocation) && (
         <Modal
-        animationType='fade'  transparent={true} visible={modalTraceRoute}
-        onRequestClose={() => {
-            setModalTraceRoute(false);
-            setLoading(false);
-        }}>
-          <View style={globalStyles.centerContainer}>
-              <View style={styles.modalContainerMap}>
-                  <Text style={styles.textTitle}>{modulo}</Text>
-                  <MapView
-                      provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-                      style={styles.map}
-                      initialRegion={{
-                          latitude: 20.655897,
-                          longitude: -103.32689,
-                          latitudeDelta: 0.015,
-                          longitudeDelta: 0.0121,
-                      }}
-                      region={mapRegion}
-                      minZoomPreference={1} // Ajusta este valor según tus necesidades
-                      maxZoomPreference={6} // Ajusta este valor según tus necesidades
-                      showsUserLocation={true}
-                      followsUserLocation={true}
-                  >
-                  {coordinatesModule != null && (    
-                      <Marker
-                          key={coordinatesModule.id}
-                          coordinate={{ latitude: coordinatesModule.latitude, longitude: coordinatesModule.longitude }}
-                          title={coordinatesModule.nombre}
-                          description={coordinatesModule.descripcion}
-                      />
-                  )}
-                  {(currentLocation != null && coordinatesModule != null) && (    
-                      <MapViewDirections
-                          apikey={apikey}
-                          origin={{ latitude: coordinatesModule.latitude, longitude: coordinatesModule.longitude }} // Corregir la forma de pasar las coordenadas
-                          destination={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }} // Corregir la forma de pasar las coordenadas// Usar la segunda coordenada como destino
-                          strokeWidth={5}
-                          strokeColor="red"
-                          mode="WALKING"
-                          tracksViewChanges={true} // Evita que la ruta se quite y se vuelva a pintar
-                      />
-                  )}
-                  </MapView>
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={centerMapOnMarker}>
-                      <View style={[styles.button, styles.buttonClose]}>
-                        <Text style={globalStyles.dataTxtButton}>Centrar en marcador</Text>
-                      </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={centerMapOnUser}>
-                      <View style={[styles.button, styles.buttonClose]}>
-                        <Text style={globalStyles.dataTxtButton}>Centrar en usuario</Text>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-              </View>
-          </View>
-
+          animationType='fade'  
+          transparent={true} 
+          visible={modalTraceRoute}
+          onRequestClose={() => {
+              setModalTraceRoute(false);
+              setLoading(false);
+          }}>
+            <View style={globalStyles.centerContainer}>
+                <View style={styles.modalContainerMap}>
+                    <Text style={styles.textTitle}>{modulo}</Text>
+                    <MapView
+                        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+                        style={styles.map}
+                        initialRegion={{
+                            latitude: 20.655897,
+                            longitude: -103.32689,
+                            latitudeDelta: 0.015,
+                            longitudeDelta: 0.0121,
+                        }}
+                        region={mapRegion}
+                        minZoomPreference={1} // Ajusta este valor según tus necesidades
+                        maxZoomPreference={6} // Ajusta este valor según tus necesidades
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                    >
+                    {coordinatesModule != null && (    
+                        <Marker
+                            key={coordinatesModule.id}
+                            coordinate={{ latitude: coordinatesModule.latitude, longitude: coordinatesModule.longitude }}
+                            title={coordinatesModule.nombre}
+                            description={coordinatesModule.descripcion}
+                        />
+                    )}
+                    {(currentLocation != null && coordinatesModule != null) && (    
+                        <MapViewDirections
+                            apikey={apikey}
+                            origin={{ latitude: coordinatesModule.latitude, longitude: coordinatesModule.longitude }} // Corregir la forma de pasar las coordenadas
+                            destination={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }} // Corregir la forma de pasar las coordenadas// Usar la segunda coordenada como destino
+                            strokeWidth={5}
+                            strokeColor="red"
+                            mode="WALKING"
+                            tracksViewChanges={true} // Evita que la ruta se quite y se vuelva a pintar
+                        />
+                    )}
+                    </MapView>
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity onPress={centerMapOnMarker}>
+                        <View style={[styles.button, styles.buttonClose]}>
+                          <Text style={globalStyles.dataTxtButton}>Centrar en marcador</Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={centerMapOnUser}>
+                        <View style={[styles.button, styles.buttonClose]}>
+                          <Text style={globalStyles.dataTxtButton}>Centrar en usuario</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
         </Modal>
       )}
     </View>

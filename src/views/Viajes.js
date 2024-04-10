@@ -10,6 +10,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 const Viajes = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
   useEffect(() => {
     const showPosts = async () => {
@@ -56,10 +57,30 @@ const Viajes = ({ navigation }) => {
       navigation.navigate("VerPublicacion", { datos: item })
     };
 
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        mostrar()
+      }, 5000);
+      return () => clearTimeout(timeout);
+    });
+
+    const mostrar = () => {
+      if (downloadedPosts.length === 0) {
+        setShowNoPostsMessage(true);
+      }else{
+        setShowNoPostsMessage(false);
+      }
+      console.log("algo")
+    }
+
     return (
       <View>
         <View style={[globalStyles.form, {padding: 3, alignItems: "center"},]}>
           <ScrollView showsVerticalScrollIndicator={false}>
+          {showNoPostsMessage ? (
+              <Text style={styles.noPostsMessage}>No hay viajes disponibles.</Text>
+            ) : (
+            <>
             {downloadedPosts.length === 0 ? (
               // <ActivityIndicator size="large" color="#0000ff" />
                 <ModalLoading visible={true}/>
@@ -86,6 +107,8 @@ const Viajes = ({ navigation }) => {
                   ))}
                 </ScrollView>
               )}
+              </>
+            )}
           </ScrollView>
         </View>
       </View>
