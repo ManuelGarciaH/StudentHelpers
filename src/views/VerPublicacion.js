@@ -15,7 +15,7 @@ const VerPublicacion = ({navigation, route}) => {
 
     return (
         <View>
-            <View style={globalStyles.form}>
+            <View style={[globalStyles.form, {alignItems: 'center',}]}>
                 <Text style={styles.titulo}>{datos.title}</Text>
                 <View style={styles.contendorImagenes}>
                     <Swiper style={styles.wrapper} showsButtons={false} 

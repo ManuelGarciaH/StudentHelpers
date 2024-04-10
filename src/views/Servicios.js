@@ -4,7 +4,7 @@ import { globalStyles } from '../../globalStyles';
 
 const Servicios = () => {
   return (
-    <View style={globalStyles.form}>
+    <View style={[globalStyles.form, {alignItems: "center"}]}>
       <Text>Servicios</Text>
     </View>
   )

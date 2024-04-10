@@ -20,7 +20,6 @@ const Stack = createNativeStackNavigator();
 const Insidestack = createNativeStackNavigator();
 
 
-
 function InsideView({navigation}) {
   return (
     <Insidestack.Navigator>
@@ -80,7 +79,7 @@ const Navegacion = () =>{
           {user ? (
             <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
           ) : (
-            <Stack.Screen name="Inicio" component={OutsideView} options={{headerShown:false}} />
+            <Stack.Screen name="Inicio" component={outsideView} options={{headerShown:false}} />
           )}
         </Stack.Navigator>
     </NavigationContainer>

@@ -58,7 +58,7 @@ const Publicaciones = ({ navigation }) => {
 
     return (
       <View>
-        <View style={[globalStyles.form, {padding: 3},]}>
+        <View style={[globalStyles.form, {padding: 3, alignItems: "center"},]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {downloadedPosts.length === 0 ? (
               // <ActivityIndicator size="large" color="#0000ff" />
