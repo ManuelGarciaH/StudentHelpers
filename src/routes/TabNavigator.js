@@ -64,7 +64,7 @@ function TabNavigator({navigation}) {
         options={{
             headerShown:false,
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="account-box" color={color} size={size} />
+                <Icon name="library-books" color={color} size={size} />
             ),
         }}/>
       <Tab.Screen name="Menu" component={MENU} 
