@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Platform} from 'react-native'
 import React, { useState } from 'react';
-import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
 // firebase
 import { FIREBASE_AUTH } from '../../Firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Controller, useForm } from 'react-hook-form';
+import PasswordInput from '../components/PasswordInput';
 
 const SingUp = ({ navigation }) => {
     const [nombre, setNombre] = useState('');
@@ -125,22 +124,18 @@ const SingUp = ({ navigation }) => {
                     defaultValue=""
                     render={({ field: { onChange, value } }) => (
                         <>
-                            <TextInput 
+                            <PasswordInput
                                 value={value}
-                                secureTextEntry={true}
                                 onChangeText={(text) => {
                                     onChange(text)
                                     setPassword(text)
                                 }}
                                 placeholder='Ejemplo1'
-                                style={globalStyles.input}
                             />
                             {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
                         </>
                     )}
                 />
-                <Text>{password}</Text>
-                {/* Implementar boton para ocultar */}
 
                 <Text style={globalStyles.txtBasic}>Confirmar Contraseña</Text>
                 <Controller
@@ -156,11 +151,10 @@ const SingUp = ({ navigation }) => {
                     defaultValue=""
                     render={({ field: { onChange, value } }) => (
                         <>
-                            <TextInput 
+                            <PasswordInput
                                 value={value}
                                 secureTextEntry={true}
                                 onChangeText={(text) => onChange(text)}
-                                style={globalStyles.input}
                             />
                             {errors.validPassword && <Text style={{ color: 'red' }}>{errors.validPassword.message}</Text>}
                         </>
@@ -170,7 +164,6 @@ const SingUp = ({ navigation }) => {
                 {   // Codigo de carga para esperar respuesta del servidor
                     loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
                     (
-                        // <TouchableOpacity onPress={createUser}>
                         <TouchableOpacity onPress={handleSubmit(createUser)} style={globalStyles.centrar} >
                             <View style={globalStyles.boton}>
                                 <Text style={globalStyles.txtBoton}>Crear cuenta</Text>
