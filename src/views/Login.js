@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
             <SafeAreaView>
                 <View>
         
-                    <View style={globalStyles.form}>
+                    <View style={[globalStyles.form, ]}>
                         <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
                         <View style={globalStyles.input}>
                             <TextInput 
@@ -56,7 +56,7 @@ const Login = ({ navigation }) => {
                         {   // Codigo de carga para esperar respuesta del servidor
                             loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
                             (
-                                <TouchableOpacity onPress={clickIniciarSesion}>
+                                <TouchableOpacity onPress={clickIniciarSesion} style={{alignSelf: "center"}}>
                                     <View style={globalStyles.boton}>
                                         <Text style={globalStyles.txtBoton}>Iniciar Sesión</Text>
                                     </View>
