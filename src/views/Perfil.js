@@ -16,7 +16,7 @@ const Perfil = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
-  const userName = "Manuel Antonio Garcia";
+  const userName = "Tony Montana";
 
   useEffect(() => {
     setDownloadedPosts([]);

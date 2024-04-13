@@ -17,6 +17,7 @@ const Viajes = () => {
   const [markerList, setMarkerList] = useState([]);
 
   useEffect(() => {
+    console.log(apikey);
     const getModules = async () => {
       setMarkerList([]);
       try {
