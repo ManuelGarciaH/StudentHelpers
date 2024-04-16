@@ -184,16 +184,17 @@ return (
                     )}
                     </MapView>
                     <View style={styles.buttonContainer}>
+                      <TouchableOpacity onPress={() => {setModalTraceRoute(false); setLoading(false)}}>
+                        <View style={[styles.button, styles.buttonClose]}>
+                          <Text style={globalStyles.dataTxtButton}>Cerrar</Text>
+                        </View>
+                      </TouchableOpacity>
                       <TouchableOpacity onPress={centerMapOnMarker}>
                         <View style={[styles.button, styles.buttonClose]}>
                           <Text style={globalStyles.dataTxtButton}>Centrar en marcador</Text>
                         </View>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={centerMapOnUser}>
-                        <View style={[styles.button, styles.buttonClose]}>
-                          <Text style={globalStyles.dataTxtButton}>Centrar en usuario</Text>
-                        </View>
-                      </TouchableOpacity>
+                      
                     </View>
                 </View>
             </View>
@@ -215,13 +216,21 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   map: {
-    height: hp("77%"),
-    width: wp("90%"),
+    // height: hp("77%"),
+    // width: wp("90%"),
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 0,
   },
   textTitle:{
     fontSize: 24,
     fontWeight: "bold",
-    color : "black"
+    color : "black",
+    zIndex: 1,
+    borderWidth: 1,
+    backgroundColor: '#0ABEDC',
+    elevation: 2,
+    padding: 5,
+    paddingHorizontal: 20,
   },
   buttonContainer:{
     flexDirection: "row",

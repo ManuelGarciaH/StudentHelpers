@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, StyleSheet, PermissionsAndroid} from 'react-native'
+import { View, Text, Modal, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native'
 import React, {useEffect, useState, useRef } from 'react'
 import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -132,6 +132,7 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
             setModalTravelRoute(false);
             setLoading(false);1
         }}>
+          <ScrollView>
             <View style={globalStyles.centerContainer}>
                 <View style={styles.modalContainerMap}>
                   <View style={{zIndex: 1, flex: 0.5}}>
@@ -199,14 +200,16 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
 
               </View>
             </View>
-            
+          </ScrollView>
         </Modal>
-
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   image: {
     width: '100%',
     height: 200,
@@ -223,6 +226,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     // alignItems: "center",
     justifyContent: "space-between",
+    marginTop: 10,
   },
   map: {
     // height: hp("77%"),

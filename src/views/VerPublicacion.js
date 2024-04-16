@@ -56,7 +56,7 @@ const VerPublicacion = ({navigation, route}) => {
                         </View>
                     )}
                     {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
-                    {datos.category =="Viaje" && <SeeRouteTravel location={datos.location} />}
+                    {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
                     
                 </View>
                 

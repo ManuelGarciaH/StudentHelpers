@@ -17,6 +17,7 @@ import TravelRouteButton from './TravelRouteButton';
 
 const CreatePostModal = ({ visible, onClose, userName}) => {
     const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
+    const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
     const [imageUploaded, setImageUploaded] = useState(false);
     const storage = getStorage();
 
@@ -64,7 +65,20 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
     const onCancel = () => {
       reset(); // Limpiar los datos del formulario
       onClose();
-  };
+    };
+
+    // Función para manejar el cambio de categoría
+    const handleCategoryChange = (selectedCategory) => {
+
+      setValue("category", selectedCategory); 
+      trigger("category");
+
+      if(selectedCategory != "Viaje"){
+        setPlaceholderAmount("Cantidad");
+      }else{
+        setPlaceholderAmount("Cantidad de pasajeros");
+      }
+    };
   
     return (
       <Modal animationType="fade" transparent={true} visible={visible}
@@ -85,17 +99,17 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                     render={({ field: { value, onChange } }) => (
                       <>
                         <View style={styles.buttonContainer}>
-                          <TouchableOpacity onPress={() => {onChange('Comida'); trigger("category")}}>
+                          <TouchableOpacity onPress={() => handleCategoryChange("Comida")}>
                             <View style={[styles.notSelectedButton, value === 'Comida' && styles.selectedButton]}>
                               <Text style={styles.txtButton}>Comida</Text>
                             </View>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={() => {onChange('Accesorios'); trigger("category")}}>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Accesorios")}>
                             <View style={[styles.notSelectedButton, value === 'Accesorios' && styles.selectedButton]}>
                               <Text style={styles.txtButton}>Accesorios</Text>
                             </View>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={() => {onChange('Viaje'); trigger("category")}}>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Viaje")}>
                             <View style={[styles.notSelectedButton, value === 'Viaje' && styles.selectedButton]}>
                               <Text style={styles.txtButton}>Viaje</Text>
                             </View>
@@ -103,17 +117,17 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                         </View>
 
                         <View style={[styles.buttonContainer, {marginBottom: 5}]}>
-                          <TouchableOpacity onPress={() => {onChange('Intercambio'); trigger("category")}}>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Intercambio")}>
                             <View style={[styles.notSelectedButton, value === 'Intercambio' && styles.selectedButton]}>
                               <Text style={styles.txtButton}>Intercambio</Text>
                             </View>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={() => {onChange('Producto'); trigger("category")}}>
-                            <View style={[styles.notSelectedButton, value === 'Producto' && styles.selectedButton]}>
-                              <Text style={styles.txtButton}>Producto</Text>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Asesorías")}>
+                            <View style={[styles.notSelectedButton, value === 'Asesorías' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Asesorías</Text>
                             </View>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={() => {onChange('Otro'); trigger("category")}}>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Otro")}>
                             <View style={[styles.notSelectedButton, value === 'Otro' && styles.selectedButton]}>
                               <Text style={styles.txtButton}>Otro</Text>
                             </View>
@@ -162,11 +176,47 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       </>
                     )}
                 />
+                <Controller
+                    name="costo"
+                    control={control}
+                    rules={{ required: "Campo requerido" }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <TextInput keyboardType="numeric"
+                          value={value}
+                          onChangeText={(text) => onChange(text)}
+                          placeholder="Costo"
+                          style={{marginTop: 10}}
+                        />
+                        {errors.costo && <Text style={globalStyles.errorMessage}>{errors.costo.message}</Text>}
+                        {!errors.costo && <Text style={globalStyles.showInfoSelected}></Text>}
+                      </>
+                    )}
+                />
+                <Controller
+                    name="cantidad"
+                    control={control}
+                    rules={{ required: "Campo requerido" }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <TextInput keyboardType="numeric"
+                          value={value}
+                          onChangeText={(text) => onChange(text)}
+                          placeholder={placeholderAmount}
+                          style={{marginTop: 10}}
+                        />
+                        {errors.cantidad && <Text style={globalStyles.errorMessage}>{errors.cantidad.message}</Text>}
+                        {!errors.cantidad && <Text style={globalStyles.showInfoSelected}></Text>}
+                      </>
+                    )}
+                />
                 <View style={[styles.delimitador, {height: 1}]}></View>
                 <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     <ScheduleButton control={control} errors={errors} name="horario"/>
                     {getValues("category") == "Viaje" ? (
-                      <TravelRouteButton control={control} errors={errors} name="lugar" setValue={setValue} 
+                      <TravelRouteButton control={control} errors={errors} name="coordenadas" setValue={setValue} 
                       trigger={trigger} getValues={getValues} imageUploaded={imageUploaded}/>
                     ) : (
                       <LocationButton control={control} errors={errors} name="lugar" 
@@ -179,7 +229,6 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                         setValue={setValue} trigger={trigger}/>
                     <ContactButton control={control} errors={errors} name="contacto" 
                         setValue={setValue} trigger={trigger}/>
-
                 </View>
 
                 <View style={[styles.buttonContainer, ]}>

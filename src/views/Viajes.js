@@ -35,7 +35,7 @@ const Viajes = ({ navigation }) => {
               details: doc.data().detalles,
               category: doc.data().category,
               schedule: doc.data().horario,
-              location: doc.data().lugar,
+              coordinates: doc.data().coordenadas,
               days: doc.data().dias,
               contact: doc.data().contacto,
               images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
