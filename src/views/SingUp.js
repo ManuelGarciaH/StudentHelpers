@@ -1,26 +1,20 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert} from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Platform} from 'react-native'
 import React, { useState } from 'react';
-import Header from '../components/Header';
 import {globalStyles} from '../../globalStyles';
 // firebase
 import { FIREBASE_AUTH } from '../../Firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Controller, useForm } from 'react-hook-form';
+import PasswordInput from '../components/PasswordInput';
 
 const SingUp = ({ navigation }) => {
     const [nombre, setNombre] = useState('');
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const { handleSubmit, control, getValues, setValue, formState: { errors }, trigger } = useForm();
 
     const createUser = async () => {
-        // let loading = this.state.loading;
-        // loading = true;
-        // let nombre = this.state.nombre;
-        // let correo = this.state.correo;
-        // let password = this.state.password;
-        // let auth = this.state.auth;         //Firebase autenticacion 
-
         createUserWithEmailAndPassword(FIREBASE_AUTH, correo, password)
             .then((userCredential) => {
                 // Signed up 
@@ -48,51 +42,129 @@ const SingUp = ({ navigation }) => {
     };
 
     return (
-        <KeyboardAvoidingView behavior='padding' style={globalStyles.container} >
-            <Header navigation={navigation} 
-                title="SingUp" 
-                customStyles={styles.title} // Puedes personalizar los estilos aquí 
-            />
+        <KeyboardAvoidingView 
+            behavior='padding'
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+            style={{flex: 1}}
+        >
 
             <View style={globalStyles.form}>
                 <Text style={globalStyles.txtBasic}>Nombre</Text>
-                <View style={globalStyles.input}>
-                    <TextInput 
-                        style={globalStyles.txtInput}
-                        onChangeText={(nombre) => setNombre(nombre)}
-                    ></TextInput>
-                </View>
+                <Controller
+                    name = 'nombre'
+                    control={control}
+                    rules={{ 
+                        required: "Campo requerido",
+                        pattern: {
+                            value: /[A-Z][a-z]+\s(?:[A-Z][a-z]+\s)*[A-Z][a-z]+$/,
+                            message: "Nombre completo o primer nombre y apellido empezando por mayusculas"
+                        }
+                    }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                        <>
+                            <TextInput 
+                                value={value}
+                                onChangeText={(text) => {
+                                    onChange(text)
+                                    setNombre(text)
+                                }}
+                                style={globalStyles.input}
+                                placeholder='Nombre'
+                            />
+                            {errors.nombre && <Text style={{ color: 'red' }}>{errors.nombre.message}</Text>}
+                        </>
+                    )}
+                />
 
                 <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
-                <View style={globalStyles.input}>
-                    <TextInput 
-                        style={globalStyles.txtInput}
-                        onChangeText={(correo) => setCorreo(correo)}
-                        placeholder='Email'
-                        autoCapitalize='none'
-                        inputMode='email'
-                    ></TextInput>
-                </View>
+                <Controller
+                    name = 'email'
+                    control={control}
+                    rules={{ 
+                        required: "Campo requerido",
+                        pattern: {
+                            value: /^[a-z]+\.[a-z]+\d{4}@alumnos\.udg\.mx$/,
+                            message: "El correo debe ser un correo instucional de la udg"
+                        }
+                    }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                        <>
+                            <TextInput 
+                                value={value}
+                                onChangeText={(text) => {
+                                    onChange(text)
+                                    setCorreo(text)
+                                }}
+                                placeholder='correo.ejemplo1234@alumnos.udg.mx'
+                                inputMode='email'
+                                style={globalStyles.input}
+                            />
+                            {errors.email && <Text style={{ color: 'red' }}>{errors.email.message}</Text>}
+                        </>
+                    )}
+                />
 
                 <Text style={globalStyles.txtBasic}>Contraseña</Text>
-                <View style={globalStyles.input}>
-                    <TextInput 
-                        style={globalStyles.txtInput}
-                        onChangeText={(password) => setPassword(password)}
-                        placeholder='Password'
-                        secureTextEntry={true}
-                    ></TextInput>
-                </View>
+                <Controller
+                    name = 'password'
+                    control={control}
+                    rules={{ 
+                        required: "Campo requerido",
+                        pattern: {
+                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                            message: "Requiere una mayuscula, una minuscula y un numero"
+                        },
+                        minLength: {
+                            value: 8,
+                            message: "La contraseña debe ser de al menos 8 caracteres"
+                        }
+                    }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                        <>
+                            <PasswordInput
+                                value={value}
+                                onChangeText={(text) => {
+                                    onChange(text)
+                                    setPassword(text)
+                                }}
+                                placeholder='Ejemplo1'
+                            />
+                            {errors.password && <Text style={{ color: 'red' }}>{errors.password.message}</Text>}
+                        </>
+                    )}
+                />
 
                 <Text style={globalStyles.txtBasic}>Confirmar Contraseña</Text>
-                <View style={globalStyles.input}>
-                    <TextInput style={globalStyles.txtInput}></TextInput>
-                </View>
+                <Controller
+                    name = 'validPassword'
+                    control={control}
+                    rules={{ 
+                        required: "Campo requerido",
+                        pattern: {
+                            value: new RegExp(password),
+                            message: "Las contraseñas no coinciden"
+                        }
+                    }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                        <>
+                            <PasswordInput
+                                value={value}
+                                secureTextEntry={true}
+                                onChangeText={(text) => onChange(text)}
+                            />
+                            {errors.validPassword && <Text style={{ color: 'red' }}>{errors.validPassword.message}</Text>}
+                        </>
+                    )}
+                />
 
                 {   // Codigo de carga para esperar respuesta del servidor
                     loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
                     (
-                        <TouchableOpacity onPress={createUser}>
+                        <TouchableOpacity onPress={handleSubmit(createUser)} style={globalStyles.centrar} >
                             <View style={globalStyles.boton}>
                                 <Text style={globalStyles.txtBoton}>Crear cuenta</Text>
                             </View>

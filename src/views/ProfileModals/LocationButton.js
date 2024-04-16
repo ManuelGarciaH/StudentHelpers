@@ -38,11 +38,12 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
   return (
     <View style={globalStyles.centrar}>
         <TouchableOpacity onPress={() => setModalLocation(true)}>
-        <View style={globalStyles.dataButton}>
+          <View style={globalStyles.dataButton}>
             <Icon name="map-marker" style={globalStyles.dataIcon}/>
             <Text style={globalStyles.dataTxtButton}>Lugar</Text>
-        </View>
+          </View>
         </TouchableOpacity>
+        
         {modalLocation && (
         <ModalSelector animationType="fade" data={modulesList} visible={true} 
           optionTextStyle={styles.optionText}

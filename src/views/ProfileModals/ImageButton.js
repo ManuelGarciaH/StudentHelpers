@@ -1,5 +1,5 @@
 import { View, Text, Modal, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -8,17 +8,34 @@ import Swiper from 'react-native-swiper';
 import { Button} from 'react-native-paper';
 import { Controller } from 'react-hook-form';
 
-const ImageButton = ({ control, errors, name, setValue, trigger }) => {
+const ImageButton = ({ control, errors, name, setValue, trigger, getValues, setImageUploaded}) => {
     const [modalImage, setModalImage] = useState(false);
 
     const [imageUris, setImageUris] = useState([]);
     const swiperRef = useRef(null);
     const [swiperKey, setSwiperKey] = useState(0); // Clave única para el Swiper
 
+    const openImageButton = () =>{
+        const values = getValues("image");
+        console.log(values)
+        if (values!="") {
+            // Si ya es un array, no es necesario concatenar
+            setImageUris(values);
+            console.log("a")
+        }
+        setModalImage(true);
+    }
+
     const guardarImagenes = () => {
         setModalImage(false); 
         setValue("image", imageUris); 
         trigger("image");
+        if(imageUris.length === 0) {
+            setImageUploaded(false)
+        }else{
+            setImageUploaded(true)
+        }
+        
     }
 
     const openImagePicker = () => {
@@ -54,7 +71,7 @@ const ImageButton = ({ control, errors, name, setValue, trigger }) => {
 
   return (
     <View style={globalStyles.centrar}>
-        <TouchableOpacity onPress={() => setModalImage(true)}>
+        <TouchableOpacity onPress={openImageButton}>
           <View style={globalStyles.dataButton}>
               <Icon name="image" style={globalStyles.dataIcon}/>
               <Text style={globalStyles.dataTxtButton}>Imagen</Text>

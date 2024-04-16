@@ -10,6 +10,12 @@ const ScheduleButton = ({ control, errors, name }) => {
     const [open, setOpen] = useState(false);
     const [date, setDate] = useState(new Date());
 
+    // Calcula las horas de inicio y fin límites
+    const minTime = new Date();
+    minTime.setHours(7, 0, 0); // 7:00 am
+    const maxTime = new Date();
+    maxTime.setHours(21, 0, 0); // 9:00 pm
+
     return (
         <View style={globalStyles.centrar}>
             <TouchableOpacity onPress={() => setOpen(true)}>
@@ -26,7 +32,7 @@ const ScheduleButton = ({ control, errors, name }) => {
                 defaultValue=""
                 render={({field: {onChange, value}})=>(
                     <>
-                        <DatePicker modal open={open} date={date} mode="time"
+                        <DatePicker modal open={open} date={date} mode="time" minimumDate={minTime} maximumDate={maxTime}
                             onConfirm={(date) => {
                                 setOpen(false)
                                 setDate(date)

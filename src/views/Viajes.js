@@ -1,97 +1,152 @@
 import React, { Component, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, 
+  ScrollView, Image, ActivityIndicator} from 'react-native'
 import {globalStyles} from '../../globalStyles';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps'
-import MapViewDirections from 'react-native-maps-directions';
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import ModalLoading from '../components/ModalLoading';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, query, getDocs, limit } from "firebase/firestore";
-import { API_KEY_MAPS } from '@env';
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-const apikey = API_KEY_MAPS;
-
-const origin = {latitude: 20.6557968824397, longitude: -103.32599362480626};
-const destination = {latitude: 20.656630129459906, longitude:  -103.32629403219092};
-
-const Viajes = () => {
-  const [markerList, setMarkerList] = useState([]);
+const Viajes = ({ navigation }) => {
+  const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
   useEffect(() => {
-    console.log(apikey);
-    const getModules = async () => {
-      setMarkerList([]);
+    const showPosts = async () => {
+      console.log("A")
+      console.log(downloadedPosts);
+      setDownloadedPosts([]);
       try {
-        console.log("Realizando consulta a la colección 'modulos'");
-        const modulesCollection = collection(FIREBASE_DB, "modulos");
-        // const querySnapshot = await getDocs(query(modulesCollection, limit(30)));
-        const querySnapshot = await getDocs(modulesCollection);
+        const postsCollection = collection(FIREBASE_DB, "publicaciones");
+        const querySnapshot = await getDocs(query(postsCollection, where("category", "==", "Viaje")));
         console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+        
         if (querySnapshot.empty) {
           console.log("No hay documentos en la colección 'modulos'");
         } else {
-          const nuevosMarcadores = [];
-          querySnapshot.forEach((doc) => {
+          const newPosts = [];
+          querySnapshot.forEach(async (doc) => {
             console.log("Datos del documento:", doc.data());
-            nuevosMarcadores.push({
+            const postData = {
               id: doc.id,
-              latitude: doc.data().latitud,
-              longitude: doc.data().longitud,
-              nombre: doc.data().nombre,
-              descripcion: 'Descripción del nuevo lugar',
-            });
+              userName: doc.data().nombreUsuario,
+              title: doc.data().titulo,
+              details: doc.data().detalles,
+              category: doc.data().category,
+              schedule: doc.data().horario,
+              coordinates: doc.data().coordenadas,
+              days: doc.data().dias,
+              contact: doc.data().contacto,
+              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+            };
+            newPosts.push(postData);
           });
-          setMarkerList(nuevosMarcadores);
+          console.log(newPosts);
+          setDownloadedPosts(newPosts);
         }
       } catch (error) {
         console.error("Error al obtener documentos:", error);
       }
     }
     
-    getModules();
+    showPosts();
   }, []); // Se ejecuta solo una vez al montar el componente
-  
-  return (
-    <View>
-        <View style={globalStyles.form}>
-          <MapView
-              provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-              style={styles.map}
-              region={{
-                  latitude: 20.655897,
-                  longitude: -103.32689,
-                  latitudeDelta: 0.015,
-                  longitudeDelta: 0.0121,
-              }}
-              showsUserLocation={true}
-              followsUserLocation={true}
-          >
-            {markerList.map((marker) => (
-              <Marker
-                key={marker.id}
-                coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
-                title={marker.nombre}
-                description={marker.descripcion}
-              />
-            ))}
-            {markerList.length >= 2 && (
-              <MapViewDirections
-                apikey={apikey}
-                origin={`${markerList[0].latitude},${markerList[0].longitude}`}
-                destination={`${markerList[1].latitude},${markerList[1].longitude}`} // Usar la segunda coordenada como destino
-                strokeWidth={5}
-                strokeColor="red"
-                mode="WALKING"
-              />
+
+    const verPublicacion = (item) => {
+      navigation.navigate("VerPublicacion", { datos: item })
+    };
+
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        mostrar()
+      }, 5000);
+      return () => clearTimeout(timeout);
+    });
+
+    const mostrar = () => {
+      if (downloadedPosts.length === 0) {
+        setShowNoPostsMessage(true);
+      }else{
+        setShowNoPostsMessage(false);
+      }
+      console.log("algo")
+    }
+
+    return (
+      <View>
+        <View style={[globalStyles.form, {padding: 3, alignItems: "center"},]}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+          {showNoPostsMessage ? (
+              <Text style={styles.noPostsMessage}>No hay viajes disponibles.</Text>
+            ) : (
+            <>
+            {downloadedPosts.length === 0 ? (
+              // <ActivityIndicator size="large" color="#0000ff" />
+                <ModalLoading visible={true}/>
+              ) : (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {downloadedPosts.map((item, index) => (
+                    <View key={index} > 
+                      <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                        <View style={styles.imageContainer}>
+                          <Image
+                            source={{ uri: item.images[0] }}
+                            style={styles.image}
+                          />
+                        </View>
+                        
+                        <View>
+                          <Text style={styles.textTitle}>{item.title}</Text>
+                          <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
+                          <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
+                          <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+              </>
             )}
-          </MapView>
+          </ScrollView>
         </View>
-    </View>
-  )
+      </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  map: {
-    ...StyleSheet.absoluteFillObject,
+  itemConteiner:{
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 0.5,
+    elevation: 5,
+    marginBottom: 10,
+    width: wp("96%"),
+  },
+  image: {
+    width: wp("28%"),
+    height: hp("13%"),
+    //resizeMode: "contain",
+  },
+  imageContainer: {
+    width: wp("30%"),
+    height: hp("16%"),
+    padding: 10,
+    marginLeft: 5,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textName:{
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  textEmail:{
+    fontSize: 14,
+  },
+  textTitle:{
+    fontSize: 17,
+    fontWeight: "600",
   },
 });
 

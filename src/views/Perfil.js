@@ -40,6 +40,7 @@ const Perfil = ({ navigation }) => {
               category: doc.data().category,
               schedule: doc.data().horario,
               location: doc.data().lugar,
+              coordinates: doc.data().coordenadas,
               days: doc.data().dias,
               contact: doc.data().contacto,
               images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
@@ -77,12 +78,12 @@ const Perfil = ({ navigation }) => {
     }else{
       setShowNoPostsMessage(false);
     }
+    console.log("algo")
   }
 
   return (
     <View>
-        <PerfilHeader/>
-        <View style={[globalStyles.form, {padding: 5}]}>
+        <View style={[globalStyles.form, {padding: 5, alignItems: "center"}]}>
           <Text style={styles.titleName}>{userName}</Text>
           <View style={styles.descriptionContainer}>
             <Image
@@ -125,7 +126,7 @@ const Perfil = ({ navigation }) => {
                         
                         <View>
                           <Text style={styles.textTitle}>{item.title}</Text>
-                          <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                          {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
                           <Text style={styles.textEmail}>Días: L-V</Text>
                           <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
                           <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
