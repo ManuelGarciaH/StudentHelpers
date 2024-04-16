@@ -6,7 +6,10 @@ import { globalStyles } from '../../globalStyles';
 const serviciosData = [
   { 
     nombre: 'Biblioteca', 
-    descripcion: 'Descripción de la biblioteca', 
+    descripcion: 'Biblioteca del Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI)',
+    telefono: 'Telefono: (33) 13785900 ext. 27489',
+    coreo: 'ubiblio@cucei.udg.mx',
+    horario: '8:00 a 19:45 horas, de lunes a viernes y los sábados de 8:00 a 13:45 horas',
     imagen: require('../../Img/biblioteca.png') 
   },
   { 
