@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native'
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert} from 'react-native'
 import React, {useEffect, useState, useRef } from 'react'
 import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,6 +9,7 @@ import { API_KEY_MAPS } from '@env';
 import ModalLoading from '../../components/ModalLoading';
 import { Controller } from 'react-hook-form';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { ScrollView } from 'react-native-virtualized-view'
 
 const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues, imageUploaded }) => {
   const [modalTravelRoute, setModalTravelRoute] = useState(false);
@@ -70,7 +71,7 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
           setModalTravelRoute(false); 
           setLoading(false)
         }else{
-          console.log("ingresa la direccion");
+          Alert.alert("Ingresa una dirección antes de guardar");
         }
         
       } catch (error) {

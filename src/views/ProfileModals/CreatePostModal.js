@@ -7,6 +7,7 @@ import { globalStyles } from '../../../globalStyles';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -61,7 +62,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
             const newData = { ...data, image: newImagePaths, nombreUsuario: userName};
 
             await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
-            //reset();
+            reset();
             onClose();
         } else {
             console.log(errors);
@@ -70,6 +71,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
 
     const onCancel = () => {
       reset(); // Limpiar los datos del formulario
+      setPlaceholderAmount("Cantidad");
       onClose();
     };
 
@@ -182,28 +184,70 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       </>
                     )}
                 />
-                <Controller
-                    name="costo"
-                    control={control}
-                    rules={{ required: "Campo requerido" }}
-                    defaultValue=""
-                    render={({ field: { onChange, value } }) => (
-                      <>
-                        <TextInput keyboardType="numeric"
-                          value={value}
-                          onChangeText={(text) => onChange(text)}
-                          placeholder="Costo"
-                          style={{marginTop: 10}}
-                        />
-                        {errors.costo && <Text style={globalStyles.errorMessage}>{errors.costo.message}</Text>}
-                        {!errors.costo && <Text style={globalStyles.showInfoSelected}></Text>}
-                      </>
-                    )}
-                />
+                <View style={[styles.minMaxCostContainer, {marginTop: 5}]}>
+                  <Controller
+                      name="costo"
+                      control={control}
+                      rules={{ required: "Campo requerido", 
+                      validate: value => {
+                        return /^\d+$/.test(value) || "Ingresa un costo numerico";
+                      } }}
+                      defaultValue=""
+                      render={({ field: { onChange, value } }) => (
+                        <>
+                          
+                          <View style={styles.costsInputContainer}>
+                            
+                            <TextInput
+                              value={value}
+                              onChangeText={(text) => onChange(text)}
+                              keyboardType="numeric"
+                              placeholder="Costo mínimo"
+                            />
+                            {errors.costo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costo.message}</Text>}
+                            {!errors.costo && <Text style={globalStyles.showInfoSelected}></Text>}
+                          </View>
+                        </>
+                      )}
+                  />
+                  <Controller
+                      name="costoMaximo"
+                      control={control}
+                      rules={{ 
+                        required: "Campo requerido", 
+                        validate: {
+                          isGreaterThanCosto: value => {
+                            const costoValue = Number(getValues('costo'));
+                            const costoMaximoValue = Number(value);
+                            return costoMaximoValue > costoValue || "Ingrese un costo mayor al minimo";
+                          },
+                          validateCostoMaximo: value => /^\d+$/.test(value) || "Ingresa un costo numérico"
+                        }
+                      }}
+                      defaultValue=""
+                      render={({ field: { onChange, value } }) => (
+                        <>
+                          <View style={styles.costsInputContainer}>
+                            <TextInput keyboardType="numeric"
+                              value={value}
+                              onChangeText={(text) => onChange(text)}
+                              placeholder="Costo maximo"
+                            />
+                            {errors.costoMaximo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costoMaximo.message}</Text>}
+                            {!errors.costoMaximo && <Text style={globalStyles.showInfoSelected}></Text>}
+                          </View>
+                        </>
+                      )}
+                  />
+                </View>
+                
                 <Controller
                     name="cantidad"
                     control={control}
-                    rules={{ required: "Campo requerido" }}
+                    rules={{ required: "Campo requerido", 
+                      validate: value => {
+                        return /^\d+$/.test(value) || "Ingresa una cantidad numerica";
+                      } }}
                     defaultValue=""
                     render={({ field: { onChange, value } }) => (
                       <>
@@ -291,6 +335,12 @@ const styles = StyleSheet.create({
       justifyContent: "space-between", // Distribuye automáticamente el espacio entre los botones
       marginVertical: 5,
   },
+  minMaxCostContainer:{
+    flexDirection: "row",
+    alignItems: "center",
+    
+    justifyContent: "space-between", // Distribuye automáticamente el espacio entre los botones
+  },
   boton:{
       width: wp("32%"),
       // backgroundColor:"#B0EFDB"
@@ -331,6 +381,10 @@ const styles = StyleSheet.create({
     height: 2, 
     width: wp("100%"), 
     backgroundColor: "grey"
+  },
+  costsInputContainer:{
+    flexDirection: "column",
+    width: wp("45%")
   }
 })
 

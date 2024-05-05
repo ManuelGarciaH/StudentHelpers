@@ -33,8 +33,12 @@ const Viajes = ({ navigation }) => {
               userName: doc.data().nombreUsuario,
               title: doc.data().titulo,
               details: doc.data().detalles,
+              cost: doc.data().costo,
+              maxCost: doc.data().costoMaximo,
+              cantidad: doc.data().cantidad,
               category: doc.data().category,
               schedule: doc.data().horario,
+              scheduleEnd: doc.data().horarioFin,
               coordinates: doc.data().coordenadas,
               days: doc.data().dias,
               contact: doc.data().contacto,
@@ -74,60 +78,76 @@ const Viajes = ({ navigation }) => {
     }
 
     return (
-      <View>
-        <View style={[globalStyles.form, {padding: 3, alignItems: "center"},]}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-          {showNoPostsMessage ? (
-              <Text style={styles.noPostsMessage}>No hay viajes disponibles.</Text>
+      <View style={globalStyles.mainContainer}>
+        {showNoPostsMessage ? (
+            <Text style={styles.noPostsMessage}>No hay viajes disponibles.</Text>
+          ) : (
+          <>
+          {downloadedPosts.length === 0 ? (
+            // <ActivityIndicator size="large" color="#0000ff" />
+              <ModalLoading visible={true}/>
             ) : (
-            <>
-            {downloadedPosts.length === 0 ? (
-              // <ActivityIndicator size="large" color="#0000ff" />
-                <ModalLoading visible={true}/>
-              ) : (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  {downloadedPosts.map((item, index) => (
-                    <View key={index} > 
-                      <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                        <View style={styles.imageContainer}>
-                          <Image
-                            source={{ uri: item.images[0] }}
-                            style={styles.image}
-                          />
-                        </View>
-                        
-                        <View>
-                          <Text style={styles.textTitle}>{item.title}</Text>
-                          <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
-                          <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
-                          <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
-              </>
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+                {downloadedPosts.map((item, index) => (
+                  <View key={index} style={styles.cuadro}> 
+                    <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={{ uri: item.images[0] }}
+                          style={styles.image}
+                        />
+                      </View>
+                      
+                      <View>
+                        <Text style={styles.textTitle}>{item.title}</Text>
+                        <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
+                        <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text>
+                        <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                        <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>
+                        <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
             )}
-          </ScrollView>
-        </View>
+            </>
+          )}
       </View>
     );
 }
 
 const styles = StyleSheet.create({
+  cuadro: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    padding: 2,
+    marginBottom: 10,
+    borderRadius: 10,
+    shadowColor: 'blue',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 0,
+    elevation: 6,
+  },
   itemConteiner:{
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 0.5,
-    elevation: 5,
-    marginBottom: 10,
-    width: wp("96%"),
+    width: wp("94%"),
   },
   image: {
     width: wp("28%"),
     height: hp("13%"),
     //resizeMode: "contain",
+  },
+  scrollView: {
+    // borderWidth: 4,
+    marginTop: 5,
+    flex: 1,
   },
   imageContainer: {
     width: wp("30%"),
@@ -147,6 +167,16 @@ const styles = StyleSheet.create({
   textTitle:{
     fontSize: 17,
     fontWeight: "600",
+  },
+  textCost:{
+    fontSize: 19,
+    fontWeight: "bold",
+    color: "black",
+  },
+  scrollView: {
+    // borderWidth: 4,
+    marginTop: 5,
+    flex: 1,
   },
 });
 
