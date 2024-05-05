@@ -16,7 +16,9 @@ const VerPublicacion = ({navigation, route}) => {
     return (
         <View>
             <View style={[globalStyles.form, {alignItems: 'center',}]}>
-                <Text style={styles.titulo}>{datos.title}</Text>
+                <View style={{width: wp("95%")}}>
+                    <Text style={styles.titulo}>{datos.title}</Text>
+                </View>
                 <View style={styles.contendorImagenes}>
                     <Swiper style={styles.wrapper} showsButtons={false} 
                         loop={false}
@@ -29,6 +31,7 @@ const VerPublicacion = ({navigation, route}) => {
                     </Swiper>
                 </View>
                 <View style={{width: wp("95%")}}>
+                    <Text style={styles.textCost}>$ {datos.cost} - $ {datos.maxCost}</Text>
                     <View style={styles.centerText}>
                         <Text style={[styles.textoDatos, styles.bold]}>Detalles: </Text>
                         <Text style={styles.textoDatos} multiline={true}>{datos.details}</Text>
@@ -41,12 +44,16 @@ const VerPublicacion = ({navigation, route}) => {
 
                     <View style={styles.centerText}>
                         <Text style={[styles.textoDatos, styles.bold]}>Horario: </Text>
-                        <Text style={styles.textoDatos}>{datos.schedule}</Text>
+                        <Text style={styles.textoDatos}>{datos.schedule} - {datos.scheduleEnd}</Text>
                     </View>
 
                     <View style={styles.centerText}>
                         <Text style={[styles.textoDatos, styles.bold]}>Contacto: </Text>   
                         <Text style={styles.textoDatos}>{datos.contact}</Text>   
+                    </View>
+                    <View style={styles.centerText}>
+                        {datos.category != "Viaje" && <Text style={[styles.textoDatos, styles.bold]}>Articulos disponibles: {datos.cantidad}</Text>}
+                        {datos.category == "Viaje" && <Text style={[styles.textoDatos, styles.bold]}>Asientos disponibles: {datos.cantidad}</Text>}
                     </View>
                     
                     {datos.category !="Viaje" && (
@@ -71,7 +78,7 @@ const styles = StyleSheet.create({
         height: hp("40%"),
     },
     titulo:{
-        fontSize: 30,
+        fontSize: 36,
         fontWeight: "bold",
         marginBottom: 4,
         color: "black",
@@ -99,6 +106,11 @@ const styles = StyleSheet.create({
     },
     bold:{
         fontWeight: "bold"
+    },
+    textCost:{
+        fontSize: 32,
+        fontWeight: "bold",
+        color: "black",
     },
 })
 

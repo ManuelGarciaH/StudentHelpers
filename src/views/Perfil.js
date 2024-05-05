@@ -37,8 +37,12 @@ const Perfil = ({ navigation }) => {
               userName: doc.data().nombreUsuario,
               title: doc.data().titulo,
               details: doc.data().detalles,
+              cost: doc.data().costo,
+              maxCost: doc.data().costoMaximo,
+              cantidad: doc.data().cantidad,
               category: doc.data().category,
               schedule: doc.data().horario,
+              scheduleEnd: doc.data().horarioFin,
               location: doc.data().lugar,
               coordinates: doc.data().coordenadas,
               days: doc.data().dias,
@@ -82,63 +86,63 @@ const Perfil = ({ navigation }) => {
   }
 
   return (
-    <View>
-        <View style={[globalStyles.form, {padding: 5, alignItems: "center"}]}>
-          <Text style={styles.titleName}>{userName}</Text>
-          <View style={styles.descriptionContainer}>
-            <Image
-              source={require("../../Img/Sin-foto-Perfil.png")}
-              style={styles.image}
-            />
-            <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
-          </View>
-          <Text style={styles.titleName}>Publicaciones</Text>
-          <View style={styles.descriptionContainer}>
-            <View style={[globalStyles.centrar, ]}>
-              <TouchableOpacity onPress={() => setModalCreatePost(true)}>
-                <View style={styles.buttonCreatePost}>
-                  <Icon name="plus" style={styles.iconCreatePost}/>
-                  <Text style={styles.txtButton}>Crear Publicación</Text>
-                </View>
-              </TouchableOpacity>
+    <View style={globalStyles.mainContainer}>
+      <Text style={styles.titleName}>{userName}</Text>
+      <View style={styles.descriptionContainer}>
+        <Image
+          source={require("../../Img/Sin-foto-Perfil.png")}
+          style={styles.image}
+        />
+        <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+      </View>
+      <Text style={styles.titleName}>Publicaciones</Text>
+      <View style={[styles.descriptionContainer, {marginBottom: 5}]}>
+        <View style={[globalStyles.centrar, ]}>
+          <TouchableOpacity onPress={() => setModalCreatePost(true)}>
+            <View style={styles.buttonCreatePost}>
+              <Icon name="plus" style={styles.iconCreatePost}/>
+              <Text style={styles.txtButton}>Crear Publicación</Text>
             </View>
-          </View>
-
-          <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
-
-          {showNoPostsMessage ? (
-            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
-          ) : (
-            <>
-              {downloadedPosts.length === 0 ? (
-                <ModalLoading visible={true}/>
-              ) : (
-                <ScrollView showsVerticalScrollIndicator={false}>
-                  {downloadedPosts.map((item, index) => (
-                    <View key={index} > 
-                      <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                        <View style={styles.imageContainer}> 
-                          <Image
-                            source={{ uri: item.images[0] }}
-                            style={styles.imageStyle}
-                          />
-                        </View>
-                        
-                        <View>
-                          <Text style={styles.textTitle}>{item.title}</Text>
-                          {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
-                          <Text style={styles.textEmail}>Días: L-V</Text>
-                          <Text style={styles.textEmail}>Horario: {item.schedule}</Text>
-                          <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </ScrollView>
-              )}
-            </>
-          )}
+          </TouchableOpacity>
         </View>
+      </View>
+
+      <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
+
+      {showNoPostsMessage ? (
+        <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+      ) : (
+        <>
+          {downloadedPosts.length === 0 ? (
+            <ModalLoading visible={true}/>
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+              {downloadedPosts.map((item, index) => (
+                <View key={index} style={styles.cuadro}>
+                  <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                    <View style={styles.imageContainer}> 
+                      <Image
+                        source={{ uri: item.images[0] }}
+                        style={styles.imageStyle}
+                      />
+                    </View>
+                    
+                    <View>
+                      <Text style={styles.textTitle}>{item.title}</Text>
+                      {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
+                      <Text style={styles.textEmail}>Días: L-V</Text>
+                      <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text>
+                      <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                      {item.category=="Viaje" && <Text style={styles.textEmail}>Pasajeros disponibles: {item.cantidad}</Text>}
+                      <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </>
+      )}
     </View>
   )
 }
@@ -157,6 +161,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 4,
     color: "black",
+  },
+  scrollView: {
+    // borderWidth: 4,
+    marginTop: 5,
+    flex: 1,
   },
   textDescription:{
    // marginRight: 150,
@@ -196,13 +205,26 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  cuadro: {
+    flexDirection: 'row', 
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    padding: 2,
+    marginBottom: 10,
+    borderRadius: 10,
+    shadowColor: 'blue',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 0,
+    elevation: 6,
+  },
   itemConteiner:{
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 0.5,
-    elevation: 5,
-    marginBottom: 10,
-    width: wp("96%"),
+    width: wp("94%"),
   },
   image:{
     margin: 7,
@@ -217,7 +239,12 @@ const styles = StyleSheet.create({
   },
   textEmail:{
     fontSize: 14,
-  }
+  },
+  textCost:{
+    fontSize: 19,
+    fontWeight: "bold",
+    color: "black",
+  },
 });
 
 export default Perfil;

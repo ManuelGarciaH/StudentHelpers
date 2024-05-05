@@ -104,4 +104,11 @@ export const globalStyles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+    mainContainer: {
+        flex: 1,
+        padding: 3,
+        paddingTop: 5,
+        alignItems: "center",
+        backgroundColor: '#A7DBCB',
+    },
 });

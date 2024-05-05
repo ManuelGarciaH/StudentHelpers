@@ -157,6 +157,15 @@ const styles = StyleSheet.create ({
         marginLeft: 20,
         marginRight: 10,
       },
+      buttonGetModule:{
+        padding: 10,
+        elevation: 2,
+        alignSelf: "center",
+        width: wp("95%"),
+        marginTop: 10,
+        // marginLeft: 20,
+        // marginRight: 10,
+      },
       buttonClose: {
         backgroundColor: '#0ABEDC',
       },

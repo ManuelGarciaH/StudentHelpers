@@ -48,3 +48,5 @@ npm install @react-native-community/blur
 npm install react-native-date-picker
 
 npm install @react-navigation/bottom-tabs
+
+npm install react-native-virtualized-view --save
