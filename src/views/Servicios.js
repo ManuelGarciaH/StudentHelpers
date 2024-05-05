@@ -1,12 +1,17 @@
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { globalStyles } from '../../globalStyles';
+import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 const serviciosData = [
   { 
     nombre: 'Biblioteca', 
-    descripcion: 'Descripción de la biblioteca', 
+    descripcion: 'Biblioteca del Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI)',
+    telefono: 'Telefono: (33) 13785900 ext. 27489',
+    coreo: 'ubiblio@cucei.udg.mx',
+    horario: '8:00 a 19:45 horas, de lunes a viernes y los sábados de 8:00 a 13:45 horas',
     imagen: require('../../Img/biblioteca.png') 
   },
   { 
@@ -47,7 +52,15 @@ const Servicios = () => {
               <View style={styles.contenido}>
                 <Text style={styles.nombre}>{servicio.nombre}</Text>
                 <Text>{servicio.descripcion}</Text>
+                <Text>{servicio.telefono}</Text>
+                <Text>{servicio.coreo}</Text>
+                <Text>{servicio.horario}</Text>
               </View>
+              {/* <TouchableOpacity >
+                <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose]}>
+
+                </View>
+              </TouchableOpacity> */}
               <Image source={servicio.imagen} style={styles.imagen} />
             </View>
           ))}
