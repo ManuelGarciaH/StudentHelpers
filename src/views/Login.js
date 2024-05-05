@@ -6,6 +6,7 @@ import {globalStyles} from '../../globalStyles';
 import { FIREBASE_AUTH } from '../../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import PasswordInput from '../components/PasswordInput';
 
 
 const Login = ({ navigation }) => {
@@ -14,12 +15,6 @@ const Login = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
 
     const clickIniciarSesion = async () => {
-        // let loading = this.state.loading;
-        // loading = true;
-        // let correo = this.state.correo;
-        // let password = this.state.password;
-        // let auth = this.state.auth;
-
         signInWithEmailAndPassword(FIREBASE_AUTH, correo, password)
             .then((userCredential) => {
                 // Signed in 
@@ -37,12 +32,8 @@ const Login = ({ navigation }) => {
         return (
             <SafeAreaView>
                 <View>
-                    <Header navigation={navigation} 
-                        title="Login" 
-                        customStyles={styles.title} // Puedes personalizar los estilos aquí 
-                        />
         
-                    <View style={globalStyles.form}>
+                    <View style={[globalStyles.form, ]}>
                         <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
                         <View style={globalStyles.input}>
                             <TextInput 
@@ -56,18 +47,16 @@ const Login = ({ navigation }) => {
             
                         <Text style={globalStyles.txtBasic}>Contraseña</Text>
                         <View style={globalStyles.input}>
-                            <TextInput 
-                                style={globalStyles.txtInput}
+                            <PasswordInput
                                 onChangeText={(password) => setPassword(password)}
                                 placeholder='Password'
-                                secureTextEntry={true}
-                            ></TextInput>
+                            />
                         </View>
 
                         {   // Codigo de carga para esperar respuesta del servidor
                             loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
                             (
-                                <TouchableOpacity onPress={clickIniciarSesion}>
+                                <TouchableOpacity onPress={clickIniciarSesion} style={{alignSelf: "center"}}>
                                     <View style={globalStyles.boton}>
                                         <Text style={globalStyles.txtBoton}>Iniciar Sesión</Text>
                                     </View>
