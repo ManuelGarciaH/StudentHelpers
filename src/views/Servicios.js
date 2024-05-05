@@ -1,6 +1,8 @@
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { globalStyles } from '../../globalStyles';
+import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 const serviciosData = [
@@ -50,7 +52,15 @@ const Servicios = () => {
               <View style={styles.contenido}>
                 <Text style={styles.nombre}>{servicio.nombre}</Text>
                 <Text>{servicio.descripcion}</Text>
+                <Text>{servicio.telefono}</Text>
+                <Text>{servicio.coreo}</Text>
+                <Text>{servicio.horario}</Text>
               </View>
+              {/* <TouchableOpacity >
+                <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose]}>
+
+                </View>
+              </TouchableOpacity> */}
               <Image source={servicio.imagen} style={styles.imagen} />
             </View>
           ))}
