@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { globalStyles } from '../../../globalStyles';

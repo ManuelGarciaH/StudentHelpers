@@ -21,6 +21,12 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
     const [imageUploaded, setImageUploaded] = useState(false);
     const storage = getStorage();
 
+    // Calcula las horas de inicio y fin límites
+    const minTime = new Date();
+    minTime.setHours(7, 0, 0); // 7:00 am
+    const maxTime = new Date();
+    maxTime.setHours(21, 0, 0); // 9:00 pm
+
     const subirImagenesABaseDeDatos = async (imageUris, title) => {
       try {
         const newImagePaths = [];
@@ -214,7 +220,11 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                 />
                 <View style={[styles.delimitador, {height: 1}]}></View>
                 <View style={[styles.buttonContainer, {marginTop: 7}]}>
-                    <ScheduleButton control={control} errors={errors} name="horario"/>
+                    <ScheduleButton control={control} errors={errors} name="horario" start={true} getValues={getValues}/>
+                    <ScheduleButton control={control} errors={errors} name="horarioFin" start={false} getValues={getValues}/>
+                </View>
+
+                <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     {getValues("category") == "Viaje" ? (
                       <TravelRouteButton control={control} errors={errors} name="coordenadas" setValue={setValue} 
                       trigger={trigger} getValues={getValues} imageUploaded={imageUploaded}/>
@@ -222,18 +232,15 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       <LocationButton control={control} errors={errors} name="lugar" 
                         setValue={setValue} trigger={trigger}/>
                     )}
-                </View>
-
-                <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     <DaysButton control={control} errors={errors} name="dias" 
-                        setValue={setValue} trigger={trigger}/>
-                    <ContactButton control={control} errors={errors} name="contacto" 
                         setValue={setValue} trigger={trigger}/>
                 </View>
 
                 <View style={[styles.buttonContainer, ]}>
                     <ImageButton control={control} errors={errors} name="image" setValue={setValue} 
                     trigger={trigger} getValues={getValues} setImageUploaded={setImageUploaded}/>
+                    <ContactButton control={control} errors={errors} name="contacto" 
+                        setValue={setValue} trigger={trigger}/>
                 </View>
                 
                 <View style={[styles.delimitador, {height: 1, marginBottom: 5}]}></View>
