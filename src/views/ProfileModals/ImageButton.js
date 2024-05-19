@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         width: wp("70%"),
-        height: hp("38%"),
+        height: hp("35%"),
         backgroundColor: 'lightblue', // Cambia el color de fondo del contenedor
         borderWidth: 2, // Añade un borde alrededor del contenedor
         borderColor: 'blue', // Color del borde
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: wp('64%'), // Ancho de la imagen
-        height: hp('28%'), // Altura de la imagen
+        height: hp('32%'), // Altura de la imagen
         resizeMode: 'cover',
         marginBottom: 30,
     },

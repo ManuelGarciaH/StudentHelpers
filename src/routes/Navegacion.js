@@ -13,6 +13,7 @@ import VERPUBLICACION from '../views/VerPublicacion.js';
 import PROFILE from '../views/Perfil.js';
 import PUBLICACIONES from '../views/Publicaciones.js';
 import TAB_NAVIGATOR from '../routes/TabNavigator.js';
+import UPDATE_POSTS from '../views/UpdatePosts.js'
 import Header from '../components/Header.js';
 //La importacion de lo que usemos
 
@@ -36,6 +37,16 @@ function InsideView({navigation}) {
         }} />
       <Stack.Screen name="Publicaciones" component={PUBLICACIONES}/>
       <Stack.Screen name="Profile" component={PROFILE} />
+      <Stack.Screen name="UpdatePosts" component={UPDATE_POSTS}
+        options={{
+          headerTitle: () => null, // Esto ocultará el título del encabezado
+          headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
+          headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
+          headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
+          header: () => (
+            <Header navigation={navigation} back={true}/>
+          ),
+        }} />
     </Insidestack.Navigator>
   )
 }

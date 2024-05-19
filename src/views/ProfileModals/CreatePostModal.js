@@ -219,7 +219,10 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                           isGreaterThanCosto: value => {
                             const costoValue = Number(getValues('costo'));
                             const costoMaximoValue = Number(value);
-                            return costoMaximoValue > costoValue || "Ingrese un costo mayor al minimo";
+                            if (costoMaximoValue >= costoValue) {
+                              return true;
+                            }
+                            return "El costo máximo no puede ser menor que el mínimo";
                           },
                           validateCostoMaximo: value => /^\d+$/.test(value) || "Ingresa un costo numérico"
                         }

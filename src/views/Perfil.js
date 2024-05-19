@@ -16,7 +16,7 @@ const Perfil = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
-  const userName = "Tony Montana";
+  const userName = "Manuel Antonio Garcia";
 
   useEffect(() => {
     setDownloadedPosts([]);
@@ -85,6 +85,10 @@ const Perfil = ({ navigation }) => {
     console.log("algo")
   }
 
+  const openUpdatePosts = (item)=>{
+    navigation.navigate("UpdatePosts", { datos: item })
+  }
+
   return (
     <View style={globalStyles.mainContainer}>
       <Text style={styles.titleName}>{userName}</Text>
@@ -137,6 +141,19 @@ const Perfil = ({ navigation }) => {
                       <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
                     </View>
                   </TouchableOpacity>
+                  <View style={styles.iconContainer}>
+                    <TouchableOpacity  onPress={() => openUpdatePosts(item)}>
+                      <View>
+                          <Icon name="pencil" style={styles.updateButton} size={25}/>
+                      </View>
+                    </TouchableOpacity>
+                    <View style={styles.verticalSeparator}></View>
+                    <TouchableOpacity>
+                      <View>
+                          <Icon name="trash" style={styles.deleteButton} size={25}/>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               ))}
             </ScrollView>
@@ -224,7 +241,7 @@ const styles = StyleSheet.create({
   itemConteiner:{
     flexDirection: "row",
     alignItems: "center",
-    width: wp("94%"),
+    width: wp("81.5%"),
   },
   image:{
     margin: 7,
@@ -245,6 +262,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "black",
+  },
+  iconContainer:{
+    alignItems: "center",
+    width: wp("10.5%"),
+    marginHorizontal: 5,
+  },
+  updateButton:{
+    padding: 8,
+    backgroundColor:"#0ABEDC",
+    borderRadius: 5,
+    color: "black",
+  },
+  deleteButton:{
+    padding: 8,
+    backgroundColor:"red",
+    borderRadius: 5,
+    color: "black",
+  },
+  verticalSeparator:{
+    marginVertical: 9,
   },
 });
 
