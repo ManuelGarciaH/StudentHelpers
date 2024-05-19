@@ -131,8 +131,8 @@ const Perfil = ({ navigation }) => {
                       <Text style={styles.textTitle}>{item.title}</Text>
                       {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
                       <Text style={styles.textEmail}>Días: L-V</Text>
-                      <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text>
-                      <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                      {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
+                      {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
                       {item.category=="Viaje" && <Text style={styles.textEmail}>Pasajeros disponibles: {item.cantidad}</Text>}
                       <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
                     </View>
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     width: wp("30%"),
     height: hp("16%"),
     padding: 10,
-    marginLeft: 5,
+    marginHorizontal: 5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: '#9C9C9C',
     padding: 2,
     marginBottom: 10,
     borderRadius: 10,
@@ -234,14 +234,15 @@ const styles = StyleSheet.create({
     height: hp("15%"),
   },
   textTitle:{
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: "600",
+    color: "black",
   },
   textEmail:{
     fontSize: 14,
   },
   textCost:{
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: "bold",
     color: "black",
   },

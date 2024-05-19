@@ -248,11 +248,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0ABEDC',
   },
   buttonGetModule:{
-    padding: 10,
-    elevation: 2,
-    alignSelf: "center",
+    padding: 9,
+    elevation: 1,
+    // alignSelf: "center",
     width: wp("95%"),
     marginTop: 10,
+    marginBottom: 30,
     // marginLeft: 20,
     // marginRight: 10,
   }

@@ -100,11 +100,11 @@ const Publicaciones = ({ navigation }) => {
                       </View>
                       
                       <View>
-                        <Text style={styles.textTitle}>{item.title}</Text>
+                        <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
                         <Text style={styles.textEmail}>Lugar: {item.location}</Text>
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
-                        <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text>
-                        <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text>
+                        {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
+                        {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
                         <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
                       </View>
                     </TouchableOpacity>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
-    backgroundColor: 'grey',
+    backgroundColor: '#9C9C9C',
     padding: 2,
     marginBottom: 10,
     borderRadius: 10,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     width: wp("30%"),
     height: hp("16%"),
     padding: 10,
-    marginLeft: 5,
+    marginHorizontal: 5,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -165,11 +165,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   textTitle:{
-    fontSize: 17,
+    fontSize: 20,
+    color: "black",
     fontWeight: "600",
   },
   textCost:{
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: "bold",
     color: "black",
   },
