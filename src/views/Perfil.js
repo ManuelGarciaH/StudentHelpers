@@ -134,7 +134,7 @@ const Perfil = ({ navigation }) => {
                     <View>
                       <Text style={styles.textTitle}>{item.title}</Text>
                       {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
-                      <Text style={styles.textEmail}>Días: L-V</Text>
+                      <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                       {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                       {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
                       {item.category=="Viaje" && <Text style={styles.textEmail}>Pasajeros disponibles: {item.cantidad}</Text>}

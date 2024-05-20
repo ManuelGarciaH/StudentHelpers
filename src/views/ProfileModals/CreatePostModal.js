@@ -279,8 +279,8 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       <LocationButton control={control} errors={errors} name="lugar" 
                         setValue={setValue} trigger={trigger}/>
                     )}
-                    <DaysButton control={control} errors={errors} name="dias" 
-                        setValue={setValue} trigger={trigger}/>
+                    <DaysButton control={control} errors={errors} name="dias" setValue={setValue} 
+                        trigger={trigger} isUpdate={false}  getValues={getValues}/>
                 </View>
 
                 <View style={[styles.buttonContainer, ]}>

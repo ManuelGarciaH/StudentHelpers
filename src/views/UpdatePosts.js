@@ -3,6 +3,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Controller, useForm } from 'react-hook-form';
 import React, {useEffect, useState} from 'react'
 import { TextInput} from 'react-native-paper';
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL} from "firebase/storage";
 
 import { globalStyles } from '../../globalStyles'
 import ScheduleButton from './ProfileModals/ScheduleButton';
@@ -18,23 +21,70 @@ const UpdatePosts = ({navigation, route}) => {
   const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
   const [imageUploaded, setImageUploaded] = useState(false);
   const { datos } = route.params;
+  const userName = "Manuel Antonio Garcia";
 
   useEffect(()=> {
     uploadPreviousInformation()
   }, [])
 
-  const onSubmit = async (data) => {
-    if (Object.keys(errors).length === 0) {
-        // const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
-        // const newData = { ...data, image: newImagePaths, nombreUsuario: userName};
-
-        // await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
-        reset();
-        // onClose();
-    } else {
-        console.log(errors);
+  const subirImagenesNuevasABaseDeDatos = async (newImageUris, title) => {
+    try {
+      const newImagePaths = [];
+      // Iterar sobre cada nueva URI de imagen y subirla a la base de datos
+      await Promise.all(
+        newImageUris.map(async (uri, index) => {
+          // Obtener la referencia de almacenamiento para la imagen
+          const storageRef = ref(storage, `publicaciones/${userName}/${title}/image_${index}.png`);
+  
+          // Convertir la imagen a bytes
+          const response = await fetch(uri);
+          const blob = await response.blob();
+  
+          // Subir la imagen a Firebase Storage
+          await uploadBytes(storageRef, blob);
+  
+          // Obtener la URL de descarga de la imagen y agregarla al array
+          const downloadURL = await getDownloadURL(storageRef);
+          newImagePaths.push(downloadURL);
+        })
+      );
+      console.log("Nuevas imágenes subidas exitosamente.");
+      return newImagePaths;
+    } catch (error) {
+      console.error("Error al subir las nuevas imágenes:", error);
     }
-};
+  };
+  
+  const onSubmit = async (data) => {
+    try {
+      if (Object.keys(errors).length === 0) {
+        const existingImageUris = data.image || []; // URLs de imágenes existentes
+        const newImageUris = data.newImages || []; // Nuevas imágenes seleccionadas desde el teléfono
+  
+        // Subir nuevas imágenes si hay alguna
+        let newImagePaths = [];
+        if (newImageUris.length > 0) {
+          newImagePaths = await subirImagenesNuevasABaseDeDatos(newImageUris, data.titulo);
+        }
+  
+        // Combinar las URLs de las imágenes existentes con las nuevas URLs
+        const allImagePaths = [...existingImageUris, ...newImagePaths];
+        const newData = { ...data, image: allImagePaths, nombreUsuario: userName };
+  
+        // Actualizar el documento existente en Firestore
+        const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
+        const docRef = doc(publicacionesCollection, datos.id);
+        console.log(newData)
+        await updateDoc(docRef, newData);
+        onCancel();
+        console.log("Documento actualizado exitosamente.");
+      } else {
+        console.log(errors);
+      }
+    } catch (error) {
+      console.error("Error al actualizar el documento:", error);
+    }
+  };
 
   const uploadPreviousInformation = () =>{
     //Category
@@ -62,11 +112,17 @@ const UpdatePosts = ({navigation, route}) => {
     setValue("horarioFin", datos.scheduleEnd)
     trigger("horarioFin")
     //coordinates
-    setValue("coordenadas", datos.coordinates)
-    trigger("coordenadas")
+    if(datos.coordinates!=undefined && datos.category=="Viaje"){
+        console.log(datos.coordinates)
+        setValue("coordenadas", datos.coordinates)
+        trigger("coordenadas")
+    }
+    
     //location
-    setValue("lugar", datos.location)
-    trigger("lugar")
+    if(datos.location!=undefined && datos.category!="Viaje"){
+        setValue("lugar", datos.location)
+        trigger("lugar")
+    }
     //days
     setValue("dias", datos.days)
     trigger("dias")
@@ -112,6 +168,7 @@ const UpdatePosts = ({navigation, route}) => {
   const waiting = () => {
     setLoading(false)
   }
+  
   return (
     <View style={[globalStyles.mainContainer, {padding: 0}]}>
       <View style={styles.formContainer}>
@@ -302,8 +359,8 @@ const UpdatePosts = ({navigation, route}) => {
                     <LocationButton control={control} errors={errors} name="lugar" 
                     setValue={setValue} trigger={trigger}/>
                 )}
-                <   DaysButton control={control} errors={errors} name="dias" 
-                    setValue={setValue} trigger={trigger}/>
+                    <DaysButton control={control} errors={errors} name="dias" setValue={setValue} 
+                        trigger={trigger} isUpdate={true} getValues={getValues}/>
             </View>
             <View style={styles.buttonContainer}>
                 <ImageButton control={control} errors={errors} name="image" setValue={setValue} 
