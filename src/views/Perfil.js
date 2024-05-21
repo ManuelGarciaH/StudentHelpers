@@ -9,10 +9,12 @@ import ModalLoading from '../components/ModalLoading';
 
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, getDocs, query, where } from "firebase/firestore";
+import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
 
 const Perfil = ({ navigation }) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
+  const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
@@ -112,6 +114,7 @@ const Perfil = ({ navigation }) => {
       </View>
 
       <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
+      <DeleteConfirmModal visible={modalDeleteConfirm} onClose={() => setModalDeleteConfirm(false)} userName={userName}/>
 
       {showNoPostsMessage ? (
         <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
@@ -148,15 +151,17 @@ const Perfil = ({ navigation }) => {
                       </View>
                     </TouchableOpacity>
                     <View style={styles.verticalSeparator}></View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setModalDeleteConfirm(true)} >
                       <View>
                           <Icon name="trash" style={styles.deleteButton} size={25}/>
                       </View>
                     </TouchableOpacity>
                   </View>
                 </View>
+                
               ))}
             </ScrollView>
+            
           )}
         </>
       )}
