@@ -99,7 +99,7 @@ const Publicaciones = ({ navigation }) => {
                         />
                       </View>
                       
-                      <View>
+                      <View  style={styles.dataContainer}>
                         <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
                         <Text style={styles.textEmail}>Lugar: {item.location}</Text>
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
@@ -178,6 +178,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
+  },
+  dataContainer:{
+    width: wp("58%")
   },
 });
 

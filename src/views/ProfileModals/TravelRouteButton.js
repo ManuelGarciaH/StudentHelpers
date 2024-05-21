@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert} from 'react-native'
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Alert, } from 'react-native'
 import React, {useEffect, useState, useRef } from 'react'
 import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -11,7 +11,7 @@ import { Controller } from 'react-hook-form';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { ScrollView } from 'react-native-virtualized-view'
 
-const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues, imageUploaded }) => {
+const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues, imageUploaded}) => {
   const [modalTravelRoute, setModalTravelRoute] = useState(false);
   const [destination, setDestination] = useState(null);
   const [coordinatesParkingStudents, setCoordinatesParkingStudents] = useState({
@@ -80,8 +80,31 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
     }
   };
 
+  useEffect(() =>{
+    if(getValues("coordenadas") != ""){
+      const coordinates  = getValues("coordenadas")
+      const latitude = coordinates.latitude
+      const longitude = coordinates.longitude
+      // Guardar las coordenadas de destino seleccionadas por el usuario
+      setDestination({
+        latitude: latitude,
+        longitude: longitude,
+      });
+      const newRegion = {
+        latitude: (coordinatesParkingStudents.latitude + latitude) / 2,
+        longitude: (coordinatesParkingStudents.longitude + longitude) / 2,
+        latitudeDelta: Math.abs(coordinatesParkingStudents.latitude - latitude) * 1.3,
+        longitudeDelta: Math.abs(coordinatesParkingStudents.longitude - longitude) * 1.3,
+      };
+    
+      // Establecer la nueva región del mapa
+      setMapRegion(newRegion);
+    }
+  }, [])
+
   const handleSelectAddress = (data, details = null) => {
     // Guardar las coordenadas de destino seleccionadas por el usuario
+    console.log("select")
     setDestination({
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
@@ -131,7 +154,7 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
         animationType='fade'  transparent={true} visible={modalTravelRoute}
         onRequestClose={() => {
             setModalTravelRoute(false);
-            setLoading(false);1
+            setLoading(false);
         }}>
           <ScrollView>
             <View style={globalStyles.centerContainer}>

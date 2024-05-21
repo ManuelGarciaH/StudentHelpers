@@ -2,12 +2,14 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import {Controller} from 'react-hook-form';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { globalStyles } from '../../../globalStyles'
+import { getVersion } from 'jest';
 
-const DaysButton = ({ control, errors, name, setValue, trigger }) => {
+const DaysButton = ({ control, errors, name, setValue, trigger, isUpdate, getValues }) => {
   const [modalDays, setModalDays] = useState(false);
   const [selectedDays, setSelectedDays] = useState([]);
+  const [preveSelectedDays, setPrevSelectedDays] = useState([])
 
   const filterDaysSelector = (dia) => {
     const updateDays = selectedDays.includes(dia)
@@ -25,7 +27,20 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
     setValue(name, selectedDays)
     setModalDays(!modalDays);
     trigger(name)
+    setPrevSelectedDays(selectedDays)
   }
+
+  const onCancel = () =>{
+    setModalDays(false)
+    setSelectedDays(preveSelectedDays)
+  }
+
+  useEffect( () =>{
+    if(isUpdate){
+      setSelectedDays(getValues("dias"))
+      setPrevSelectedDays(getValues("dias"))
+    }
+  }, [])
 
   return (
     <View style={globalStyles.centrar}>
@@ -103,7 +118,7 @@ const DaysButton = ({ control, errors, name, setValue, trigger }) => {
                   <View style={[styles.buttonContainer, {justifyContent: "flex-end"}]}>
                     <TouchableOpacity
                       style={[styles.button, styles.buttonClose, { marginHorizontal: 0}]}
-                      onPress={() => setModalDays(false)}>
+                      onPress={() => onCancel()}>
                       <Text style={styles.textStyle}>Cancelar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity

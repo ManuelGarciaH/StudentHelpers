@@ -150,7 +150,17 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                 <Controller
                     name="titulo"
                     control={control}
-                    rules={{ required: "Campo requerido"}}
+                    rules={{ 
+                      required: "Campo requerido",
+                      maxLength:{
+                        value: 37,
+                        message: "El titulo no puede pasar de 37 caracteres"
+                      },
+                      minLength:{
+                        value: 5,
+                        message: "El titulo debe contener al menos 5 caracteres"
+                      }
+                    }}
                     defaultValue=""
                     render={({ field: { onChange, value } }) => (
                       <>
@@ -169,7 +179,17 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                 <Controller
                     name="detalles"
                     control={control}
-                    rules={{ required: "Campo requerido" }}
+                    rules={{ 
+                      required: "Campo requerido",
+                      maxLength:{
+                        value: 37,
+                        message: "Los detalles no pueden pasar de 120 caracteres"
+                      },
+                      minLength:{
+                        value: 5,
+                        message: "Los detalles debe contener al menos 5 caracteres"
+                      }
+                    }}
                     defaultValue=""
                     render={({ field: { onChange, value } }) => (
                       <>
@@ -219,7 +239,10 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                           isGreaterThanCosto: value => {
                             const costoValue = Number(getValues('costo'));
                             const costoMaximoValue = Number(value);
-                            return costoMaximoValue > costoValue || "Ingrese un costo mayor al minimo";
+                            if (costoMaximoValue >= costoValue) {
+                              return true;
+                            }
+                            return "El costo máximo no puede ser menor que el mínimo";
                           },
                           validateCostoMaximo: value => /^\d+$/.test(value) || "Ingresa un costo numérico"
                         }
@@ -276,8 +299,8 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       <LocationButton control={control} errors={errors} name="lugar" 
                         setValue={setValue} trigger={trigger}/>
                     )}
-                    <DaysButton control={control} errors={errors} name="dias" 
-                        setValue={setValue} trigger={trigger}/>
+                    <DaysButton control={control} errors={errors} name="dias" setValue={setValue} 
+                        trigger={trigger} isUpdate={false}  getValues={getValues}/>
                 </View>
 
                 <View style={[styles.buttonContainer, ]}>
