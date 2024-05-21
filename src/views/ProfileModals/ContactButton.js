@@ -27,7 +27,20 @@ const ContactButton = ({ control, errors, name, setValue, trigger }) => {
         <Controller
             name={name}
             control={control}
-            rules={{ required: "Campo requerido" }}
+            rules={{ 
+              required: "Campo requerido",
+              maxLength:{
+                value: 10,
+                message: "El telefono debe de tener 10 digitos"
+              },
+              minLength:{
+                value: 10,
+                message: "El telefono debe de tener 10 digitos"
+              },
+              validate: value => {
+                return /^\d+$/.test(value) || "Solo se permiten digitos";
+              },
+            }}
             defaultValue=""
             render={({ field: { value } }) => (
                 <>

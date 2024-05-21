@@ -98,7 +98,7 @@ const Viajes = ({ navigation }) => {
                         />
                       </View>
                       
-                      <View>
+                      <View  style={styles.dataContainer}>
                         <Text style={styles.textTitle}>{item.title}</Text>
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                         {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text>
@@ -178,6 +178,9 @@ const styles = StyleSheet.create({
     // borderWidth: 4,
     marginTop: 5,
     flex: 1,
+  },
+  dataContainer:{
+    width: wp("58%")
   },
 });
 

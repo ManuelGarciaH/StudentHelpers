@@ -231,7 +231,17 @@ const UpdatePosts = ({navigation, route}) => {
             <Controller
                 name="titulo"
                 control={control}
-                rules={{ required: "Campo requerido"}}
+                rules={{ 
+                  required: "Campo requerido",
+                  maxLength:{
+                    value: 37,
+                    message: "El titulo no puede pasar de 37 caracteres"
+                  },
+                  minLength:{
+                    value: 5,
+                    message: "El titulo debe contener al menos 5 caracteres"
+                  }
+                }}
                 defaultValue=""
                 render={({ field: { onChange, value } }) => (
                 <>
@@ -250,7 +260,17 @@ const UpdatePosts = ({navigation, route}) => {
             <Controller
                 name="detalles"
                 control={control}
-                rules={{ required: "Campo requerido" }}
+                rules={{ 
+                  required: "Campo requerido",
+                  maxLength:{
+                    value: 37,
+                    message: "Los detalles no pueden pasar de 120 caracteres"
+                  },
+                  minLength:{
+                    value: 5,
+                    message: "Los detalles debe contener al menos 5 caracteres"
+                  }
+                }}
                 defaultValue=""
                 render={({ field: { onChange, value } }) => (
                 <>
