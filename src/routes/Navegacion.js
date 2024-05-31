@@ -6,9 +6,9 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from "../../Firebase.js";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import INICIO from '../views/Inicio.js';
-import SINGUP from '../views/SingUp.js';
-import LOGIN from '../views/Login.js';
+import INICIO from '../views/AuthModals/Inicio.js';
+import SINGUP from '../views/AuthModals/SingUp.js';
+import LOGIN from '../views/AuthModals/Login.js';
 import VERPUBLICACION from '../views/VerPublicacion.js';
 import PROFILE from '../views/Perfil.js';
 import PUBLICACIONES from '../views/Publicaciones.js';

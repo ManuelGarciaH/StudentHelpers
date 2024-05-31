@@ -30,8 +30,6 @@ export default function PasswordInput(props) {
       <TouchableOpacity onPress={showPassword} style={styles.show}>
         <Icon name={icon} size={30} color="black" /> 
       </TouchableOpacity>
-        {/*<Text>{password}</Text>
-         Implementar boton para ocultar */}
     </View>
   )
 }

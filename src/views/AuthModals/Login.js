@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
 import React, { useState } from 'react';
-import Header from '../components/Header';
-import {globalStyles} from '../../globalStyles';
+import Header from '../../components/Header';
+import {globalStyles} from '../../../globalStyles';
 // firebase
-import { FIREBASE_AUTH } from '../../Firebase';
+import { FIREBASE_AUTH } from '../../../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import PasswordInput from '../components/PasswordInput';
+import PasswordInput from '../../components/PasswordInput';
 
 
 const Login = ({ navigation }) => {
@@ -19,8 +19,6 @@ const Login = ({ navigation }) => {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log(user.displayName);
-                console.log(user);
                 navigation.navigate('TabNavigator');
                 // ...
             })
