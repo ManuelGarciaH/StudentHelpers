@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, doc, deleteDoc} from "firebase/firestore";
-import { getStorage, ref, deleteObject} from "firebase/storage";
+import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
 
 
 const DeleteConfirmModal = ({userName, item}) => {
@@ -30,8 +30,16 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
   async function deleteDirectory(title) {
     try {
       const storage = getStorage();
-      const directoryRef = ref(storage, `publicaciones/${userName}/${title}/image_0.png`);
-      await deleteObject(directoryRef);
+      const directoryRef = ref(storage, `publicaciones/${userName}/${title}`);
+      // List all items (files) and directories in this directory
+      const listResult = await listAll(directoryRef);
+
+      // Iterate through each file and delete it
+      listResult.items.forEach(async (fileRef) => {
+        await deleteObject(fileRef);
+        console.log(`Archivo ${fileRef.name} eliminado exitosamente`);
+      });
+      // await deleteObject(directoryRef);
       console.log('Directorio eliminado exitosamente');
     } catch (error) {
       console.error('Error al eliminar el directorio: ', error);
