@@ -17,7 +17,7 @@ const serviciosData = [
   { 
     nombre: 'Rectoria', 
     descripcion: 'Dr. Marco Antonio Pérez Cisneros', 
-    telefono: 'Telefono:  33 1378 5900, Ext: 27402, 27405 y 27429',
+    telefono: 'Telefono:  33 1378 5900, Ext: 27402, 27405 y 27429 m',
     coreo: 'rector@cucei.udg.mx',
     horario: '9:a.m.-5:p.m.',
     imagen: require('../../Img/rectoria.png') 
