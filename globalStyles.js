@@ -8,8 +8,8 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
     },
     centrar:{
-        flex: 1,
         alignItems: 'center', // Esto centra horizontalmente el contenido
+        textAlignVertical: "center"
     },
     imgBackGround:{
         width: wp('100%'),

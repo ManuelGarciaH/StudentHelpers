@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
 import React, { useState } from 'react';
-import Header from '../../components/Header';
 import {globalStyles} from '../../../globalStyles';
 // firebase
 import { FIREBASE_AUTH } from '../../../Firebase';
@@ -13,6 +12,7 @@ const Login = ({ navigation }) => {
     const [correo, setCorreo] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const ForgotPassword = () => navigation.navigate('ForgotPassword');
 
     const clickIniciarSesion = async () => {
         signInWithEmailAndPassword(FIREBASE_AUTH, correo, password)
@@ -29,41 +29,41 @@ const Login = ({ navigation }) => {
         }
         return (
             <SafeAreaView>
-                <View>
+                <View style={[globalStyles.form, ]}>
+                    <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
+                    <View style={globalStyles.input}>
+                        <TextInput 
+                            style={globalStyles.txtInput}
+                            onChangeText={(correo) => setCorreo(correo)}
+                            autoCapitalize='none'
+                            inputMode='email'
+                        ></TextInput>
+                    </View>
         
-                    <View style={[globalStyles.form, ]}>
-                        <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
-                        <View style={globalStyles.input}>
-                            <TextInput 
-                                style={globalStyles.txtInput}
-                                onChangeText={(correo) => setCorreo(correo)}
-                                placeholder='Email'
-                                autoCapitalize='none'
-                                inputMode='email'
-                            ></TextInput>
-                        </View>
-            
-                        <Text style={globalStyles.txtBasic}>Contraseña</Text>
-                        <View style={globalStyles.input}>
-                            <PasswordInput
-                                onChangeText={(password) => setPassword(password)}
-                                placeholder='Password'
-                            />
-                        </View>
-
-                        {   // Codigo de carga para esperar respuesta del servidor
-                            loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
-                            (
-                                <TouchableOpacity onPress={clickIniciarSesion} style={{alignSelf: "center"}}>
-                                    <View style={globalStyles.boton}>
-                                        <Text style={globalStyles.txtBoton}>Iniciar Sesión</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }
-            
+                    <Text style={globalStyles.txtBasic}>Contraseña</Text>
+                    <View style={globalStyles.input}>
+                        <PasswordInput
+                            onChangeText={(password) => setPassword(password)}
+                        />
                     </View>
 
+                    <View style={[globalStyles.centrar, styles.padding]}>
+                        <TouchableOpacity onPress={ForgotPassword} >
+                            <Text style={styles.link}>¿Olvidaste tu constraseña?</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {   // Codigo de carga para esperar respuesta del servidor
+                        loading ? (<ActivityIndicator size={'large'} color={'#33BD78'}/>) :
+                        (
+                            <TouchableOpacity onPress={clickIniciarSesion} style={{alignSelf: "center"}}>
+                                <View style={globalStyles.boton}>
+                                    <Text style={globalStyles.txtBoton}>Iniciar Sesión</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    }
+        
                 </View>
             </SafeAreaView>
         )
@@ -81,6 +81,13 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: 'bold',
     },
+    padding:{
+        paddingTop: 5,
+    },
+    link:{
+        color: '#575757',
+        fontWeight: 'bold',
+    }
 });
 
 export default Login;

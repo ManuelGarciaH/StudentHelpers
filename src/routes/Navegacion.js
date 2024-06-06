@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import INICIO from '../views/AuthModals/Inicio.js';
 import SINGUP from '../views/AuthModals/SingUp.js';
+import PASSWORD from '../views/AuthModals/ForgotPassword.jsx';
 import LOGIN from '../views/AuthModals/Login.js';
 import VERPUBLICACION from '../views/VerPublicacion.js';
 import PROFILE from '../views/Perfil.js';
@@ -69,6 +70,13 @@ function OutsideView({navigation}) {
         headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
         headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
         header: () => <Header navigation={navigation} back={true}/>,
+        }}/>
+        <Stack.Screen name='ForgotPassword' component={PASSWORD} 
+        options={{
+          headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
+          headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
+          headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
+          header: () => <Header navigation={navigation} back={true} />,
         }}/>
     </Stack.Navigator>
   )

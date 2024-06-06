@@ -14,7 +14,7 @@ const INICIO = ({ navigation }) => {
             <View style={globalStyles.centrar}> 
               <Image 
                 style={styles.imgLogo}
-                source={require("../../Img/Logo.png")}
+                source={require("../../../Img/Logo.png")}
               />
                 <View style={styles.contenedorLogin}>
                   <TouchableOpacity onPress={cambiarVentanaLogin}>
