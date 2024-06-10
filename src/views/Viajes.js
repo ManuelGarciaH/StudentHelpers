@@ -6,7 +6,8 @@ import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 const Viajes = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);

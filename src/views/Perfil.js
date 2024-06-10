@@ -8,7 +8,9 @@ import CreatePostModal from './ProfileModals/CreatePostModal';
 import ModalLoading from '../components/ModalLoading';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
 
 const Perfil = ({ navigation }) => {
   //States for modals
@@ -109,6 +111,7 @@ const Perfil = ({ navigation }) => {
 
       <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
 
+
       {showNoPostsMessage ? (
         <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
       ) : (
@@ -126,7 +129,7 @@ const Perfil = ({ navigation }) => {
                         style={styles.imageStyle}
                       />
                     </View>
-                    
+
                     <View style={styles.dataContainer}>
                       <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
                       {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
@@ -144,15 +147,15 @@ const Perfil = ({ navigation }) => {
                       </View>
                     </TouchableOpacity>
                     <View style={styles.verticalSeparator}></View>
-                    <TouchableOpacity>
-                      <View>
-                          <Icon name="trash" style={styles.deleteButton} size={25}/>
-                      </View>
-                    </TouchableOpacity>
+
+                    <DeleteConfirmModal userName={userName} item={item}/>
+
                   </View>
                 </View>
+
               ))}
             </ScrollView>
+
           )}
         </>
       )}

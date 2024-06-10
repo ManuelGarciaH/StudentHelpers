@@ -74,6 +74,48 @@ const Publicaciones = ({ navigation}) => {
   useEffect(() => {
     showPosts(selectedCategory);
   }, []); // Se ejecuta solo una vez al montar el componente
+  useEffect(() => {
+    const postsCollection = collection(FIREBASE_DB, "publicaciones");
+    const postsQuery = query(postsCollection, where("category", "!=", "Viaje"));
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      console.log("A");
+      setDownloadedPosts([]);
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'modulos'");
+        setShowNoPostsMessage(true);
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          console.log("Datos del documento:", doc.data());
+          const postData = {
+            id: doc.id,
+            userName: doc.data().nombreUsuario,
+            title: doc.data().titulo,
+            details: doc.data().detalles,
+            cost: doc.data().costo,
+            maxCost: doc.data().costoMaximo,
+            cantidad: doc.data().cantidad,
+            category: doc.data().category,
+            schedule: doc.data().horario,
+            scheduleEnd: doc.data().horarioFin,
+            location: doc.data().lugar,
+            days: doc.data().dias,
+            contact: doc.data().contacto,
+            images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+          };
+          newPosts.push(postData);
+        });
+        console.log(newPosts);
+        setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
+      }
+    }, (error) => {
+      console.error("Error al obtener documentos:", error);
+    });
+
+    return () => unsubscribe(); // Cleanup on unmount
+  }, []);
 
     const verPublicacion = (item) => {
       if(!open){
