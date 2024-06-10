@@ -6,56 +6,55 @@ import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 const Viajes = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
 
   useEffect(() => {
-    const showPosts = async () => {
-      console.log("A")
-      console.log(downloadedPosts);
+    const postsCollection = collection(FIREBASE_DB, "publicaciones");
+    const postsQuery = query(postsCollection, where("category", "==", "Viaje"));
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      console.log("A");
       setDownloadedPosts([]);
-      try {
-        const postsCollection = collection(FIREBASE_DB, "publicaciones");
-        const querySnapshot = await getDocs(query(postsCollection, where("category", "==", "Viaje")));
-        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-        
-        if (querySnapshot.empty) {
-          console.log("No hay documentos en la colección 'modulos'");
-        } else {
-          const newPosts = [];
-          querySnapshot.forEach(async (doc) => {
-            console.log("Datos del documento:", doc.data());
-            const postData = {
-              id: doc.id,
-              userName: doc.data().nombreUsuario,
-              title: doc.data().titulo,
-              details: doc.data().detalles,
-              cost: doc.data().costo,
-              maxCost: doc.data().costoMaximo,
-              cantidad: doc.data().cantidad,
-              category: doc.data().category,
-              schedule: doc.data().horario,
-              scheduleEnd: doc.data().horarioFin,
-              coordinates: doc.data().coordenadas,
-              days: doc.data().dias,
-              contact: doc.data().contacto,
-              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
-            };
-            newPosts.push(postData);
-          });
-          console.log(newPosts);
-          setDownloadedPosts(newPosts);
-        }
-      } catch (error) {
-        console.error("Error al obtener documentos:", error);
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'modulos'");
+        setShowNoPostsMessage(true);
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          console.log("Datos del documento:", doc.data());
+          const postData = {
+            id: doc.id,
+            userName: doc.data().nombreUsuario,
+            title: doc.data().titulo,
+            details: doc.data().detalles,
+            cost: doc.data().costo,
+            maxCost: doc.data().costoMaximo,
+            cantidad: doc.data().cantidad,
+            category: doc.data().category,
+            schedule: doc.data().horario,
+            scheduleEnd: doc.data().horarioFin,
+            coordinates: doc.data().coordenadas,
+            days: doc.data().dias,
+            contact: doc.data().contacto,
+            images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+          };
+          newPosts.push(postData);
+        });
+        console.log(newPosts);
+        setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
       }
-    }
-    
-    showPosts();
-  }, []); // Se ejecuta solo una vez al montar el componente
+    }, (error) => {
+      console.error("Error al obtener documentos:", error);
+    });
+
+    return () => unsubscribe(); // Cleanup on unmount
+  }, []);
 
     const verPublicacion = (item) => {
       navigation.navigate("VerPublicacion", { datos: item })
