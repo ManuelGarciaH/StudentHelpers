@@ -1,8 +1,6 @@
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, 
-  ScrollView, Image, ActivityIndicator,
-  DrawerLayoutAndroid,
-  TouchableWithoutFeedback} from 'react-native'
+  ScrollView, Image, ActivityIndicator} from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -10,67 +8,11 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import BuscadorHeader from '../components/BuscadorHeader';
-import DrawerCategory from '../components/DrawerCategory';
-import MenuDrawer from 'react-native-side-drawer';
-import { overlay } from 'react-native-paper';
 
-const Publicaciones = ({ navigation}) => {
+const Publicaciones = ({ navigation }) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('Tendencias')
-  const [modalLoading, setModalLoading] = useState(true)
 
-  const showPosts = async (category) => {
-    console.log("A")
-    console.log(downloadedPosts);
-    setDownloadedPosts([]);
-    try {
-      const postsCollection = collection(FIREBASE_DB, "publicaciones");
-      let querySnapshot
-      setShowNoPostsMessage(false);
-      if(category=="Tendencias"){
-        querySnapshot = await getDocs(query(postsCollection, where("category", "!=", "Viaje")));
-      }else{
-        querySnapshot = await getDocs(query(postsCollection, where("category", "==", category)));
-      }
-      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-      if (querySnapshot.empty) {
-        console.log("No hay documentos en la colección 'modulos'");
-      } else {
-        const newPosts = [];
-        querySnapshot.forEach(async (doc) => {
-          console.log("Datos del documento:", doc.data());
-          const postData = {
-            id: doc.id,
-            userName: doc.data().nombreUsuario,
-            title: doc.data().titulo,
-            details: doc.data().detalles,
-            cost: doc.data().costo,
-            maxCost: doc.data().costoMaximo,
-            cantidad: doc.data().cantidad,
-            category: doc.data().category,
-            schedule: doc.data().horario,
-            scheduleEnd: doc.data().horarioFin,
-            location: doc.data().lugar,
-            days: doc.data().dias,
-            contact: doc.data().contacto,
-            images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
-          };
-          newPosts.push(postData);
-        });
-        console.log(newPosts);
-        setDownloadedPosts(newPosts);
-      }
-    } catch (error) {
-      console.error("Error al obtener documentos:", error);
-    }
-  }
-
-  useEffect(() => {
-    showPosts(selectedCategory);
-  }, []); // Se ejecuta solo una vez al montar el componente
   useEffect(() => {
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
     const postsQuery = query(postsCollection, where("category", "!=", "Viaje"));
@@ -115,9 +57,7 @@ const Publicaciones = ({ navigation}) => {
   }, []);
 
     const verPublicacion = (item) => {
-      if(!open){
-        navigation.navigate("VerPublicacion", { datos: item })
-      }
+      navigation.navigate("VerPublicacion", { datos: item })
     };
 
     useEffect(() => {
@@ -135,41 +75,16 @@ const Publicaciones = ({ navigation}) => {
       }
       console.log("algo")
     }
-    const [open, setOpen] = useState(false)
-    toggleOpen = () => {
-      setOpen(!open);
-    };
-    const handleCategoryChange = (category) => {
-      if(selectedCategory != category){
-        setSelectedCategory(category)
-        setOpen(false)
-        showPosts(category)
-      }
-    };
+
     return (
-      <MenuDrawer
-        open={open}
-        position={'left'}
-        drawerContent={<DrawerCategory setVisible={setOpen} selectedCategory={selectedCategory} handleCategoryChange={handleCategoryChange}/>}
-        drawerPercentage={70}
-        animationTime={200}
-        overlay={true}
-        opacity={1}
-      >
-        <View style={globalStyles.mainContainer}>
-          <BuscadorHeader visible={open} setVisible={setOpen}/>
-          {open && (
-            <TouchableWithoutFeedback onPress={toggleOpen}>
-              <View style={styles.overlay} />
-            </TouchableWithoutFeedback>
-          )}
+      <View style={globalStyles.mainContainer}>
           {showNoPostsMessage ? (
             <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
           ) : (
           <>
           {downloadedPosts.length === 0 ? (
             // <ActivityIndicator size="large" color="#0000ff" />
-              <ModalLoading visible={modalLoading}/>
+              <ModalLoading visible={true}/>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 {downloadedPosts.map((item, index) => (
@@ -197,22 +112,10 @@ const Publicaciones = ({ navigation}) => {
             )}
             </>
           )}
-        </View>
-      </MenuDrawer>
+      </View>
     );
 }
 const styles = StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    padding: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Cambia el color y la opacidad aquí
-    flex: 1,
-    zIndex: 1,
-  },
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
