@@ -1,0 +1,480 @@
+[33mcommit c43fe6e398eb0953869ebb839e844115c241ae10[m[33m ([m[1;36mHEAD -> [m[1;32mtesting-SCRUM-44/Categories[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Jun 10 12:50:35 2024 -0600
+
+    Deleted line
+
+[33mcommit b82b1bc94c85182828d9c54eeb17a4771028e1b8[m[33m ([m[1;31morigin/testing-SCRUM-44/Categories[m[33m)[m
+Merge: 51b8bf5 1de54a5
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Jun 10 12:47:23 2024 -0600
+
+    Merge branch 'testing' into testing-SCRUM-44/Categories
+
+[33mcommit 51b8bf55f46288c2b2317317a9d08830150bf054[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Jun 10 12:42:19 2024 -0600
+
+    Implemented drawer for change category
+
+[33mcommit 1de54a5f5ddc5cf9f94beaf6afc054813da6bb93[m[33m ([m[1;31morigin/testing[m[33m, [m[1;32mtesting[m[33m)[m
+Merge: 4d8852c 4e7ec05
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Sat Jun 1 16:50:39 2024 -0600
+
+    Merge pull request #9 from ManuelGarciaH/testing-SCRUM-19/Listeners
+    
+    Implemented Listeners
+
+[33mcommit 4e7ec05de5b9c3094796d4cf3e23b170ac189033[m[33m ([m[1;31morigin/testing-SCRUM-19/Listeners[m[33m, [m[1;32mtesting-SCRUM-19/Listeners[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sat Jun 1 16:47:20 2024 -0600
+
+    Implemented Listeners
+
+[33mcommit 4d8852c90eb56215d68ced409a792e9c8b17b4ee[m
+Merge: 0bdbf23 d0d8500
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Wed May 22 17:22:43 2024 -0600
+
+    Merge pull request #8 from ManuelGarciaH/testing-SCRUM-2/DeletePost
+    
+    Testing scrum 2/delete post
+
+[33mcommit d0d85007a7a62c53be2b941ed989f33a0aface4c[m[33m ([m[1;31morigin/testing-SCRUM-2/DeletePost[m[33m, [m[1;32mtesting-SCRUM-2/DeletePost[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed May 22 17:21:34 2024 -0600
+
+    Delete post
+
+[33mcommit eddb238d58e2169018c3348ea5de0faeb3eeb474[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue May 21 06:54:15 2024 -0600
+
+    View created
+
+[33mcommit 0bdbf237d6d79f5a001a668c2f1c597141e6860e[m
+Merge: 82fb4a7 02afaba
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Mon May 20 19:48:32 2024 -0600
+
+    Merge pull request #6 from ManuelGarciaH/testing-SCRUM-1/UpdatePost
+    
+    Testing scrum 1/update post
+
+[33mcommit 02afabafbb9d6458357dcf6210288c883f2abaa2[m[33m ([m[1;31morigin/testing-SCRUM-1/UpdatePost[m[33m, [m[1;32mtesting-SCRUM-1/UpdatePost[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon May 20 19:42:37 2024 -0600
+
+    Validated rules
+
+[33mcommit 1bec8cf0ae109c3398a564e239e384aefb0bd050[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun May 19 22:23:51 2024 -0600
+
+    Updates to database
+
+[33mcommit fcf329ff6bf041241a4dd5a13c084e38d35f29c0[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun May 19 15:56:18 2024 -0600
+
+    created update window
+
+[33mcommit 82fb4a7e450b1c9ac997233d0eefa1d924f71138[m
+Merge: be4389b 0320ef2
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Sat May 18 21:49:05 2024 -0600
+
+    Merge pull request #5 from ManuelGarciaH/testing-SCRUM-6/Upgrade-see-posts
+    
+    improved styles and image size fixed
+
+[33mcommit 0320ef244edf2b1ca4079213b420cd43d58ec835[m[33m ([m[1;31morigin/testing-SCRUM-6/Upgrade-see-posts[m[33m, [m[1;32mtesting-SCRUM-6/Upgrade-see-posts[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sat May 18 21:44:10 2024 -0600
+
+    improved styles and image size fixed
+
+[33mcommit be4389bcd6a46afbc514bde675416379533364cd[m[33m ([m[1;31morigin/testing-updatePosts[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mtesting-updatePosts[m[33m, [m[1;32mmaster[m[33m)[m
+Merge: 0d98c7b 0b294fa
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Sun May 5 16:45:49 2024 -0600
+
+    Merge pull request #4 from ManuelGarciaH/services
+    
+    Services pull request to master
+
+[33mcommit 0d98c7b0c5e32d2d9481cd658246ac3a64a3a514[m
+Merge: addcdea 59d76b7
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Sun May 5 16:43:43 2024 -0600
+
+    Merge pull request #3 from ManuelGarciaH/google-maps
+    
+    change publications, add maxCosts and fixed multi-scrollview
+
+[33mcommit 59d76b764d8b382ee36b06e57bf701e3c955134a[m[33m ([m[1;31morigin/google-maps[m[33m, [m[1;32mgoogle-maps[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun May 5 16:42:51 2024 -0600
+
+    change publications, add maxCosts and fixed multi-scrollview
+
+[33mcommit 0b294fa56dbcfe24ae0ce1269fc2aee3e2fe2571[m[33m ([m[1;31morigin/services[m[33m)[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sun May 5 08:58:05 2024 -0600
+
+    add description to biblioteca service
+
+[33mcommit addcdea4fd797a625a25a0b0d35a70704b04aaba[m
+Merge: a115289 086c583
+Author: Manuel Antonio García Huerta <103135989+ManuelGarciaH@users.noreply.github.com>
+Date:   Sat May 4 18:08:27 2024 -0600
+
+    Merge pull request #2 from ManuelGarciaH/google-maps
+    
+    Multi-module update
+
+[33mcommit 086c5839135d4dbadf3011a637bda58dec154b98[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sat May 4 18:01:51 2024 -0600
+
+    Schedule begin and schedule end
+
+[33mcommit e5d117dc94b90f4b442649abf39648c3394f3e13[m
+Merge: c7e81d3 fc6164c
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Tue Apr 16 14:38:35 2024 -0600
+
+    Merge branch 'google-maps' into services
+    
+    # Conflicts:
+    #       src/views/Viajes.js
+
+[33mcommit c7e81d337057fcb261924604c7bbb1cdb432d3f0[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Tue Apr 16 14:27:40 2024 -0600
+
+    Add plane library information
+
+[33mcommit fc6164c997c39e67d56d02897ca2237ec5fa2611[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue Apr 16 14:00:33 2024 -0600
+
+    Cambios de formularios y mejoras de los mapas
+
+[33mcommit 0131fac9feef79c4af2aaa346fa41253172e5301[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Fri Apr 12 18:22:41 2024 -0600
+
+    key changes
+
+[33mcommit 2469b84993d8928c74bc4fa7dcccde67546d3255[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Apr 10 23:51:41 2024 -0600
+
+    merge con email
+
+[33mcommit 16837db467b7d488e981ef62deed492abc94b4ca[m
+Merge: db7ace3 6a1e4d5
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Apr 10 23:40:57 2024 -0600
+
+    Merge branch 'email' into google-maps
+
+[33mcommit db7ace346ffe6032a2ba6633ae364242c3faf633[m
+Merge: 869d4b4 dfdbc34
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Apr 10 23:40:03 2024 -0600
+
+    merge con services
+
+[33mcommit 6a1e4d52b552fad8a8e04699f707e65f5a6c6d76[m[33m ([m[1;31morigin/email[m[33m, [m[1;32memail[m[33m)[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Wed Apr 10 23:35:47 2024 -0600
+
+    Componente PasswordInput para mostrar u ocultar la contraseña
+
+[33mcommit 869d4b4dfe8adc374cd2519f1b90553cd0f47487[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Apr 10 16:38:31 2024 -0600
+
+    Evitar trazar ruta a modulo si no se dan permisos y mensaje si no se encuentran publicaciones
+
+[33mcommit 2be944bd16bb6aaadf1daaa7c70f3c07a94ab30c[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue Apr 9 23:53:33 2024 -0600
+
+    correccion form
+
+[33mcommit 13f27e88245813b7996efb31d1cdfb83206892f9[m
+Merge: 9360c63 5e52b6a
+Author: Hector Garcia <hectorgarxx@gmail.com>
+Date:   Tue Apr 9 18:51:14 2024 -0600
+
+    Merge con google-maps
+
+[33mcommit 5e52b6ae6340a6566cf016cb8b1e3bb8bec99a61[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Apr 8 23:13:09 2024 -0600
+
+    Crear viaje y tab de viajes actualizados
+
+[33mcommit dfdbc3424f63394e29ac5ad9f669d543b455834d[m[33m ([m[1;32mservices[m[33m)[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sun Apr 7 23:47:18 2024 -0600
+
+    test
+
+[33mcommit 8b5c659c6981e5a9c68b31293972a5f60c02e438[m
+Merge: 7ea5363 806391d
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sun Apr 7 20:15:35 2024 -0600
+
+    Merge branch 'google-maps' into services
+
+[33mcommit 777717cc52981f49bc4a54ffd621811eca889367[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun Apr 7 16:06:41 2024 -0600
+
+    Mejora headers
+
+[33mcommit 7ea536361d6154417667695ff08a62372a5905af[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sun Apr 7 15:13:38 2024 -0600
+
+    merge
+
+[33mcommit 8882d3d8c2aedcb0c5db96c4e6fc468f538a70a9[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sun Apr 7 15:04:05 2024 -0600
+
+    merge
+
+[33mcommit c68dc004e93c82b61f84847c9acc11ec638b9ed7[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Sat Apr 6 10:11:27 2024 -0600
+
+    Services view
+
+[33mcommit 16da0d2801c9dc4ac162d938ee8c589de423f370[m
+Author: carlos <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Fri Apr 5 23:28:47 2024 -0600
+
+    ScreenOrientation Blocked
+
+[33mcommit 806391db213c4819bf0323e877d769f1c390f898[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Fri Apr 5 16:20:27 2024 -0600
+
+    Mejoras de interfaz e implementacion de modal loading
+
+[33mcommit 9847337ebf208fd1ebaa9cc10e8157d2010b67e3[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue Apr 2 15:21:52 2024 -0600
+
+    boton para poner marcador en la ubicacion de la publicacion
+
+[33mcommit 9360c6381d986e00bf10bd302056f79098a2a90b[m
+Author: Hector Garcia <hectorgarxx@gmail.com>
+Date:   Mon Apr 1 22:40:42 2024 -0600
+
+    Creacion de usarios con correo institucional
+
+[33mcommit 0c10baa8de0c373103b3468d2023f87cca8f9587[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Apr 1 16:37:58 2024 -0600
+
+    Crear, mostrar publicaciones y ver publicacion individual
+
+[33mcommit f42ae729bf2f8cde3ff140cccbb982e68e41f4aa[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sun Mar 31 21:17:57 2024 -0600
+
+    Implementacion de validadores en SingUp
+
+[33mcommit 171b9f5eca6d4b48d1a346c38c7984435e629b94[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun Mar 31 18:18:32 2024 -0600
+
+    Mejora de interfaz Modals perfil
+
+[33mcommit fbf4f15f8a3a1b50155b522284802f32c89bcbcc[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sat Mar 30 23:38:55 2024 -0600
+
+    Boton de LogOut provisional en Menu
+
+[33mcommit 5aa0159e216876e5d7afcb048f8611c478593aac[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sat Mar 30 23:20:37 2024 -0600
+
+    Waring arreglado
+
+[33mcommit daa07402fbf4776014b06111fe9392c53d025090[m
+Merge: d4f479b bcf3c68
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sat Mar 30 23:17:53 2024 -0600
+
+    Merge branch 'google-maps' into email
+
+[33mcommit d15f974e1ac99e1ea0ac8c589bec6e5737dd1cb8[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Fri Mar 29 18:05:16 2024 -0600
+
+    Modals de perfil separados en diferentes archivos
+
+[33mcommit 945c8208ed78e9a25eb5f2dcf4b8d7977132a2a9[m
+Merge: bcf3c68 d4f479b
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Thu Mar 28 15:27:08 2024 -0600
+
+    Merge branch 'valid-email' into google-maps
+
+[33mcommit bcf3c6842889cee65187fa536a732b9fb8d17a52[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Thu Mar 28 15:25:28 2024 -0600
+
+    Implementacion validadores en crear publicacion
+
+[33mcommit 3a4d43ec12fe0fd6810314d36da2ce7aa22df953[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Mar 27 18:02:57 2024 -0600
+
+    ahora si no api
+
+[33mcommit 1409f459fbb6e285bc685d80b525e3955aa65e24[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Mar 27 16:39:42 2024 -0600
+
+    Ya no api
+
+[33mcommit d1843a695412a9c59c4d3326791cb86754ce0874[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Wed Mar 27 16:16:45 2024 -0600
+
+    api-google-maps
+
+[33mcommit d4f479b8ec732092f3b61cc69fc23ebd25ceed59[m[33m ([m[1;31morigin/valid-email[m[33m, [m[1;32mvalid-email[m[33m)[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Mon Mar 25 20:26:44 2024 -0600
+
+    Validar si un usario ya esta loggeado o no
+
+[33mcommit a115289bcaf242a65bb0f3c4d169c62dcbd22ceb[m
+Merge: c43d4cf 07482ac
+Author: CarlosCervantes <112907118+2CarlosCervantespac@users.noreply.github.com>
+Date:   Wed Mar 20 21:10:21 2024 -0600
+
+    Merge pull request #1
+    
+    Icon Changed
+
+[33mcommit 07482acdd3d2be95d6a8546909f6c21dbe5f8159[m[33m ([m[1;31morigin/firebase[m[33m)[m
+Author: carlos cervantes <carlos.cervantes3701@alumnos.udg.mx>
+Date:   Wed Mar 20 20:02:57 2024 -0600
+
+    Icon changed
+
+[33mcommit 97aa5ec8c066842de4d3aa0108c54642dbae0228[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue Mar 19 23:24:40 2024 -0600
+
+    modal crear publicacion y ver publicacion
+
+[33mcommit 2a2d4e602ced6f521cfc79fbf286dbba0dbc8afe[m
+Merge: 75e3dd8 8b1e9e6
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Tue Mar 19 22:20:48 2024 -0600
+
+    Merge firebase a fire-base
+
+[33mcommit 75e3dd85c56e322087d42d516d76bcdf2a455b3f[m
+Merge: d26ac96 a9c530f
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sun Mar 17 22:21:26 2024 -0600
+
+    Merge con la rama master
+
+[33mcommit 8b1e9e6cf1115836e341228f31ce32ac73ee741e[m[33m ([m[1;31morigin/fire-base[m[33m)[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Thu Mar 14 15:21:09 2024 -0600
+
+    Inicio Modal crear publicacion
+
+[33mcommit 2845fcd9c5a6ae35d2e53ac8c93e4c2114b5da25[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Mar 11 20:04:50 2024 -0600
+
+    Tabs y nuevas ventanas
+
+[33mcommit db909ab6de8dfb3f57a375a34ba0e7613f7ec773[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Sun Mar 10 19:49:41 2024 -0600
+
+    Warning de firebase arreglado
+
+[33mcommit cb99967d66a5b073832034b10fa06c83914273e9[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Fri Mar 8 15:55:04 2024 -0600
+
+    Cambio de clase a funciones
+
+[33mcommit d26ac965d03666f113c471b837e7f4060fa23a54[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Wed Mar 6 00:59:58 2024 -0600
+
+    log in y sing up con firebase
+
+[33mcommit a9c530fadf9e76903143ab273aecfcc61f282b25[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Wed Mar 6 00:59:58 2024 -0600
+
+    log in y sing up con firebase
+
+[33mcommit 954f7f1207bd0642ce9f5ef5a70963d9fe9ebf5f[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sun Jan 14 19:06:52 2024 -0600
+
+    Creacion de usuarios con nombre correo y carrera
+
+[33mcommit c7ec34585bcee4116b9764b51d833b5378f38035[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sun Jan 14 15:22:46 2024 -0600
+
+    Log in funcional con firebase
+
+[33mcommit 3a1cef456ceb2dcdfd06de3cc352c39fe565d208[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Wed Jan 10 23:26:23 2024 -0600
+
+    Creación de usarios en firebase y estilo de container
+
+[33mcommit 71bf9fe6e677b550d5336e2da45a2676a4ec2b82[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Sat Jan 6 23:22:56 2024 -0600
+
+    Ordenamiento de carpetas y credenciales de firebase
+
+[33mcommit 725a2887612f8652feca0493bca6b1ae3f8f660e[m
+Author: Hector Garcia <hectorgarx2@gmail.com>
+Date:   Thu Jan 4 22:08:24 2024 -0600
+
+    init commit npm install firebase
+
+[33mcommit c43d4cf89f9059bd0b5e05c2b867d9aa462feeef[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Thu Jan 4 14:36:50 2024 -0600
+
+    archivo para el header
+
+[33mcommit 7a109acb787ed5092ba38b7258d4c1bd57494f14[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Tue Jan 2 21:31:08 2024 -0600
+
+    Creacion de archivo de estilos globales
+
+[33mcommit 4e0bee112ee1ed4ef7f45a76eb9c70d03d832d04[m
+Author: Many <manuel.garcia4599@alumnos.udg.mx>
+Date:   Mon Nov 27 23:12:35 2023 -0600
+
+    Pantallas login y singUp
