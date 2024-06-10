@@ -6,7 +6,7 @@ import { globalStyles } from './globalStyles';
 import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const BuscadorHeader = () => {
+const BuscadorHeader = ({visible, setVisible,}) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (query) => {
@@ -14,9 +14,16 @@ const BuscadorHeader = () => {
     setSearchQuery(query); // Actualiza el estado del texto de búsqueda
   };
 
+  const openDrawer = () =>{
+    setVisible(true)
+  }
+
   return (
     <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
         <View style={styles.container}>
+            <TouchableOpacity onPress={openDrawer}>
+                <Icon name="menu" color={"black"} size={46} style={styles.icon}/>
+            </TouchableOpacity>
             <Searchbar
                 placeholder="Search"
                 onChangeText={handleSearch}
@@ -50,9 +57,9 @@ const BuscadorHeader = () => {
 
 const styles = StyleSheet.create({
     searchBar: {
-        marginLeft: "2%",
+        // marginLeft: "1%",
         borderRadius: 20,
-        width: wp("80%"),
+        width: wp("70%"),
         height: hp("6%"),
     },
     inputStyle: {
@@ -60,7 +67,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     imgHeaderLogo:{
-        marginLeft: "4%",
+        marginRight: "1%",
         width: wp('12%'),
         height: hp('6%'),
     },
@@ -70,10 +77,13 @@ const styles = StyleSheet.create({
     },
     container: {
         flexDirection: "row",
-        justifyContent: 'center',
+        justifyContent:'space-between',
         alignItems: 'center',
         marginTop: 6,
-      },
+    },
+    icon:{
+        marginLeft: "1%",
+    }
 });
 
 export default BuscadorHeader;
