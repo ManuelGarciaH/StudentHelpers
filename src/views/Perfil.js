@@ -8,7 +8,7 @@ import CreatePostModal from './ProfileModals/CreatePostModal';
 import ModalLoading from '../components/ModalLoading';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 const Perfil = ({ navigation }) => {
   //States for modals
@@ -21,49 +21,45 @@ const Perfil = ({ navigation }) => {
   useEffect(() => {
     setDownloadedPosts([]);
 
-    const showPosts = async () => {
-      try {
-        const postsCollection = collection(FIREBASE_DB, "publicaciones");
-        const querySnapshot = await getDocs(query(postsCollection, where("nombreUsuario", "==", userName)));
-        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-        if (querySnapshot.empty) {
-          console.log("No hay documentos en la colección 'modulos'");
-        } else {
-          const newPosts = [];
-          querySnapshot.forEach(async (doc) => {
-            console.log("Datos del documento:", doc.data());
-            const postData = {
-              id: doc.id,
-              userName: doc.data().nombreUsuario,
-              title: doc.data().titulo,
-              details: doc.data().detalles,
-              cost: doc.data().costo,
-              maxCost: doc.data().costoMaximo,
-              cantidad: doc.data().cantidad,
-              category: doc.data().category,
-              schedule: doc.data().horario,
-              scheduleEnd: doc.data().horarioFin,
-              location: doc.data().lugar,
-              coordinates: doc.data().coordenadas,
-              days: doc.data().dias,
-              contact: doc.data().contacto,
-              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
-            };
-            newPosts.push(postData);
-          });
-          // console.log(newPosts);
-          console.log("Base de datos")
-          console.log(downloadedPosts);
-          console.log(downloadedPosts.length)
-          setDownloadedPosts(newPosts);
-        }
-      } catch (error) {
-        console.error("Error al obtener documentos:", error);
+    const postsCollection = collection(FIREBASE_DB, "publicaciones");
+    const postsQuery = query(postsCollection, where("nombreUsuario", "==", userName));
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'publicaciones'");
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          console.log("Datos del documento:", doc.data());
+          const postData = {
+            id: doc.id,
+            userName: doc.data().nombreUsuario,
+            title: doc.data().titulo,
+            details: doc.data().detalles,
+            cost: doc.data().costo,
+            maxCost: doc.data().costoMaximo,
+            cantidad: doc.data().cantidad,
+            category: doc.data().category,
+            schedule: doc.data().horario,
+            scheduleEnd: doc.data().horarioFin,
+            location: doc.data().lugar,
+            coordinates: doc.data().coordenadas,
+            days: doc.data().dias,
+            contact: doc.data().contacto,
+            images: doc.data().image // Agregar las URLs de las imágenes al objeto postData
+          };
+          newPosts.push(postData);
+        });
+        setDownloadedPosts(newPosts);
       }
-    }
-    showPosts();
-    
-  }, []); // Se ejecuta solo una vez al montar el componente
+    }, (error) => {
+      console.error("Error al obtener documentos:", error);
+    });
+
+    // Cleanup function to unsubscribe from the listener when the component unmounts
+    return () => unsubscribe();
+  }, [userName]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

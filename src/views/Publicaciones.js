@@ -8,7 +8,7 @@ import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import BuscadorHeader from '../components/BuscadorHeader';
 import DrawerCategory from '../components/DrawerCategory';
 import MenuDrawer from 'react-native-side-drawer';
@@ -21,24 +21,23 @@ const Publicaciones = ({ navigation}) => {
   const [modalLoading, setModalLoading] = useState(true)
 
   const showPosts = async (category) => {
-    console.log("A")
-    console.log(downloadedPosts);
-    setDownloadedPosts([]);
-    try {
-      const postsCollection = collection(FIREBASE_DB, "publicaciones");
-      let querySnapshot
-      setShowNoPostsMessage(false);
-      if(category=="Tendencias"){
-        querySnapshot = await getDocs(query(postsCollection, where("category", "!=", "Viaje")));
-      }else{
-        querySnapshot = await getDocs(query(postsCollection, where("category", "==", category)));
-      }
-      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+    const postsCollection = collection(FIREBASE_DB, "publicaciones");
+    let postsQuery
+    if(category=="Tendencias"){
+      postsQuery = query(postsCollection, where("category", "!=", "Viaje"));
+    }else{
+      postsQuery = query(postsCollection, where("category", "==", category));
+    }
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      console.log("A");
+      setDownloadedPosts([]);
       if (querySnapshot.empty) {
         console.log("No hay documentos en la colección 'modulos'");
+        setShowNoPostsMessage(true);
       } else {
         const newPosts = [];
-        querySnapshot.forEach(async (doc) => {
+        querySnapshot.forEach((doc) => {
           console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
@@ -60,10 +59,16 @@ const Publicaciones = ({ navigation}) => {
         });
         console.log(newPosts);
         setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
       }
-    } catch (error) {
+      
+    }, (error) => {
       console.error("Error al obtener documentos:", error);
-    }
+    });
+    setTimeout(() => {
+      setModalLoading(false);
+    }, 1000);
+    return () => unsubscribe(); // Cleanup on unmount
   }
 
   useEffect(() => {
@@ -86,8 +91,10 @@ const Publicaciones = ({ navigation}) => {
     const mostrar = () => {
       if (downloadedPosts.length === 0) {
         setShowNoPostsMessage(true);
+        setModalLoading(true);
       }else{
         setShowNoPostsMessage(false);
+        setModalLoading(false);
       }
       console.log("algo")
     }
@@ -98,6 +105,7 @@ const Publicaciones = ({ navigation}) => {
     const handleCategoryChange = (category) => {
       if(selectedCategory != category){
         setSelectedCategory(category)
+        setModalLoading(true);
         setOpen(false)
         showPosts(category)
       }
@@ -123,9 +131,9 @@ const Publicaciones = ({ navigation}) => {
             <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
           ) : (
           <>
-          {downloadedPosts.length === 0 ? (
+          {modalLoading ? (
             // <ActivityIndicator size="large" color="#0000ff" />
-              <ModalLoading visible={modalLoading}/>
+              <ModalLoading visible={true}/>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 {downloadedPosts.map((item, index) => (
