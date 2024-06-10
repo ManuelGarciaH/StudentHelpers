@@ -54,17 +54,8 @@ const VerPublicacion = ({navigation, route}) => {
                             <Text style={styles.textoDatos}>{datos.contact}</Text>   
                         </View>
                         <View style={styles.centerText}>
-                            {datos.category != "Viaje" ? (
-                                <>
-                                <Text style={[styles.textoDatos, styles.bold]}>Artículos disponibles: </Text>
-                                <Text style={styles.textoDatos}>{datos.cantidad}</Text>
-                                </>
-                            ) : (
-                                <>
-                                <Text style={[styles.textoDatos, styles.bold]}>Asientos disponibles: </Text>
-                                <Text style={styles.textoDatos}>{datos.cantidad}</Text>
-                                </>
-                            )}
+                            {datos.category != "Viaje" && <Text style={[styles.textoDatos, styles.bold]}>Articulos disponibles: {datos.cantidad}</Text>}
+                            {datos.category == "Viaje" && <Text style={[styles.textoDatos, styles.bold]}>Asientos disponibles: {datos.cantidad}</Text>}
                         </View>
                         
                         {datos.category !="Viaje" && (
@@ -116,8 +107,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     bold:{
-        fontWeight: "bold",
-        fontSize: 20,
+        fontWeight: "bold"
     },
     textCost:{
         marginTop: 15,

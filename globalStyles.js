@@ -107,7 +107,7 @@ export const globalStyles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         padding: 3,
-        paddingTop: 0,
+        paddingTop: 5,
         alignItems: "center",
         backgroundColor: '#A7DBCB',
     },
