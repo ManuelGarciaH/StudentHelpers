@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 function TabNavigator({navigation}) {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Publicaciones" component={PUBLICACIONES}
+      <Tab.Screen name="Publicaciones" component={PUBLICACIONES} 
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="newspaper" color={color} size={size} />
@@ -28,6 +28,7 @@ function TabNavigator({navigation}) {
             headerLeft: () => (
               <BuscadorHeader/>
             ),
+            headerShown: false, // Oculta el encabezado de esta pantalla
         }}
         
       />
