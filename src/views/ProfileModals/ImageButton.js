@@ -70,7 +70,7 @@ const ImageButton = ({ control, errors, name, setValue, trigger, getValues, setI
     };
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={openImageButton}>
           <View style={globalStyles.dataButton}>
               <Icon name="image" style={globalStyles.dataIcon}/>

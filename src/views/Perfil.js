@@ -99,7 +99,7 @@ const Perfil = ({ navigation }) => {
       </View>
       <Text style={styles.titleName}>Publicaciones</Text>
       <View style={[styles.descriptionContainer, {marginBottom: 5}]}>
-        <View style={[globalStyles.centrar, ]}>
+        <View style={[globalStyles.centrar, {flex: 1}]}>
           <TouchableOpacity onPress={() => setModalCreatePost(true)}>
             <View style={styles.buttonCreatePost}>
               <Icon name="plus" style={styles.iconCreatePost}/>

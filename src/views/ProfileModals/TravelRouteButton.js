@@ -126,7 +126,7 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
   };
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={() => {getCoordinates()}}>
           <View style={globalStyles.dataButton}>
             <Icon name="map-marker" style={globalStyles.dataIcon}/>

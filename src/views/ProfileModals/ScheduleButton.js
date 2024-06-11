@@ -55,7 +55,7 @@ const ScheduleButton = ({ control, errors, name,  start, getValues}) => {
     
 
     return (
-        <View style={globalStyles.centrar}>
+        <View style={[globalStyles.centrar, {flex: 1}]}>
             <TouchableOpacity onPress={openDatePicker}>
             <View style={globalStyles.dataButton}>
                 <Icon name="clock-o" style={globalStyles.dataIcon}/>
