@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Platform} from 'react-native'
 import React, { useState } from 'react';
-import {globalStyles} from '../../globalStyles';
+import {globalStyles} from '../../../globalStyles';
 // firebase
-import { FIREBASE_AUTH } from '../../Firebase';
+import { FIREBASE_AUTH } from '../../../Firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { Controller, useForm } from 'react-hook-form';
-import PasswordInput from '../components/PasswordInput';
+import PasswordInput from '../../components/PasswordInput';
 
 const SingUp = ({ navigation }) => {
     const [nombre, setNombre] = useState('');
@@ -19,7 +19,6 @@ const SingUp = ({ navigation }) => {
             .then((userCredential) => {
                 // Signed up 
                 const user = userCredential.user;
-                console.log(nombre);
                 updateProfile(user, {
                     displayName: nombre,
                     photoURL: null
@@ -153,7 +152,6 @@ const SingUp = ({ navigation }) => {
                         <>
                             <PasswordInput
                                 value={value}
-                                secureTextEntry={true}
                                 onChangeText={(text) => onChange(text)}
                             />
                             {errors.validPassword && <Text style={{ color: 'red' }}>{errors.validPassword.message}</Text>}
