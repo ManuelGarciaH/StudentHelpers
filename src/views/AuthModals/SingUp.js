@@ -55,8 +55,8 @@ const SingUp = ({ navigation }) => {
                     rules={{ 
                         required: "Campo requerido",
                         pattern: {
-                            value: /[A-Z][a-z]+\s(?:[A-Z][a-z]+\s)*[A-Z][a-z]+$/,
-                            message: "Nombre completo o primer nombre y apellido empezando por mayusculas"
+                            value: /([A-Z][a-z])*/,
+                            message: "El nombre no puede llevar numeros o caracteres especiales"
                         }
                     }}
                     defaultValue=""
