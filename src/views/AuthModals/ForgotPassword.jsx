@@ -10,11 +10,25 @@ import React, {useState} from 'react';
 import {globalStyles} from '../../../globalStyles';
 // firebase
 import {FIREBASE_AUTH} from '../../../Firebase';
-import {signInWithEmailAndPassword} from 'firebase/auth';
+import {sendPasswordResetEmail} from 'firebase/auth';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import PasswordInput from '../../components/PasswordInput';
 
 const ForgotPassword = () => {
+  const [correo, setCorreo] = useState('');
+
+  const recoveryEmail = async () => {
+    sendPasswordResetEmail(FIREBASE_AUTH, correo)
+      .then(Response => {
+        console.log(Response);
+        
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(error);
+      });
+  };
+
   return (
     <SafeAreaView>
       <View style={[globalStyles.form]}>
@@ -35,7 +49,7 @@ const ForgotPassword = () => {
         </View>
 
         <TouchableOpacity
-          style={{alignSelf: 'center'}}>
+          style={{alignSelf: 'center'}} onPress={recoveryEmail}>
           <View style={globalStyles.boton}>
             <Text style={globalStyles.txtBoton}>Enviar</Text>
           </View>
