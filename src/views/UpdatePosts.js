@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react'
 import { TextInput} from 'react-native-paper';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, deleteObject, listAll, getStorage} from "firebase/storage";
 
 import { globalStyles } from '../../globalStyles'
 import ScheduleButton from './ProfileModals/ScheduleButton';
@@ -27,9 +27,29 @@ const UpdatePosts = ({navigation, route}) => {
     uploadPreviousInformation()
   }, [])
 
+  // Eliminar imágenes antiguas antes de subir las nuevas
+  const deleteOldImages = async (userName, oldTitle) => {
+    try {
+      const storage = getStorage();
+      // Obtener referencia al directorio de imágenes antiguas
+      const oldImagesRef = ref(storage, `publicaciones/${userName}/${oldTitle}`);
+  
+      // Listar y eliminar cada imagen
+      const oldImagesList = await listAll(oldImagesRef);
+      await Promise.all(oldImagesList.items.map(async (imageRef) => {
+        await deleteObject(imageRef);
+      }));
+  
+      console.log("Imágenes antiguas eliminadas correctamente.");
+    } catch (error) {
+      console.error("Error al eliminar imágenes antiguas:", error);
+    }
+  };
+
   const subirImagenesNuevasABaseDeDatos = async (newImageUris, title) => {
     try {
       const newImagePaths = [];
+      const storage = getStorage();
       // Iterar sobre cada nueva URI de imagen y subirla a la base de datos
       await Promise.all(
         newImageUris.map(async (uri, index) => {
@@ -48,6 +68,7 @@ const UpdatePosts = ({navigation, route}) => {
           newImagePaths.push(downloadURL);
         })
       );
+  
       console.log("Nuevas imágenes subidas exitosamente.");
       return newImagePaths;
     } catch (error) {
@@ -63,19 +84,30 @@ const UpdatePosts = ({navigation, route}) => {
   
         // Subir nuevas imágenes si hay alguna
         let newImagePaths = [];
-        if (newImageUris.length > 0) {
+        if (newImageUris.length > 0 || data.titulo !== datos.title) {
           newImagePaths = await subirImagenesNuevasABaseDeDatos(newImageUris, data.titulo);
+        }
+        let allImagePaths = [...existingImageUris, ...newImagePaths];
+        // Eliminar imágenes antiguas si hay cambio de título
+        if (data.titulo !== datos.title) {
+          allImagePaths = await subirImagenesNuevasABaseDeDatos(allImagePaths, data.titulo);
+          await deleteOldImages(userName, datos.title);
         }
   
         // Combinar las URLs de las imágenes existentes con las nuevas URLs
-        const allImagePaths = [...existingImageUris, ...newImagePaths];
+        // allImagePaths = [...existingImageUris, ...newImagePaths];
         const newData = { ...data, image: allImagePaths, nombreUsuario: userName };
   
         // Actualizar el documento existente en Firestore
         const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
         const docRef = doc(publicacionesCollection, datos.id);
-        console.log(newData)
-        await updateDoc(docRef, newData);
+  
+        // Actualizar el documento con los nuevos datos, incluido el nuevo título
+        await updateDoc(docRef, {
+          ...newData,
+          title: data.titulo  // Asegúrate de actualizar el título
+        });
+  
         onCancel();
         console.log("Documento actualizado exitosamente.");
       } else {
