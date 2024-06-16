@@ -204,66 +204,97 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       </>
                     )}
                 />
-                <View style={[styles.minMaxCostContainer, {marginTop: 5}]}>
-                  <Controller
-                      name="costo"
-                      control={control}
-                      rules={{ required: "Campo requerido", 
-                      validate: value => {
-                        return /^\d+$/.test(value) || "Ingresa un costo numerico";
-                      } }}
-                      defaultValue=""
-                      render={({ field: { onChange, value } }) => (
-                        <>
-                          
-                          <View style={styles.costsInputContainer}>
+                {getValues("category") != "Intercambio" ? (
+                  <View style={[styles.minMaxCostContainer, {marginTop: 5}]}>
+                    <Controller
+                        name="costo"
+                        control={control}
+                        rules={{ required: "Campo requerido", 
+                        validate: value => {
+                          return /^\d+$/.test(value) || "Ingresa un costo numerico";
+                        } }}
+                        defaultValue=""
+                        render={({ field: { onChange, value } }) => (
+                          <>
                             
-                            <TextInput
-                              value={value}
-                              onChangeText={(text) => onChange(text)}
-                              keyboardType="numeric"
-                              placeholder="Costo mínimo"
-                            />
-                            {errors.costo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costo.message}</Text>}
-                            {!errors.costo && <Text style={globalStyles.showInfoSelected}></Text>}
-                          </View>
-                        </>
-                      )}
-                  />
+                            <View style={styles.costsInputContainer}>
+                              
+                              <TextInput
+                                value={value}
+                                onChangeText={(text) => onChange(text)}
+                                keyboardType="numeric"
+                                placeholder="Costo mínimo"
+                              />
+                              {errors.costo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costo.message}</Text>}
+                              {!errors.costo && <Text style={globalStyles.showInfoSelected}></Text>}
+                            </View>
+                          </>
+                        )}
+                    />
+                    <Controller
+                        name="costoMaximo"
+                        control={control}
+                        rules={{ 
+                          required: "Campo requerido", 
+                          validate: {
+                            isGreaterThanCosto: value => {
+                              const costoValue = Number(getValues('costo'));
+                              const costoMaximoValue = Number(value);
+                              if (costoMaximoValue >= costoValue) {
+                                return true;
+                              }
+                              return "El costo máximo no puede ser menor que el mínimo";
+                            },
+                            validateCostoMaximo: value => /^\d+$/.test(value) || "Ingresa un costo numérico"
+                          }
+                        }}
+                        defaultValue=""
+                        render={({ field: { onChange, value } }) => (
+                          <>
+                            <View style={styles.costsInputContainer}>
+                              <TextInput keyboardType="numeric"
+                                value={value}
+                                onChangeText={(text) => onChange(text)}
+                                placeholder="Costo maximo"
+                              />
+                              {errors.costoMaximo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costoMaximo.message}</Text>}
+                              {!errors.costoMaximo && <Text style={globalStyles.showInfoSelected}></Text>}
+                            </View>
+                          </>
+                        )}
+                    />
+                  </View>
+                ) : (
                   <Controller
-                      name="costoMaximo"
-                      control={control}
-                      rules={{ 
-                        required: "Campo requerido", 
-                        validate: {
-                          isGreaterThanCosto: value => {
-                            const costoValue = Number(getValues('costo'));
-                            const costoMaximoValue = Number(value);
-                            if (costoMaximoValue >= costoValue) {
-                              return true;
-                            }
-                            return "El costo máximo no puede ser menor que el mínimo";
-                          },
-                          validateCostoMaximo: value => /^\d+$/.test(value) || "Ingresa un costo numérico"
-                        }
-                      }}
-                      defaultValue=""
-                      render={({ field: { onChange, value } }) => (
-                        <>
-                          <View style={styles.costsInputContainer}>
-                            <TextInput keyboardType="numeric"
-                              value={value}
-                              onChangeText={(text) => onChange(text)}
-                              placeholder="Costo maximo"
-                            />
-                            {errors.costoMaximo && <Text style={[globalStyles.errorMessage, {textAlign: "center"}]}>{errors.costoMaximo.message}</Text>}
-                            {!errors.costoMaximo && <Text style={globalStyles.showInfoSelected}></Text>}
-                          </View>
-                        </>
-                      )}
+                    name="aCambio"
+                    control={control}
+                    rules={{ 
+                      required: "Campo requerido",
+                      maxLength:{
+                        value: 37,
+                        message: "El texto no pueden pasar de 120 caracteres"
+                      },
+                      minLength:{
+                        value: 5,
+                        message: "El texto debe contener al menos 5 caracteres"
+                      }
+                    }}
+                    defaultValue=""
+                    render={({ field: { onChange, value } }) => (
+                      <>
+                        <TextInput multiline={true} numberOfLines={3}
+                          value={value}
+                          onChangeText={(text) => onChange(text)}
+                          placeholder="A cambio de"
+                          style={{marginTop: 10}}
+                        />
+                        {errors.aCambio && <Text style={globalStyles.errorMessage}>{errors.aCambio.message}</Text>}
+                        {!errors.aCambio && <Text style={globalStyles.showInfoSelected}></Text>}
+                      </>
+                    )}
                   />
-                </View>
-                
+                )}
+
                 <Controller
                     name="cantidad"
                     control={control}
@@ -285,6 +316,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                       </>
                     )}
                 />
+
                 <View style={[styles.delimitador, {height: 1}]}></View>
                 <View style={[styles.buttonContainer, {marginTop: 7}]}>
                     <ScheduleButton control={control} errors={errors} name="horario" start={true} getValues={getValues}/>

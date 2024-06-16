@@ -156,7 +156,7 @@ const Publicaciones = ({ navigation}) => {
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                         {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                         {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                       </View>
                     </TouchableOpacity>
                   </View>

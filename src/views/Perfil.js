@@ -137,7 +137,7 @@ const Perfil = ({ navigation }) => {
                       {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                       {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
                       {item.category=="Viaje" && <Text style={styles.textEmail}>Pasajeros disponibles: {item.cantidad}</Text>}
-                      <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                      {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                     </View>
                   </TouchableOpacity>
                   <View style={styles.iconContainer}>
