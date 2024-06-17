@@ -7,10 +7,12 @@ import { useState } from 'react';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, doc, deleteDoc} from "firebase/firestore";
 import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
+import ModalLoading from '../../components/ModalLoading';
 
 
 const DeleteConfirmModal = ({userName, item}) => {
 const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
+const [loading, setLoading] = useState(false)
 
   const onCancel = () => {
     onClose();
@@ -46,6 +48,7 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
     }
   }
   const confirmButton = () => {
+    setLoading(true)
     console.log(item.id)
     deleteDocument(item.id)
     deleteDirectory(item.title)
@@ -55,6 +58,7 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
     setModalDeleteConfirm(true);
   }
   const onClose=() => {
+    setLoading(false)
     setModalDeleteConfirm(false)
   }
 
@@ -71,6 +75,7 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
         onClose()
         }}>
             <View style={globalStyles.centerContainer}>
+              {loading && <ModalLoading visible={true}/>}
                 <View style={styles.modalContainer}>
                     <Text style={styles.textAsk}>¿Estás seguro de que quieres borrar la publicación?</Text>
                     <View style={styles.buttonContainer}>

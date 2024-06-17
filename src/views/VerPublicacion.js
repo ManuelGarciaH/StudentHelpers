@@ -33,7 +33,7 @@ const VerPublicacion = ({navigation, route}) => {
                         </Swiper>
                     </View>
                     <View style={{width: wp("95%")}}>
-                        <Text style={styles.textCost}>$ {datos.cost} - $ {datos.maxCost}</Text>
+                        {datos.category!="Intercambio" && <Text style={styles.textCost}>$ {datos.cost} - $ {datos.maxCost}</Text>}
                         <View style={styles.centerText}>
                             <Text style={[styles.textoDatos, styles.bold]}>Detalles: </Text>
                             <Text style={styles.textoDatos} multiline={true}>{datos.details}</Text>
