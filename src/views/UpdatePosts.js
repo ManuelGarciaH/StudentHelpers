@@ -77,6 +77,7 @@ const UpdatePosts = ({navigation, route}) => {
   };
   
   const onSubmit = async (data) => {
+    setUpdate(true)
     try {
       if (Object.keys(errors).length === 0) {
         const existingImageUris = data.image || []; // URLs de imágenes existentes
@@ -116,6 +117,7 @@ const UpdatePosts = ({navigation, route}) => {
     } catch (error) {
       console.error("Error al actualizar el documento:", error);
     }
+    setUpdate(false)
   };
 
   const uploadPreviousInformation = () =>{
@@ -190,12 +192,13 @@ const UpdatePosts = ({navigation, route}) => {
     }
   };
   const [loading, setLoading] = useState(true)
+  const [update, setUpdate] = useState(false)
   useEffect(() => {
     const timeout = setTimeout(() => {
         waiting()
     }, 1000);
     return () => clearTimeout(timeout);
-  });
+  }, []);
 
   const waiting = () => {
     setLoading(false)
@@ -211,7 +214,8 @@ const UpdatePosts = ({navigation, route}) => {
               <ModalLoading visible={true}/>
             ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.textModal}>Elige una categoria</Text>
+          {update && <ModalLoading visible={true}/>}
+          <Text style={styles.textModal}>Elige una categoria</Text>
             <Controller
                 name="category"
                 control={control}

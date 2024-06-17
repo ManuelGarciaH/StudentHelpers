@@ -15,12 +15,14 @@ import DaysButton from './DaysButton'
 import ContactButton from './ContactButton';
 import ImageButton from './ImageButton';
 import TravelRouteButton from './TravelRouteButton';
+import ModalLoading from '../../components/ModalLoading';
 
 const CreatePostModal = ({ visible, onClose, userName}) => {
     const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
     const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
     const [imageUploaded, setImageUploaded] = useState(false);
     const storage = getStorage();
+    const [loading, setLoading] = useState(false)
 
     // Calcula las horas de inicio y fin límites
     const minTime = new Date();
@@ -57,6 +59,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
     };
 
     const onSubmit = async (data) => {
+        setLoading(true)
         if (Object.keys(errors).length === 0) {
             const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
             const newData = { ...data, image: newImagePaths, nombreUsuario: userName};
@@ -67,6 +70,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
         } else {
             console.log(errors);
         }
+        setLoading(false)
     };
 
     const onCancel = () => {
@@ -98,6 +102,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
             <Text style={styles.tituloModal}>Crear Publicación</Text>
             <View style={styles.delimitador}></View>
             <ScrollView showsVerticalScrollIndicator={false}>
+            {loading && <ModalLoading visible={true}/>}
             <Text style={styles.textModal}>Elige una categoria</Text>
                 <Controller
                     name="category"
