@@ -14,6 +14,7 @@ import QualificationModal from './seePublicationModals/QualificationModal';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ModalLoading from '../components/ModalLoading';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
@@ -83,6 +84,10 @@ const VerPublicacion = ({navigation, route}) => {
         setLoading(false)
     }
 
+    const watchSellerProfile = () => {
+        navigation.navigate("ProfileSeller", {userName: datos.userName})
+    }
+
     return (
         <View style={globalStyles.mainContainer}>
             <View>
@@ -148,6 +153,14 @@ const VerPublicacion = ({navigation, route}) => {
                         )}
                         {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                         {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
+
+                        <TouchableOpacity onPress={watchSellerProfile}>
+                            <View style={styles.containerUserName}>
+                                 <Text style={styles.textSell}>Vendido por: </Text>
+                                 <Text style={styles.textUserName}>{datos.userName}</Text>
+                            </View> 
+                        </TouchableOpacity>
+
                         <View style={styles.starsContainer}>
                             <View style={styles.averageStarsContainer}>
                                 <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
@@ -229,6 +242,22 @@ const styles = StyleSheet.create({
     barsStarsContainer:{
         width: wp("70%"),
         marginLeft: "3%"
+    },
+    containerUserName:{
+        backgroundColor: "#8CD1A9",
+        padding: 5,
+        flexDirection: "row",
+        alignItems: "center",
+        borderRadius: 6, 
+    },
+    textSell:{
+        fontSize: 18,
+        color: "black",
+        fontWeight: "bold",
+    },
+    textUserName:{
+        fontSize: 16,
+        color: "black",
     },
 })
 
