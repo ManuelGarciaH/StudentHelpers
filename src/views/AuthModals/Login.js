@@ -15,16 +15,18 @@ const Login = ({ navigation }) => {
     const ForgotPassword = () => navigation.navigate('ForgotPassword');
 
     const clickIniciarSesion = async () => {
+        console.log(FIREBASE_AUTH)
         signInWithEmailAndPassword(FIREBASE_AUTH, correo, password)
             .then((userCredential) => {
                 // Signed in 
+                console.log(userCredential.user)
                 const user = userCredential.user;
-                navigation.navigate('TabNavigator');
+                //navigation.navigate('TabNavigator');
                 // ...
             })
             .catch((error) => {
                 const errorMessage = error.message;
-                Alert.alert(`${errorMessage}`)
+                //Alert.alert(`${errorMessage}`)
             });
         }
         return (

@@ -1,22 +1,95 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity  } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { globalStyles } from '../../globalStyles'
 import PerfilHeader from '../components/PerfilHeader';
 import Swiper from 'react-native-swiper';
 import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
 import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
 import { ScrollView } from 'react-native-virtualized-view';
+import PorcentageBar from '../components/PorcentageBar';
+import AverageStars from '../components/AverageStars';
+import QualificationModal from './seePublicationModals/QualificationModal';
+
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import ModalLoading from '../components/ModalLoading';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
     const [currentPage, setCurrentPage] = useState(0);
+    const percentage = (50 / 100) * 100;
+    const [downloadedStarsCounter, setDownloadedStarsCounter] = useState([]);
+    const [totalStars, setTotalStars] = useState(0)
 
     const imagenes = datos.images.map(image => ({ uri: image }));
 
+    useEffect(() => {
+        const getQualification = async () => {
+          console.log("A");
+          try {
+            const postsCollection = collection(FIREBASE_DB, "calificacion");
+            console.log(datos.id)
+            const querySnapshot = await getDocs(query(postsCollection, where("id_publicacion", "==", datos.id)));
+            console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+      
+            if (querySnapshot.empty) {
+              console.log("No hay documentos en la colección 'calificacion'");
+              const defaultStarsData = {
+                id: '',
+                countFiveStars: 0,
+                countFourStars: 0,
+                countThreeStars: 0,
+                countTwoStars: 0,
+                countOneStars: 0,
+              };
+              setTotalStars(0); // Establecer total en 0 cuando no hay documentos
+              setDownloadedStarsCounter([defaultStarsData]);
+            } else {
+              const doc = querySnapshot.docs[0];
+              console.log("Datos del documento:", doc.data());
+              const starsData = {
+                id: doc.id,
+                countFiveStars: doc.data().cinco_estrellas,
+                countFourStars: doc.data().cuatro_estrellas,
+                countThreeStars: doc.data().tres_estrellas,
+                countTwoStars: doc.data().dos_estrellas,
+                countOneStars: doc.data().una_estrella,
+              };
+              const total = starsData["countFiveStars"] + starsData["countFourStars"] + starsData["countThreeStars"] + starsData    ["countTwoStars"] + starsData["countOneStars"]
+              setTotalStars(total)
+              console.log(starsData["countFiveStars"])
+              console.log(starsData);
+              console.log(totalStars)
+              setDownloadedStarsCounter([starsData]); // Establecer como arreglo con un solo elemento
+            }
+          } catch (error) {
+            console.error("Error al obtener documentos:", error);
+          }
+        }
+      
+        getQualification();
+      }, []);
+
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            waiting()
+        }, 1500);
+        return () => clearTimeout(timeout);
+    }, []);
+
+    const waiting = () => {
+        setLoading(false)
+    }
+
     return (
         <View style={globalStyles.mainContainer}>
-            <View >
+            <View>
+                {loading ? (
+                // <ActivityIndicator size="large" color="#0000ff" />
+                <ModalLoading visible={true}/>
+                ) : (
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                     <View style={{width: wp("95%")}}>
                         <Text style={styles.titulo}>{datos.title}</Text>
@@ -75,9 +148,22 @@ const VerPublicacion = ({navigation, route}) => {
                         )}
                         {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                         {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
-                        
+                        <View style={styles.starsContainer}>
+                            <View style={styles.averageStarsContainer}>
+                                <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                            </View>
+                            <View style={styles.barsStarsContainer}>
+                                <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>
+                                <PorcentageBar quantity={downloadedStarsCounter[0].countFourStars} total={totalStars} textStars={"4"}/>
+                                <PorcentageBar quantity={downloadedStarsCounter[0].countThreeStars} total={totalStars} textStars={"3"}/>
+                                <PorcentageBar quantity={downloadedStarsCounter[0].countTwoStars} total={totalStars} textStars={"2"}/>
+                                <PorcentageBar quantity={downloadedStarsCounter[0].countOneStars} total={totalStars} textStars={"1"} />
+                            </View>
+                        </View>
                     </View>
+                    <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />
                 </ScrollView>
+                )}
             </View>
         </View>
     )
@@ -126,9 +212,23 @@ const styles = StyleSheet.create({
         color: "black",
     },
     scrollView: {
-        // borderWidth: 4,
         marginTop: 5,
         flex: 1,
+    },
+    starsContainer:{
+        flexDirection: "row",
+        flex: 1,
+        marginBottom: 10,
+        marginTop: 15,
+    },
+    averageStarsContainer:{
+        width: wp("22%"),
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    barsStarsContainer:{
+        width: wp("70%"),
+        marginLeft: "3%"
     },
 })
 
