@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     // alignSelf: "center",
     width: wp("95%"),
     marginTop: 10,
-    marginBottom: 30,
+    marginBottom: 15,
     // marginLeft: 20,
     // marginRight: 10,
   }
