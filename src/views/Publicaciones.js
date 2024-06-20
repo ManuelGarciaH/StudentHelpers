@@ -30,7 +30,6 @@ const Publicaciones = ({ navigation}) => {
     }
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-      console.log("A");
       setDownloadedPosts([]);
       if (querySnapshot.empty) {
         console.log("No hay documentos en la colección 'modulos'");
@@ -63,17 +62,23 @@ const Publicaciones = ({ navigation}) => {
       }
       
     }, (error) => {
-      console.error("Error al obtener documentos:", error);
+      // console.error("Error al obtener documentos:", error);
     });
-    setTimeout(() => {
-      setModalLoading(false);
-    }, 1000);
+    
     return () => unsubscribe(); // Cleanup on unmount
   }
 
   useEffect(() => {
+    console.log("b")
     showPosts(selectedCategory);
-  }, []); // Se ejecuta solo una vez al montar el componente
+  }, [selectedCategory]); // Se ejecuta solo una vez al montar el componente
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      mostrar()
+    }, 5000);
+    return () => clearTimeout(timeout);
+  });
 
     const verPublicacion = (item) => {
       if(!open){
@@ -105,7 +110,6 @@ const Publicaciones = ({ navigation}) => {
     const handleCategoryChange = (category) => {
       if(selectedCategory != category){
         setSelectedCategory(category)
-        setModalLoading(true);
         setOpen(false)
         showPosts(category)
       }
@@ -152,7 +156,7 @@ const Publicaciones = ({ navigation}) => {
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                         {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                         {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                       </View>
                     </TouchableOpacity>
                   </View>
