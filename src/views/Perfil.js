@@ -71,7 +71,7 @@ const Perfil = ({ navigation }) => {
   });
 
   const verPublicacion = (item) => {
-    navigation.navigate("VerPublicacion", { datos: item })
+    navigation.navigate("VerPublicacion", { datos: item,  isOwner: true})
   };
 
   const mostrar = () => {

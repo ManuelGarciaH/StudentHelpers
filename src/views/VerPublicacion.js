@@ -15,9 +15,11 @@ import { FIREBASE_DB } from '../../Firebase';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ModalLoading from '../components/ModalLoading';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import GenerateCode from './seePublicationModals/GenerateCode';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
+    const isOwner = route.params.isOwner
     const [currentPage, setCurrentPage] = useState(0);
     const percentage = (50 / 100) * 100;
     const [downloadedStarsCounter, setDownloadedStarsCounter] = useState([]);
@@ -27,6 +29,7 @@ const VerPublicacion = ({navigation, route}) => {
 
     useEffect(() => {
         const getQualification = async () => {
+        console.log(isOwner)
           console.log("A");
           try {
             const postsCollection = collection(FIREBASE_DB, "calificacion");
@@ -174,7 +177,14 @@ const VerPublicacion = ({navigation, route}) => {
                             </View>
                         </View>
                     </View>
-                    <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />
+
+                    {!isOwner ? (
+                        <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />
+                    ) : (
+                    <>
+                        <GenerateCode />
+                    </>
+                    )}
                 </ScrollView>
                 )}
             </View>
