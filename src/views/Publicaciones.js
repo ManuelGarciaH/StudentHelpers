@@ -37,7 +37,6 @@ const Publicaciones = ({ navigation}) => {
       } else {
         const newPosts = [];
         querySnapshot.forEach((doc) => {
-          console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
@@ -56,7 +55,6 @@ const Publicaciones = ({ navigation}) => {
           };
           newPosts.push(postData);
         });
-        console.log(newPosts);
         setDownloadedPosts(newPosts);
         setShowNoPostsMessage(false);
       }
@@ -69,7 +67,6 @@ const Publicaciones = ({ navigation}) => {
   }
 
   useEffect(() => {
-    console.log("b")
     showPosts(selectedCategory);
   }, [selectedCategory]); // Se ejecuta solo una vez al montar el componente
 
@@ -101,7 +98,6 @@ const Publicaciones = ({ navigation}) => {
         setShowNoPostsMessage(false);
         setModalLoading(false);
       }
-      console.log("algo")
     }
     const [open, setOpen] = useState(false)
     toggleOpen = () => {

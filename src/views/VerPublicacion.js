@@ -31,7 +31,6 @@ const VerPublicacion = ({navigation, route}) => {
         const getQualification = async () => {
           try {
             const postsCollection = collection(FIREBASE_DB, "calificacion");
-            console.log(datos.id)
             const querySnapshot = await getDocs(query(postsCollection, where("id_publicacion", "==", datos.id)));
             console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
       
@@ -49,7 +48,6 @@ const VerPublicacion = ({navigation, route}) => {
               setDownloadedStarsCounter([defaultStarsData]);
             } else {
               const doc = querySnapshot.docs[0];
-              console.log("Datos del documento:", doc.data());
               const starsData = {
                 id: doc.id,
                 countFiveStars: doc.data().cinco_estrellas,
@@ -60,9 +58,6 @@ const VerPublicacion = ({navigation, route}) => {
               };
               const total = starsData["countFiveStars"] + starsData["countFourStars"] + starsData["countThreeStars"] + starsData    ["countTwoStars"] + starsData["countOneStars"]
               setTotalStars(total)
-              console.log(starsData["countFiveStars"])
-              console.log(starsData);
-              console.log(totalStars)
               setDownloadedStarsCounter([starsData]); // Establecer como arreglo con un solo elemento
             }
           } catch (error) {

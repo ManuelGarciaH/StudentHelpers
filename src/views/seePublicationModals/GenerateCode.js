@@ -27,7 +27,6 @@ const GenerateCode = ({idPost}) => {
       fecha_subida: time,
       id_publicacion: idPost,
     }
-    console.log(uploadData)
     addDoc(collection(FIREBASE_DB, 'codigoCalificacion'), uploadData);
     setModalGenerateCode(false);
   }

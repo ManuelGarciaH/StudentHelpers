@@ -31,11 +31,8 @@ const QualificationModal = ({datos, id}) => {
     try {
       const codeQualificationCollection = collection(FIREBASE_DB, "codigoCalificacion");
       const querySnapshot = await getDocs(query(codeQualificationCollection, where("id_publicacion", "==", id), where("codigo", "==", inputCode)));
-      console.log(inputCode)
-      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
 
       if (querySnapshot.empty) {
-        console.log("No hay documentos en la colección 'codeQualifiacion'");
         Alert.alert("Código no existente")
       } else {
         const doc = querySnapshot.docs[0];
