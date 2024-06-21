@@ -2,22 +2,35 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import React, { useState } from 'react'
 import { globalStyles } from '../../../globalStyles'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { FIREBASE_DB } from '../../../Firebase';
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 
-
-const GenerateCode = () => {
+const GenerateCode = ({idPost}) => {
   const [modalGenerateCode, setModalGenerateCode] = useState(false)
   const [temporalCode, setTemporalCode] = useState('')
+  const [time, setTime] = useState('')
 
   const handleOpenModal = () =>{
-    generateUniqueCode(12)
-    setModalGenerateCode(true)
+    generateUniqueCode(6)
     const dateTime = new Date().toISOString();
-    console.log(dateTime)
+    setTime(dateTime)
+    setModalGenerateCode(true)
   }
 
   const handleCloseModal = () => {
     setModalGenerateCode(false);
   };
+
+  const uploadCodeQualification = () => {
+    const uploadData={
+      codigo: temporalCode,
+      fecha_subida: time,
+      id_publicacion: idPost,
+    }
+    console.log(uploadData)
+    addDoc(collection(FIREBASE_DB, 'codigoCalificacion'), uploadData);
+    setModalGenerateCode(false);
+  }
 
   const generateUniqueCode = (length) => {
     let result = '';
@@ -33,7 +46,7 @@ const GenerateCode = () => {
     <View>
       <TouchableOpacity onPress={handleOpenModal}>
         <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose]}>
-            <Text style={globalStyles.dataTxtButton}>Generar codigo de calificacion</Text>
+            <Text style={globalStyles.dataTxtButton}>Generar código de calificación</Text>
         </View>
       </TouchableOpacity>
 
@@ -44,11 +57,11 @@ const GenerateCode = () => {
       >
         <View style={[globalStyles.centerContainer]}>
             <View style={styles.modalContainer}>
-              <Text style={styles.textTitle}>Su codigo para calificar</Text>
-              <Text>{temporalCode}</Text>
+              <Text style={styles.textTitle}>Código para calificar (duración de 5 minutos)</Text>
+              <Text style={styles.textCode}>{temporalCode}</Text>
               <TouchableOpacity 
                 style={[styles.button, styles.buttonClose]}
-                onPress={handleCloseModal}>
+                onPress={uploadCodeQualification}>
                 <Text style={styles.textStyle}>Aceptar</Text>
               </TouchableOpacity>
             </View>
@@ -63,9 +76,8 @@ const styles = StyleSheet.create({
         padding: 9,
         elevation: 1,
         alignSelf: "center",
-        width: wp("95%"),
-        marginTop: 5,
-        marginBottom: 10,
+        width: wp("94%"),
+        borderRadius: 0,
     },
     buttonClose: {
         backgroundColor: '#0ABEDC',
@@ -73,7 +85,7 @@ const styles = StyleSheet.create({
     modalContainer: {
         backgroundColor: '#B5D8C3',
         borderRadius: 20,
-        height: hp("20%"),
+        height: hp("22%"),
         width: wp("92%"),
         padding: 10,
         elevation: 5,
@@ -97,6 +109,15 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
       fontSize: 28,
+    },
+    textCode:{
+      color: 'black',
+      textAlign: 'center',
+      fontSize: 24,
+      backgroundColor: "white",
+      borderWidth: 1,
+      padding: 4,
+      width: '80%',
     },
 })
 

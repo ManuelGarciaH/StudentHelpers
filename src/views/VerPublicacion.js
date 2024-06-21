@@ -29,8 +29,6 @@ const VerPublicacion = ({navigation, route}) => {
 
     useEffect(() => {
         const getQualification = async () => {
-        console.log(isOwner)
-          console.log("A");
           try {
             const postsCollection = collection(FIREBASE_DB, "calificacion");
             console.log(datos.id)
@@ -157,34 +155,31 @@ const VerPublicacion = ({navigation, route}) => {
                         {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                         {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
 
-                        <TouchableOpacity onPress={watchSellerProfile}>
-                            <View style={styles.containerUserName}>
-                                 <Text style={styles.textSell}>Vendido por: </Text>
-                                 <Text style={styles.textUserName}>{datos.userName}</Text>
-                            </View> 
-                        </TouchableOpacity>
+                        <View style={styles.containerQualification}>
+                            <TouchableOpacity onPress={watchSellerProfile}>
+                                <View style={styles.containerUserName}>
+                                    <Text style={styles.textSell}>Vendido por: </Text>
+                                    <Text style={styles.textUserName}>{datos.userName}</Text>
+                                </View> 
+                            </TouchableOpacity>
 
-                        <View style={styles.starsContainer}>
-                            <View style={styles.averageStarsContainer}>
-                                <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                            <View style={styles.starsContainer}>
+                                <View style={styles.averageStarsContainer}>
+                                    <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                                </View>
+                                <View style={styles.barsStarsContainer}>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countFourStars} total={totalStars} textStars={"4"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countThreeStars} total={totalStars} textStars={"3"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countTwoStars} total={totalStars} textStars={"2"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countOneStars} total={totalStars} textStars={"1"} />
+                                </View>
                             </View>
-                            <View style={styles.barsStarsContainer}>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countFourStars} total={totalStars} textStars={"4"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countThreeStars} total={totalStars} textStars={"3"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countTwoStars} total={totalStars} textStars={"2"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countOneStars} total={totalStars} textStars={"1"} />
-                            </View>
+                            {isOwner && <GenerateCode idPost={datos.id}/>}
                         </View>
+                        
                     </View>
-
-                    {!isOwner ? (
-                        <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />
-                    ) : (
-                    <>
-                        <GenerateCode />
-                    </>
-                    )}
+                    {!isOwner && <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />}
                 </ScrollView>
                 )}
             </View>
@@ -241,13 +236,16 @@ const styles = StyleSheet.create({
     starsContainer:{
         flexDirection: "row",
         flex: 1,
-        marginBottom: 10,
-        marginTop: 15,
+        // marginBottom: 10,
+        // marginTop: 15,
     },
     averageStarsContainer:{
-        width: wp("22%"),
+        width: wp("24%"),
         justifyContent: "center",
         alignItems: "center",
+        marginLeft: "2%",
+        borderRightWidth: 0.5,
+        borderColor:"gray",
     },
     barsStarsContainer:{
         width: wp("70%"),
@@ -258,7 +256,12 @@ const styles = StyleSheet.create({
         padding: 5,
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 6, 
+        // borderRadius: 6, 
+        width: "99%",
+        alignSelf: "center",
+        marginTop: 2,
+        borderWidth: 0.5,
+        borderColor: "gray",
     },
     textSell:{
         fontSize: 18,
@@ -269,6 +272,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "black",
     },
+    containerQualification:{
+        borderColor: "black",
+        elevation: 2,
+        marginBottom: 10,
+    }
 })
 
 export default VerPublicacion;

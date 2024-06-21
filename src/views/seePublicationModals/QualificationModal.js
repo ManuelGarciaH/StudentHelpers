@@ -1,15 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Modal } from 'react-native';
 import { FIREBASE_DB } from '../../../Firebase';
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, where, getDocs, query, deleteDoc } from "firebase/firestore";
+import { TextInput } from 'react-native-paper';
 
 const QualificationModal = ({datos, id}) => {
   const [modalQualification, setModalQualification] = useState(false);
-  const [qualification, setQualification] = useState(0);
+  const [qualification, setQualification] = useState(1);
+  const [inputCode, setInputCode] = useState('')
+  const [codeData, setCodeData] = useState('')
+  const [caducado, setCaducado] = useState(false)
 
   const handleOpenModal = () =>{
     setModalQualification(true)
@@ -20,11 +24,44 @@ const QualificationModal = ({datos, id}) => {
   };
 
   const handleStarPress = (star) => {
-    setQualification(star);
+    setQualification(star)
   };
 
-  const handleSavePress = () => {
-    console.log(datos.id.length)
+  const handleSavePress = async () =>{
+    try {
+      const codeQualificationCollection = collection(FIREBASE_DB, "codigoCalificacion");
+      const querySnapshot = await getDocs(query(codeQualificationCollection, where("id_publicacion", "==", id), where("codigo", "==", inputCode)));
+      console.log(inputCode)
+      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
+
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'codeQualifiacion'");
+        Alert.alert("Código no existente")
+      } else {
+        const doc = querySnapshot.docs[0];
+        setCodeData(doc)
+        
+        const dateActual = new Date(); // Obtener la fecha y hora actual
+        const dateCode = new Date(Date.parse(doc.data().fecha_subida));
+
+        dateCode.setMinutes(dateCode.getMinutes() + 5); // Sumar 5 minutos
+
+        if(dateCode<dateActual || caducado){
+          setCaducado(true)
+          Alert.alert("Codigo caducado")
+        }else{
+          uploadQualification()
+          Alert.alert("Calificación guardada")
+        }
+        deleteCode(doc.id)
+        setModalQualification(false);
+      }
+    } catch (error) {
+      console.error("Error al obtener documentos:", error);
+    }
+  }
+
+  const uploadQualification = () => {
     if(datos.id.length==0){
       const newData = {
         id_publicacion: id,
@@ -34,7 +71,7 @@ const QualificationModal = ({datos, id}) => {
         dos_estrellas: 0,
         una_estrella: 0,
       };
-  
+    
       // Incrementar el contador correspondiente según la estrella seleccionada
       switch (qualification) {
         case 5: newData.cinco_estrellas++;  break;
@@ -44,7 +81,6 @@ const QualificationModal = ({datos, id}) => {
         case 1: newData.una_estrella++;     break;
         default:                            break;
       }
-      console.log("a")
       addDoc(collection(FIREBASE_DB, 'calificacion'), newData);
     }else{
       //Actualizar
@@ -75,6 +111,18 @@ const QualificationModal = ({datos, id}) => {
     setModalQualification(false);
   }
 
+  async function deleteCode(id) {
+    try {
+      const codeQualificationCollection = collection(FIREBASE_DB, "codigoCalificacion");
+      const docRef = doc(codeQualificationCollection, id);
+      await deleteDoc(docRef);
+
+      console.log('Documento eliminado exitosamente');
+    } catch (error) {
+      console.error('Error al eliminar el documento: ', error);
+    }
+  }
+
   return (
     <View>
       <TouchableOpacity onPress={handleOpenModal}>
@@ -95,11 +143,14 @@ const QualificationModal = ({datos, id}) => {
                 </TouchableOpacity>
               ))}
             </View>
+            <TextInput style={styles.inputCode} 
+              placeholder='Ingresa tu código para calificar'
+              onChangeText={(code) => setInputCode(code)}/>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={[styles.button, styles.buttonClose, { marginHorizontal: 0}]}
                     onPress={handleCloseModal}>
-                    <Text style={styles.textStyle}>Cancelar</Text>
+                    <Text style={styles.textStyle}>Cerrar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.button, styles.buttonClose]}
@@ -127,7 +178,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     backgroundColor: '#B5D8C3',
     borderRadius: 20,
-    height: hp("20%"),
+    height: hp("30%"),
     width: wp("92%"),
     padding: 10,
     elevation: 5,
@@ -172,6 +223,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 17,
   },
+  inputCode:{
+    width: "95%",
+    alignSelf:"center",
+    fontSize: 20,
+    borderWidth: 0.5,
+  }
 })
 
 export default QualificationModal
