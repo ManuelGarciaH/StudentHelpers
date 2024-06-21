@@ -104,7 +104,6 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
 
   const handleSelectAddress = (data, details = null) => {
     // Guardar las coordenadas de destino seleccionadas por el usuario
-    console.log("select")
     setDestination({
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,

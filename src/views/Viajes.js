@@ -18,7 +18,6 @@ const Viajes = ({ navigation }) => {
     const postsQuery = query(postsCollection, where("category", "==", "Viaje"));
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-      console.log("A");
       setDownloadedPosts([]);
       if (querySnapshot.empty) {
         console.log("No hay documentos en la colección 'modulos'");
@@ -26,7 +25,6 @@ const Viajes = ({ navigation }) => {
       } else {
         const newPosts = [];
         querySnapshot.forEach((doc) => {
-          console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
@@ -45,7 +43,6 @@ const Viajes = ({ navigation }) => {
           };
           newPosts.push(postData);
         });
-        console.log(newPosts);
         setDownloadedPosts(newPosts);
         setShowNoPostsMessage(false);
       }
@@ -73,7 +70,6 @@ const Viajes = ({ navigation }) => {
       }else{
         setShowNoPostsMessage(false);
       }
-      console.log("algo")
     }
 
     return (

@@ -26,13 +26,11 @@ const { userName } = route.params;
     const postsQuery = query(postsCollection, where("nombreUsuario", "==", userName));
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-      console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
       if (querySnapshot.empty) {
         console.log("No hay documentos en la colección 'publicaciones'");
       } else {
         const newPosts = [];
         querySnapshot.forEach((doc) => {
-          console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,

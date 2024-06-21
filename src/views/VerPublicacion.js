@@ -32,8 +32,6 @@ const VerPublicacion = ({navigation, route}) => {
           try {
             const postsCollection = collection(FIREBASE_DB, "calificacion");
             const querySnapshot = await getDocs(query(postsCollection, where("id_publicacion", "==", datos.id)));
-            console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-      
             if (querySnapshot.empty) {
               console.log("No hay documentos en la colección 'calificacion'");
               const defaultStarsData = {
