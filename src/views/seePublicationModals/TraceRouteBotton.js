@@ -40,7 +40,6 @@ const TraceRouteBotton = ({modulo}) => {
     if(!permissionDenied){
       setLoading(true);
       try {
-        console.log("Realizando consulta a la colección 'modulos'");
         const modulesCollection = collection(FIREBASE_DB, "modulos");
         const querySnapshot = await getDocs(query(modulesCollection, where("nombre", "==", modulo)));
         console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
@@ -49,7 +48,6 @@ const TraceRouteBotton = ({modulo}) => {
         } else {
           // Solo estamos obteniendo un documento, por lo que no necesitamos iterar
           const doc = querySnapshot.docs[0];
-          console.log("Datos del documento:", doc.data());
           const newCoordinate = {
             id: doc.id,
             latitude: doc.data().latitud,

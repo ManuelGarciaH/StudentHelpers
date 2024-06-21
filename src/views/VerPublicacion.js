@@ -15,9 +15,11 @@ import { FIREBASE_DB } from '../../Firebase';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ModalLoading from '../components/ModalLoading';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import GenerateCode from './seePublicationModals/GenerateCode';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
+    const isOwner = route.params.isOwner
     const [currentPage, setCurrentPage] = useState(0);
     const percentage = (50 / 100) * 100;
     const [downloadedStarsCounter, setDownloadedStarsCounter] = useState([]);
@@ -27,13 +29,9 @@ const VerPublicacion = ({navigation, route}) => {
 
     useEffect(() => {
         const getQualification = async () => {
-          console.log("A");
           try {
             const postsCollection = collection(FIREBASE_DB, "calificacion");
-            console.log(datos.id)
             const querySnapshot = await getDocs(query(postsCollection, where("id_publicacion", "==", datos.id)));
-            console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-      
             if (querySnapshot.empty) {
               console.log("No hay documentos en la colección 'calificacion'");
               const defaultStarsData = {
@@ -48,7 +46,6 @@ const VerPublicacion = ({navigation, route}) => {
               setDownloadedStarsCounter([defaultStarsData]);
             } else {
               const doc = querySnapshot.docs[0];
-              console.log("Datos del documento:", doc.data());
               const starsData = {
                 id: doc.id,
                 countFiveStars: doc.data().cinco_estrellas,
@@ -59,9 +56,6 @@ const VerPublicacion = ({navigation, route}) => {
               };
               const total = starsData["countFiveStars"] + starsData["countFourStars"] + starsData["countThreeStars"] + starsData    ["countTwoStars"] + starsData["countOneStars"]
               setTotalStars(total)
-              console.log(starsData["countFiveStars"])
-              console.log(starsData);
-              console.log(totalStars)
               setDownloadedStarsCounter([starsData]); // Establecer como arreglo con un solo elemento
             }
           } catch (error) {
@@ -154,27 +148,31 @@ const VerPublicacion = ({navigation, route}) => {
                         {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                         {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
 
-                        <TouchableOpacity onPress={watchSellerProfile}>
-                            <View style={styles.containerUserName}>
-                                 <Text style={styles.textSell}>Vendido por: </Text>
-                                 <Text style={styles.textUserName}>{datos.userName}</Text>
-                            </View> 
-                        </TouchableOpacity>
+                        <View style={styles.containerQualification}>
+                            <TouchableOpacity onPress={watchSellerProfile}>
+                                <View style={styles.containerUserName}>
+                                    <Text style={styles.textSell}>Vendido por: </Text>
+                                    <Text style={styles.textUserName}>{datos.userName}</Text>
+                                </View> 
+                            </TouchableOpacity>
 
-                        <View style={styles.starsContainer}>
-                            <View style={styles.averageStarsContainer}>
-                                <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                            <View style={styles.starsContainer}>
+                                <View style={styles.averageStarsContainer}>
+                                    <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                                </View>
+                                <View style={styles.barsStarsContainer}>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countFourStars} total={totalStars} textStars={"4"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countThreeStars} total={totalStars} textStars={"3"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countTwoStars} total={totalStars} textStars={"2"}/>
+                                    <PorcentageBar quantity={downloadedStarsCounter[0].countOneStars} total={totalStars} textStars={"1"} />
+                                </View>
                             </View>
-                            <View style={styles.barsStarsContainer}>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countFourStars} total={totalStars} textStars={"4"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countThreeStars} total={totalStars} textStars={"3"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countTwoStars} total={totalStars} textStars={"2"}/>
-                                <PorcentageBar quantity={downloadedStarsCounter[0].countOneStars} total={totalStars} textStars={"1"} />
-                            </View>
+                            {isOwner && <GenerateCode idPost={datos.id}/>}
                         </View>
+                        
                     </View>
-                    <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />
+                    {!isOwner && <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />}
                 </ScrollView>
                 )}
             </View>
@@ -231,13 +229,16 @@ const styles = StyleSheet.create({
     starsContainer:{
         flexDirection: "row",
         flex: 1,
-        marginBottom: 10,
-        marginTop: 15,
+        // marginBottom: 10,
+        // marginTop: 15,
     },
     averageStarsContainer:{
-        width: wp("22%"),
+        width: wp("24%"),
         justifyContent: "center",
         alignItems: "center",
+        marginLeft: "2%",
+        borderRightWidth: 0.5,
+        borderColor:"gray",
     },
     barsStarsContainer:{
         width: wp("70%"),
@@ -248,7 +249,12 @@ const styles = StyleSheet.create({
         padding: 5,
         flexDirection: "row",
         alignItems: "center",
-        borderRadius: 6, 
+        // borderRadius: 6, 
+        width: "99%",
+        alignSelf: "center",
+        marginTop: 2,
+        borderWidth: 0.5,
+        borderColor: "gray",
     },
     textSell:{
         fontSize: 18,
@@ -259,6 +265,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "black",
     },
+    containerQualification:{
+        borderColor: "black",
+        elevation: 2,
+        marginBottom: 10,
+    }
 })
 
 export default VerPublicacion;

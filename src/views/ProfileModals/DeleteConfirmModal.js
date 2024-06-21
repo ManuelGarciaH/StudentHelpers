@@ -5,7 +5,7 @@ import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
 import { FIREBASE_DB } from '../../../Firebase';
-import { collection, doc, deleteDoc} from "firebase/firestore";
+import { collection, doc, deleteDoc, query, where, getDocs} from "firebase/firestore";
 import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
 import ModalLoading from '../../components/ModalLoading';
 
@@ -19,11 +19,22 @@ const [loading, setLoading] = useState(false)
   };
   async function deleteDocument(idDocument) {
     try {
+      const qualificationCollection = collection(FIREBASE_DB, "calificacion");
+      const querySnapshot = await getDocs(query(qualificationCollection, where("id_publicacion", "==", idDocument)));
+      const document = querySnapshot.docs[0];
+
+      const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
+      const docQualificacionRef = doc(deleteQualificationCollection, document.id);
+      await deleteDoc(docQualificacionRef);
+      console.log('Calificacion eliminada exitosamente');
+
       const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
       const docRef = doc(publicacionesCollection, idDocument);
       await deleteDoc(docRef);
-
       console.log('Documento eliminado exitosamente');
+
+      
+
     } catch (error) {
       console.error('Error al eliminar el documento: ', error);
     }
@@ -49,7 +60,6 @@ const [loading, setLoading] = useState(false)
   }
   const confirmButton = () => {
     setLoading(true)
-    console.log(item.id)
     deleteDocument(item.id)
     deleteDirectory(item.title)
     onClose();

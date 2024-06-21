@@ -147,7 +147,6 @@ const UpdatePosts = ({navigation, route}) => {
     trigger("horarioFin")
     //coordinates
     if(datos.coordinates!=undefined && datos.category=="Viaje"){
-        console.log(datos.coordinates)
         setValue("coordenadas", datos.coordinates)
         trigger("coordenadas")
     }

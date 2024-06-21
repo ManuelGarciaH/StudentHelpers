@@ -22,11 +22,11 @@ const PorcentageBar = ({ quantity, total, textStars }) => {
 
 const styles = StyleSheet.create({
   progressBarBackground: {
-    marginLeft: "3%",
+    marginLeft: "2%",
     height: 10,
     backgroundColor: '#cccccc', // Color de fondo gris para la barra completa
-    width: '90%',
-    borderRadius: 10, // Bordes redondeados
+    width: '86%',
+    borderRadius: 6,
     overflow: 'hidden', // Para recortar la barra de progreso dentro del contenedor
   },
   progressBar: {
