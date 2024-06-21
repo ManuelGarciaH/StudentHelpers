@@ -6,13 +6,27 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 const GenerateCode = () => {
   const [modalGenerateCode, setModalGenerateCode] = useState(false)
+  const [temporalCode, setTemporalCode] = useState('')
 
   const handleOpenModal = () =>{
+    generateUniqueCode(12)
     setModalGenerateCode(true)
+    const dateTime = new Date().toISOString();
+    console.log(dateTime)
   }
 
   const handleCloseModal = () => {
     setModalGenerateCode(false);
+  };
+
+  const generateUniqueCode = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    setTemporalCode(result)
   };
 
   return (
@@ -30,7 +44,13 @@ const GenerateCode = () => {
       >
         <View style={[globalStyles.centerContainer]}>
             <View style={styles.modalContainer}>
-
+              <Text style={styles.textTitle}>Su codigo para calificar</Text>
+              <Text>{temporalCode}</Text>
+              <TouchableOpacity 
+                style={[styles.button, styles.buttonClose]}
+                onPress={handleCloseModal}>
+                <Text style={styles.textStyle}>Aceptar</Text>
+              </TouchableOpacity>
             </View>
         </View>
       </Modal>
@@ -58,6 +78,25 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 5,
         justifyContent: 'space-between',
+        alignItems: "center",
+    },
+    button: {
+      padding: 10,
+      elevation: 2,
+      marginLeft: 20,
+      marginRight: 10,
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      fontSize: 17,
+    },
+    textTitle: {
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      fontSize: 28,
     },
 })
 
