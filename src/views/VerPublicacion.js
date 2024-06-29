@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal  } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Linking  } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import React, { useEffect, useState } from 'react';
 import { globalStyles } from '../../globalStyles'
@@ -91,12 +91,28 @@ const VerPublicacion = ({navigation, route}) => {
         setModalVisible(false);
         setSelectedImage(null);
     }
+    const handleWhatsAppPress = () => {
+        const phoneNumber = '3319708970';
+        // const phoneNumber = datos.contact;
+        console.log(datos.contact)
+    
+        // Construye la URL de WhatsApp con el número de teléfono
+        const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;
+    
+        // Abre la URL de WhatsApp usando Linking
+        Linking.openURL(whatsappUrl)
+        .then((data) => {
+            console.log('Abrir WhatsApp exitoso:', data);
+        })
+        .catch((error) => {
+            console.log('Error al abrir WhatsApp:', error);
+        });
+    };
 
     return (
         <View style={globalStyles.mainContainer}>
             <View>
                 {loading ? (
-                // <ActivityIndicator size="large" color="#0000ff" />
                 <ModalLoading visible={true}/>
                 ) : (
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -164,6 +180,12 @@ const VerPublicacion = ({navigation, route}) => {
                             </View>
                             {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                             {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
+                            <TouchableOpacity onPress={handleWhatsAppPress}>
+                            <View style={[globalStyles.dataButton,  styles.buttonGetModule]}>
+                                {/* <Icon name="map-marker" style={globalStyles.dataIcon}/> */}
+                                <Text style={globalStyles.dataTxtButton}>Contactar</Text>
+                            </View>
+                            </TouchableOpacity>
                         </View>
                         
 
@@ -361,6 +383,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
         borderRadius: 20,
         padding: 5,
+    },
+    buttonGetModule:{
+      padding: 9,
+      elevation: 1,
+      borderRadius: 0,
+      width: wp("94.4%"),
+      marginTop: 5,
+      marginBottom: 1,
+      alignSelf: "center",
+      backgroundColor: '#0ABEDC',
     },
 })
 
