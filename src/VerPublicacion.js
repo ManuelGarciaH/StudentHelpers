@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal, Linking  } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Modal  } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import React, { useEffect, useState } from 'react';
 import { globalStyles } from '../../globalStyles'
 import PerfilHeader from '../components/PerfilHeader';
 import Swiper from 'react-native-swiper';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
 import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
 import { ScrollView } from 'react-native-virtualized-view';
@@ -13,7 +12,7 @@ import AverageStars from '../components/AverageStars';
 import QualificationModal from './seePublicationModals/QualificationModal';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import ModalLoading from '../components/ModalLoading';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import GenerateCode from './seePublicationModals/GenerateCode';
@@ -33,36 +32,42 @@ const VerPublicacion = ({navigation, route}) => {
     const imagenes = datos.images.map(image => ({ uri: image }));
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(query(collection(FIREBASE_DB, "calificacion"), where("id_publicacion", "==", datos.id)), (snapshot) => {
-          if (snapshot.empty) {
-            console.log("No hay documentos en la colección 'calificacion'");
-            const defaultStarsData = {
-              id: '',
-              countFiveStars: 0,
-              countFourStars: 0,
-              countThreeStars: 0,
-              countTwoStars: 0,
-              countOneStars: 0,
-            };
-            setTotalStars(0); // Establecer total en 0 cuando no hay documentos
-            setDownloadedStarsCounter([defaultStarsData]);
-          } else {
-            const doc = snapshot.docs[0];
-            const starsData = {
-              id: doc.id,
-              countFiveStars: doc.data().cinco_estrellas,
-              countFourStars: doc.data().cuatro_estrellas,
-              countThreeStars: doc.data().tres_estrellas,
-              countTwoStars: doc.data().dos_estrellas,
-              countOneStars: doc.data().una_estrella,
-            };
-            const total = starsData.countFiveStars + starsData.countFourStars + starsData.countThreeStars + starsData.countTwoStars + starsData.countOneStars;
-            setTotalStars(total);
-            setDownloadedStarsCounter([starsData]); // Establecer como arreglo con un solo elemento
+        const getQualification = async () => {
+          try {
+            const postsCollection = collection(FIREBASE_DB, "calificacion");
+            const querySnapshot = await getDocs(query(postsCollection, where("id_publicacion", "==", datos.id)));
+            if (querySnapshot.empty) {
+              console.log("No hay documentos en la colección 'calificacion'");
+              const defaultStarsData = {
+                id: '',
+                countFiveStars: 0,
+                countFourStars: 0,
+                countThreeStars: 0,
+                countTwoStars: 0,
+                countOneStars: 0,
+              };
+              setTotalStars(0); // Establecer total en 0 cuando no hay documentos
+              setDownloadedStarsCounter([defaultStarsData]);
+            } else {
+              const doc = querySnapshot.docs[0];
+              const starsData = {
+                id: doc.id,
+                countFiveStars: doc.data().cinco_estrellas,
+                countFourStars: doc.data().cuatro_estrellas,
+                countThreeStars: doc.data().tres_estrellas,
+                countTwoStars: doc.data().dos_estrellas,
+                countOneStars: doc.data().una_estrella,
+              };
+              const total = starsData["countFiveStars"] + starsData["countFourStars"] + starsData["countThreeStars"] + starsData    ["countTwoStars"] + starsData["countOneStars"]
+              setTotalStars(total)
+              setDownloadedStarsCounter([starsData]); // Establecer como arreglo con un solo elemento
+            }
+          } catch (error) {
+            console.error("Error al obtener documentos:", error);
           }
-        });
+        }
       
-        return () => unsubscribe();
+        getQualification();
       }, []);
 
     const [loading, setLoading] = useState(true)
@@ -91,28 +96,12 @@ const VerPublicacion = ({navigation, route}) => {
         setModalVisible(false);
         setSelectedImage(null);
     }
-    const handleWhatsAppPress = () => {
-        const phoneNumber = '3319708970';
-        // const phoneNumber = datos.contact;
-        console.log(datos.contact)
-    
-        // Construye la URL de WhatsApp con el número de teléfono
-        const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;
-    
-        // Abre la URL de WhatsApp usando Linking
-        Linking.openURL(whatsappUrl)
-        .then((data) => {
-            console.log('Abrir WhatsApp exitoso:', data);
-        })
-        .catch((error) => {
-            console.log('Error al abrir WhatsApp:', error);
-        });
-    };
 
     return (
         <View style={globalStyles.mainContainer}>
             <View>
                 {loading ? (
+                // <ActivityIndicator size="large" color="#0000ff" />
                 <ModalLoading visible={true}/>
                 ) : (
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -180,12 +169,6 @@ const VerPublicacion = ({navigation, route}) => {
                             </View>
                             {datos.category !="Viaje" && <TraceRouteBotton modulo={datos.location} />}
                             {datos.category =="Viaje" && <SeeRouteTravel location={datos.coordinates} />}
-                            <TouchableOpacity onPress={handleWhatsAppPress}>
-                            <View style={[globalStyles.dataButton,  styles.buttonGetModule]}>
-                                {/* <Icon name="map-marker" style={globalStyles.dataIcon}/> */}
-                                <Text style={globalStyles.dataTxtButton}>Contactar</Text>
-                            </View>
-                            </TouchableOpacity>
                         </View>
                         
 
@@ -223,32 +206,13 @@ const VerPublicacion = ({navigation, route}) => {
                     transparent={false}
                     visible={modalVisible}
                     onRequestClose={closeModal}
-                >   
-                
+                >
                     <View style={styles.modalContainer}>
-                        <Swiper
-                            style={styles.wrapper}
-                            showsButtons={false}
-                            loop={false}
-                            index={selectedIndex}
-                            onIndexChanged={(index) => setSelectedIndex(index)}
-                        >   
-                                {imagenes.map((imagen, index) => (
-                                    <View key={index} style={styles.slide}>
-                                        <Image source={imagen} style={styles.fullScreenImage} />
-                                        <TouchableOpacity onPress={closeModal} style={styles.closeIconContainer}>
-                                            <Icon name="close" size={20} color="red" />
-                                        </TouchableOpacity>
-                                    </View>
-                                ))}
-                        </Swiper>
-                    </View>
-                    {/* <View style={styles.modalContainer}>
                         <TouchableOpacity style={styles.modalCloseButton} onPress={closeModal}>
                             <Text style={styles.modalCloseButtonText}>Cerrar</Text>
                         </TouchableOpacity>
                         <Image source={{ uri: selectedImage }} style={styles.fullScreenImage} />
-                    </View> */}
+                    </View>
                 </Modal>
             )}
         </View>
@@ -364,10 +328,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.9)',
         justifyContent: 'center',
         alignItems: 'center',
-        position:"relative"
     },
     fullScreenImage: {
-        flex: 1,
         width: '100%',
         height: '100%',
         resizeMode: 'contain',
@@ -375,24 +337,6 @@ const styles = StyleSheet.create({
     midContainer:{
         flexDirection: "row",
         alignItems: "center",
-    },
-    closeIconContainer: {
-        position: 'absolute',
-        top: "2%",
-        right: "3%",
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-        borderRadius: 20,
-        padding: 5,
-    },
-    buttonGetModule:{
-      padding: 9,
-      elevation: 1,
-      borderRadius: 0,
-      width: wp("94.4%"),
-      marginTop: 5,
-      marginBottom: 1,
-      alignSelf: "center",
-      backgroundColor: '#0ABEDC',
     },
 })
 
