@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, Modal } from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -7,16 +7,18 @@ import PerfilHeader from '../components/PerfilHeader';
 import CreatePostModal from './ProfileModals/CreatePostModal';
 import ModalLoading from '../components/ModalLoading';
 
-import { FIREBASE_DB } from '../../Firebase';
+import { FIREBASE_AUTH, FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
+import { Button } from 'react-native-paper';
 
 const Perfil = ({ navigation }) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+  const [modalConfiguration, setModalConfiguration] = useState(false)
 
   const userName = "Manuel Antonio Garcia";
 
@@ -84,8 +86,13 @@ const Perfil = ({ navigation }) => {
     navigation.navigate("UpdatePosts", { datos: item })
   }
 
+  const closeModalConfiguration = () => {
+    setModalConfiguration(false)
+  }
+
   return (
     <View style={globalStyles.mainContainer}>
+      <PerfilHeader modalConfiguration={modalConfiguration} setModalConfiguration={setModalConfiguration} />
       <Text style={styles.titleName}>{userName}</Text>
       <View style={styles.descriptionContainer}>
         <Image
@@ -148,14 +155,53 @@ const Perfil = ({ navigation }) => {
                     <DeleteConfirmModal userName={userName} item={item}/>
 
                   </View>
+                  <Modal
+                    transparent={true}
+                    visible={modalConfiguration}
+                    onRequestClose={closeModalConfiguration}
+                  >  
+                    <View style={[globalStyles.centerContainer, {justifyContent:"flex-start", backgroundColor: 'rgba(0, 0, 0, 0.2)',}]}>
+                      <View style={styles.modalContainer}>
+                      <View style={styles.delimitador}></View>
+                      <TouchableOpacity>
+                          <View style={styles.containerConfigButtons}>
+                            <Text style={styles.textConfigButtons}>Actualizar perfil</Text>
+                          </View>
+                      </TouchableOpacity>
+                      <View style={styles.delimitador}></View>
+                      <TouchableOpacity>
+                          <View style={styles.containerConfigButtons}>
+                            <Text style={styles.textConfigButtons}>Cambiar contraseña</Text>
+                          </View>
+                      </TouchableOpacity>
+                      <View style={styles.delimitador}></View>
+                      <TouchableOpacity onPress={closeModalConfiguration}>
+                          <View style={styles.containerConfigButtons}>
+                            <Text style={styles.textConfigButtons}>Cerrar</Text>
+                          </View>
+                      </TouchableOpacity>
+                      <View style={styles.delimitador}></View>
+                      <View style={[styles.delimitador, {marginTop: "25%"}]}></View>
+                      <TouchableOpacity onPress={ () => FIREBASE_AUTH.signOut() }>
+                          <View style={styles.containerLogOutButton}>
+                            <Text style={styles.textConfigButtons}>LogOut</Text>
+                          </View>
+                      </TouchableOpacity>
+                      <View style={styles.delimitador}></View>
+                      </View>
+                    </View>
+                  </Modal>
                 </View>
+                
 
               ))}
             </ScrollView>
 
           )}
         </>
+        
       )}
+      
     </View>
   )
 }
@@ -281,6 +327,34 @@ const styles = StyleSheet.create({
   },
   dataContainer:{
     width: wp("50%")
+  },
+  modalContainer: {
+    backgroundColor: '#B5D8C3',
+    width: wp("75%"),
+    elevation: 5,
+    alignSelf:"flex-end",
+  },
+  containerConfigButtons:{
+    backgroundColor: "#8CD1A9",
+    height: hp("6%"),
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  textConfigButtons:{
+    marginLeft: "8%",
+    fontSize: 20,
+    color: "black",
+  },
+  containerLogOutButton:{
+    backgroundColor: '#0ABEDC',
+    height: hp("6%"),
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  delimitador:{
+    height: 0.4, 
+    width: "100%", 
+    backgroundColor: "grey"
   },
 });
 

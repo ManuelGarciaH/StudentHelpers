@@ -60,6 +60,7 @@ function TabNavigator({navigation}) {
             headerRight: () => (
               <PerfilHeader/>
             ),
+            headerShown: false,
         }}/>
       <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
