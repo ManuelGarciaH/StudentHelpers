@@ -13,10 +13,12 @@ import Header from '../components/Header.js';
 
 const Tab = createBottomTabNavigator();
 
-function TabNavigator({navigation}) {
+function TabNavigator({navigation, route}) {
+  const {userData} = route.params;
+  console.log("UserData: ", userData)
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Publicaciones" component={PUBLICACIONES} 
+      <Tab.Screen name="Publicaciones" component={PUBLICACIONES}  
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="newspaper" color={color} size={size} />
@@ -30,7 +32,7 @@ function TabNavigator({navigation}) {
             ),
             headerShown: false, // Oculta el encabezado de esta pantalla
         }}
-        
+        initialParams={{ userData }}
       />
       <Tab.Screen name="Viajes" component={VIAJES}
         options={{
@@ -48,7 +50,7 @@ function TabNavigator({navigation}) {
         }}
         
       />
-      <Tab.Screen name="Perfil" component={PERFIL} 
+      <Tab.Screen name="Perfil" component={PERFIL} userData={ userData }
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="account-box" color={color} size={size} />
@@ -61,7 +63,9 @@ function TabNavigator({navigation}) {
               <PerfilHeader/>
             ),
             headerShown: false,
-        }}/>
+        }}
+        initialParams={{ userData }}
+      />
       <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
             headerShown:false,

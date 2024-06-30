@@ -13,14 +13,16 @@ import { collection, query, where, onSnapshot } from "firebase/firestore";
 import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
 import { Button } from 'react-native-paper';
 
-const Perfil = ({ navigation }) => {
+const Perfil = ({ navigation, route }) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalConfiguration, setModalConfiguration] = useState(false)
+  const { userData } = route.params;
 
-  const userName = "Manuel Antonio Garcia";
+  // const userName = "Manuel Antonio Garcia";
+  const userName = userData.displayName;
 
   useEffect(() => {
     setDownloadedPosts([]);
@@ -155,53 +157,52 @@ const Perfil = ({ navigation }) => {
                     <DeleteConfirmModal userName={userName} item={item}/>
 
                   </View>
-                  <Modal
-                    transparent={true}
-                    visible={modalConfiguration}
-                    onRequestClose={closeModalConfiguration}
-                  >  
-                    <View style={[globalStyles.centerContainer, {justifyContent:"flex-start", backgroundColor: 'rgba(0, 0, 0, 0.2)',}]}>
-                      <View style={styles.modalContainer}>
-                      <View style={styles.delimitador}></View>
-                      <TouchableOpacity>
-                          <View style={styles.containerConfigButtons}>
-                            <Text style={styles.textConfigButtons}>Actualizar perfil</Text>
-                          </View>
-                      </TouchableOpacity>
-                      <View style={styles.delimitador}></View>
-                      <TouchableOpacity>
-                          <View style={styles.containerConfigButtons}>
-                            <Text style={styles.textConfigButtons}>Cambiar contraseña</Text>
-                          </View>
-                      </TouchableOpacity>
-                      <View style={styles.delimitador}></View>
-                      <TouchableOpacity onPress={closeModalConfiguration}>
-                          <View style={styles.containerConfigButtons}>
-                            <Text style={styles.textConfigButtons}>Cerrar</Text>
-                          </View>
-                      </TouchableOpacity>
-                      <View style={styles.delimitador}></View>
-                      <View style={[styles.delimitador, {marginTop: "25%"}]}></View>
-                      <TouchableOpacity onPress={ () => FIREBASE_AUTH.signOut() }>
-                          <View style={styles.containerLogOutButton}>
-                            <Text style={styles.textConfigButtons}>LogOut</Text>
-                          </View>
-                      </TouchableOpacity>
-                      <View style={styles.delimitador}></View>
-                      </View>
-                    </View>
-                  </Modal>
                 </View>
                 
 
               ))}
             </ScrollView>
-
+            
           )}
         </>
         
       )}
-      
+      <Modal
+        transparent={true}
+        visible={modalConfiguration}
+        onRequestClose={closeModalConfiguration}
+      >  
+        <View style={[globalStyles.centerContainer, {justifyContent:"flex-start", backgroundColor: 'rgba(0, 0, 0, 0.2)',}]}>
+          <View style={styles.modalContainer}>
+          <View style={styles.delimitador}></View>
+          <TouchableOpacity>
+              <View style={styles.containerConfigButtons}>
+                <Text style={styles.textConfigButtons}>Actualizar perfil</Text>
+              </View>
+          </TouchableOpacity>
+          <View style={styles.delimitador}></View>
+          <TouchableOpacity>
+              <View style={styles.containerConfigButtons}>
+                <Text style={styles.textConfigButtons}>Cambiar contraseña</Text>
+              </View>
+          </TouchableOpacity>
+          <View style={styles.delimitador}></View>
+          <TouchableOpacity onPress={closeModalConfiguration}>
+              <View style={styles.containerConfigButtons}>
+                <Text style={styles.textConfigButtons}>Cerrar</Text>
+              </View>
+          </TouchableOpacity>
+          <View style={styles.delimitador}></View>
+          <View style={[styles.delimitador, {marginTop: "25%"}]}></View>
+          <TouchableOpacity onPress={ () => FIREBASE_AUTH.signOut() }>
+              <View style={styles.containerLogOutButton}>
+                <Text style={styles.textConfigButtons}>LogOut</Text>
+              </View>
+          </TouchableOpacity>
+          <View style={styles.delimitador}></View>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }

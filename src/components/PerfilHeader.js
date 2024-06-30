@@ -5,6 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 const PerfilHeader = ({ modalConfiguration, setModalConfiguration }) => {
     const openModalConfiguration = () => {
+        console.log(modalConfiguration)
         setModalConfiguration(true);
     };
 

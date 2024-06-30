@@ -23,10 +23,19 @@ const Stack = createNativeStackNavigator();
 const Insidestack = createNativeStackNavigator();
 
 
-function InsideView({navigation}) {
+function InsideView({navigation, route}) {
+  const {datos} = route.params;
+  const userData = {
+    uid: datos.uid,
+    email: datos.email,
+    photoURL: datos.photoURL,
+    displayName: datos.displayName,
+    // Agrega aquí cualquier otro dato que necesites y sea serializable
+  };
   return (
     <Insidestack.Navigator>
-      <Stack.Screen name="TabNavigator" component={TAB_NAVIGATOR}  options={{headerShown:false}} />
+      <Stack.Screen name="TabNavigator" component={TAB_NAVIGATOR}  options={{headerShown:false}}
+        initialParams={{ userData }} />
       <Stack.Screen name="VerPublicacion" component={VERPUBLICACION} 
         options={{
           headerTitle: () => null, // Esto ocultará el título del encabezado
@@ -105,13 +114,17 @@ const Navegacion = () =>{
 
   return (
     <NavigationContainer>
-        <Stack.Navigator initialRouteName='Inicio'>
-          {user ? (
-            <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
-          ) : (
-            <Stack.Screen name="Inici" component={OutsideView} options={{headerShown:false}} />
-          )}
-        </Stack.Navigator>
+      <Stack.Navigator initialRouteName='Inicio'>
+        {user ? (
+          <Stack.Screen name="Inside" options={{headerShown:false}}>
+            {props => <InsideView {...props} route={{ params: { datos: user } }} />}
+          </Stack.Screen>
+        ) : (
+          <Stack.Screen name="Inici" options={{headerShown:false}}>
+            {props => <OutsideView {...props} />}
+          </Stack.Screen>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
