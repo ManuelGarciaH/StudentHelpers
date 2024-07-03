@@ -13,12 +13,10 @@ import Header from '../components/Header.js';
 
 const Tab = createBottomTabNavigator();
 
-function TabNavigator({navigation, route}) {
-  const {userData} = route.params;
-  console.log("UserData: ", userData)
+function TabNavigator({navigation}) {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Publicaciones" component={PUBLICACIONES}  
+      <Tab.Screen name="Publicaciones" component={PUBLICACIONES} 
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="newspaper" color={color} size={size} />
@@ -32,7 +30,7 @@ function TabNavigator({navigation, route}) {
             ),
             headerShown: false, // Oculta el encabezado de esta pantalla
         }}
-        initialParams={{ userData }}
+        
       />
       <Tab.Screen name="Viajes" component={VIAJES}
         options={{
@@ -50,7 +48,7 @@ function TabNavigator({navigation, route}) {
         }}
         
       />
-      <Tab.Screen name="Perfil" component={PERFIL} userData={ userData }
+      <Tab.Screen name="Perfil" component={PERFIL} 
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="account-box" color={color} size={size} />
@@ -59,13 +57,11 @@ function TabNavigator({navigation, route}) {
             headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
             headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
             headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
-            headerRight: () => (
-              <PerfilHeader/>
-            ),
+            // headerRight: () => (
+            //   <PerfilHeader/>
+            // ),
             headerShown: false,
-        }}
-        initialParams={{ userData }}
-      />
+        }}/>
       <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
             headerShown:false,

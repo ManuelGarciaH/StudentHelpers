@@ -14,12 +14,11 @@ import DrawerCategory from '../components/DrawerCategory';
 import MenuDrawer from 'react-native-side-drawer';
 import { overlay } from 'react-native-paper';
 
-const Publicaciones = ({ navigation, route }) => {
+const Publicaciones = ({ navigation}) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Tendencias')
   const [modalLoading, setModalLoading] = useState(true)
-  const { userData } = route.params;
 
   const showPosts = async (category) => {
     const postsCollection = collection(FIREBASE_DB, "publicaciones");

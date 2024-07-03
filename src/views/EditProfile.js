@@ -1,0 +1,150 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, Image, StyleSheet, Alert } from 'react-native';
+import { globalStyles } from '../../globalStyles';
+import { TextInput } from 'react-native-paper';
+import { Controller, useForm } from 'react-hook-form';
+import ImagePicker from 'react-native-image-crop-picker';
+import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import { getAuth, updateProfile } from "firebase/auth";
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, addDoc } from "firebase/firestore";
+
+const EditProfile = ({navigation, route}) => {
+  const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
+  const userData = getAuth().currentUser
+  const [imageUri, setImageUri] = useState(userData.photoURL || null);
+  const storage = getStorage();
+  const {description} = route.params
+
+  useEffect(() => {
+    if(description){
+      setValue("description", description)
+      trigger("description")
+    }
+  }, [])
+  // Función para abrir el selector de imágenes y recortar
+  const openImagePicker = () => {
+    ImagePicker.openPicker({
+      width: 120,
+      height: 120,
+      cropping: true // Habilita el recorte
+    }).then(image => {
+      console.log(image);
+      setImageUri(image.path); // Guarda la URI de la imagen recortada en el estado
+    }).catch(error => {
+      console.log(error);
+    });
+  };
+
+  const uploadImageToFirebase = async () => {
+    if (!imageUri || imageUri=="null") return;
+        const storageRef = ref(storage, `profilePictures/${userData.uid}/ProfilePicture_0`);
+
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        // Subir la imagen a Firebase Storage
+        await uploadBytes(storageRef, blob);
+    try {
+      const downloadURL = await getDownloadURL(storageRef);
+      
+      trigger("image");
+      setValue("image", downloadURL); 
+      return downloadURL;
+    } catch (e) {
+      console.error(e);
+      Alert.alert('Error', 'La imagen no se pudo subir. Inténtalo de nuevo.');
+      return null;
+    } finally {
+
+    }
+  };
+  const updatePhotoURL = async (photoURL) => {
+    const auth = getAuth();
+    updateProfile(auth.currentUser, {
+        photoURL: photoURL
+    }).then(() => {
+        // Profile updated!
+        console.log("Actualizado")
+        // ...
+    }).catch((error) => {
+        // An error occurred
+        console.log("Error")
+        // ...
+    });
+  };
+
+  updateData = async(data) =>{
+    if (Object.keys(errors).length === 0) {
+      const newData = { description: data.description, id_usuario: userData.uid};
+
+      await addDoc(collection(FIREBASE_DB, 'descriptions'), newData);
+      reset();
+  } else {
+      console.log(errors);
+  }
+  }
+
+  const onSubmit = async (data) => {
+    const photoURL = await uploadImageToFirebase();
+    await updatePhotoURL(photoURL);
+    console.log('Imagen subida exitosamente:', photoURL);
+    console.log(getValues("image"))
+    await updateData(data)
+    navigation.goBack();
+  };
+  return (
+    <View style={globalStyles.mainContainer}>
+      <Text>EditProfile</Text>
+      <Text>Descripción de tu perfil</Text>
+      <Controller
+            name="description"
+            control={control}
+            rules={{ 
+                required: "Campo requerido",
+                maxLength:{
+                value: 150,
+                message: "La descripción no pueden pasar de 150 caracteres"
+                },
+                minLength:{
+                value: 5,
+                message: "La descripción debe contener al menos 5 caracteres"
+                }
+            }}
+            defaultValue=""
+            render={({ field: { onChange, value } }) => (
+                <>
+                <TextInput multiline={true} numberOfLines={3}
+                    value={value}
+                    onChangeText={(text) => onChange(text)}
+                    style={styles.inputDecription}
+                />
+                {errors.description && <Text style={globalStyles.errorMessage}>{errors.description.message}</Text>}
+                {!errors.description && <Text style={globalStyles.showInfoSelected}></Text>}
+                </>
+            )}
+        />
+        <Button title="Seleccionar imagen" onPress={openImagePicker} />
+        {(imageUri && imageUri!="null") && (
+            <>
+            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+            <Button title="Aceptar y subir" onPress={handleSubmit(onSubmit)} />
+            </>
+        )}
+      
+    </View>
+  )
+}
+
+styles = StyleSheet.create({
+    inputDecription:{
+        marginTop: 5,
+        width: "90%",
+    },
+    imagePreview: {
+      width: 240,
+      height: 240,
+      marginTop: 20
+    }
+})
+
+export default EditProfile

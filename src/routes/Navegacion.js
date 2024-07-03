@@ -13,6 +13,7 @@ import LOGIN from '../views/AuthModals/Login.js';
 import VERPUBLICACION from '../views/VerPublicacion.js';
 import PROFILE from '../views/Perfil.js';
 import PROFILE_SELLER from '../views/PerfilSeller.js';
+import EDIT_PROFILE from '../views/EditProfile.js';
 import PUBLICACIONES from '../views/Publicaciones.js';
 import TAB_NAVIGATOR from '../routes/TabNavigator.js';
 import UPDATE_POSTS from '../views/UpdatePosts.js'
@@ -23,19 +24,10 @@ const Stack = createNativeStackNavigator();
 const Insidestack = createNativeStackNavigator();
 
 
-function InsideView({navigation, route}) {
-  const {datos} = route.params;
-  const userData = {
-    uid: datos.uid,
-    email: datos.email,
-    photoURL: datos.photoURL,
-    displayName: datos.displayName,
-    // Agrega aquí cualquier otro dato que necesites y sea serializable
-  };
+function InsideView({navigation}) {
   return (
     <Insidestack.Navigator>
-      <Stack.Screen name="TabNavigator" component={TAB_NAVIGATOR}  options={{headerShown:false}}
-        initialParams={{ userData }} />
+      <Stack.Screen name="TabNavigator" component={TAB_NAVIGATOR}  options={{headerShown:false}} />
       <Stack.Screen name="VerPublicacion" component={VERPUBLICACION} 
         options={{
           headerTitle: () => null, // Esto ocultará el título del encabezado
@@ -49,6 +41,17 @@ function InsideView({navigation, route}) {
       <Stack.Screen name="Publicaciones" component={PUBLICACIONES}/>
       <Stack.Screen name="Profile" component={PROFILE} />
       <Stack.Screen name="ProfileSeller" component={PROFILE_SELLER} 
+        options={{
+          headerTitle: () => null, // Esto ocultará el título del encabezado
+          headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
+          headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
+          headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
+          header: () => (
+            <Header navigation={navigation} back={true}/>
+          ),
+        }} />
+        
+      <Stack.Screen name="EditProfile" component={EDIT_PROFILE} 
         options={{
           headerTitle: () => null, // Esto ocultará el título del encabezado
           headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
@@ -114,17 +117,13 @@ const Navegacion = () =>{
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Inicio'>
-        {user ? (
-          <Stack.Screen name="Inside" options={{headerShown:false}}>
-            {props => <InsideView {...props} route={{ params: { datos: user } }} />}
-          </Stack.Screen>
-        ) : (
-          <Stack.Screen name="Inici" options={{headerShown:false}}>
-            {props => <OutsideView {...props} />}
-          </Stack.Screen>
-        )}
-      </Stack.Navigator>
+        <Stack.Navigator initialRouteName='Inicio'>
+          {user ? (
+            <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
+          ) : (
+            <Stack.Screen name="Inici" component={OutsideView} options={{headerShown:false}} />
+          )}
+        </Stack.Navigator>
     </NavigationContainer>
   );
 }

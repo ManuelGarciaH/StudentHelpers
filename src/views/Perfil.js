@@ -12,20 +12,25 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
 import { Button } from 'react-native-paper';
+import { getAuth, reload, updateProfile } from "firebase/auth";
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-const Perfil = ({ navigation, route }) => {
+
+const Perfil = ({ navigation}) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [downloadedDescription, setDownloadedDescription] = useState('');
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalConfiguration, setModalConfiguration] = useState(false)
-  const { userData } = route.params;
+  const [currentUser, setCurrentUser] = useState(getAuth().currentUser);
 
   // const userName = "Manuel Antonio Garcia";
-  const userName = userData.displayName;
+  const userName = currentUser.displayName;
 
   useEffect(() => {
     setDownloadedPosts([]);
+    setCurrentUser(getAuth().currentUser)
 
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
     const postsQuery = query(postsCollection, where("nombreUsuario", "==", userName));
@@ -66,6 +71,32 @@ const Perfil = ({ navigation, route }) => {
   }, [userName]);
 
   useEffect(() => {
+    setDownloadedDescription('');
+    console.log(currentUser.uid)
+    const descriptionsTable = collection(FIREBASE_DB, "descriptions");
+    const postsQuery = query(descriptionsTable, where("id_usuario", "==", currentUser.uid));
+
+    const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
+      if (snapshot.empty) {
+        console.log("No hay documentos en la colección 'descriptions'");
+      } else {
+        const doc = snapshot.docs[0];
+        const postData = {
+          id: doc.id,
+          description: doc.data().description,
+          
+        };
+        setDownloadedDescription(postData.description);
+      }
+    }, (error) => {
+      console.error("Error al obtener documentos:", error);
+    });
+
+    // Cleanup function to unsubscribe from the listener when the component unmounts
+    return () => unsubscribe();
+  }, [userName]);
+
+  useEffect(() => {
     const timeout = setTimeout(() => {
       mostrar()
     }, 5000);
@@ -92,16 +123,74 @@ const Perfil = ({ navigation, route }) => {
     setModalConfiguration(false)
   }
 
+  const EditProfile = () => {
+    setModalConfiguration(false)
+    navigation.navigate("EditProfile", {description: downloadedDescription})
+  }
+  //Eliminar
+  const clearPhotoURL = async () => {
+    const auth = getAuth();
+    updateProfile(auth.currentUser, {
+        photoURL: "null"
+    }).then(() => {
+        // Profile updated!
+        console.log("Limpiado")
+        // ...
+    }).catch((error) => {
+        // An error occurred
+        console.log("Error")
+        // ...
+    });
+    setReloadPhoto(false)
+    setTimeout(() => {
+      setReloadPhoto(true)
+    }, 1000);
+  };
+  const [reloadPhoto, setReloadPhoto] = useState(true)
+  useFocusEffect(
+    React.useCallback(() => {
+        const oldPhoto = currentUser.photoURL
+        let newPhoto
+        let auth
+        setTimeout(() => {
+          auth = getAuth();
+          newPhoto = auth.currentUser.photoURL
+          if(oldPhoto!=newPhoto && oldPhoto){
+              setReloadPhoto(false)
+              // console.log("adentro")
+              // console.log(oldPhoto)
+              // console.log(newPhoto)
+              setTimeout(() => {
+                setReloadPhoto(true)
+              }, 200);
+            }
+        }, 1000);
+        // console.log(oldPhoto)
+        // console.log(newPhoto)
+    }, [])
+  );
+
   return (
     <View style={globalStyles.mainContainer}>
       <PerfilHeader modalConfiguration={modalConfiguration} setModalConfiguration={setModalConfiguration} />
       <Text style={styles.titleName}>{userName}</Text>
       <View style={styles.descriptionContainer}>
-        <Image
-          source={require("../../Img/Sin-foto-Perfil.png")}
-          style={styles.image}
-        />
-        <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+        {!reloadPhoto ? (
+          <View style={[styles.image, {justifyContent: "center", alignItems: "center",}]}>
+            <ActivityIndicator style={styles.activityIndicator} color="#0000ff" />
+          </View>
+        ) : (
+          <>
+          {(!currentUser.photoURL || currentUser.photoURL=="null") 
+            && <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.image}/>}
+          
+          {(currentUser.photoURL && currentUser.photoURL!="null") 
+            &&<Image source={{ uri: currentUser.photoURL }} style={styles.image} /> }
+            </>
+          )}
+        {downloadedDescription=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción</Text>}  
+        {downloadedDescription!='' &&  <Text style={styles.textDescription}>{downloadedDescription}</Text>}  
+       
       </View>
       <Text style={styles.titleName}>Publicaciones</Text>
       <View style={[styles.descriptionContainer, {marginBottom: 5}]}>
@@ -116,6 +205,7 @@ const Perfil = ({ navigation, route }) => {
       </View>
 
       <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
+      <Button style={{padding: 5, backgroundColor: "red"}} onPress={clearPhotoURL}>Clear foto</Button>
 
 
       {showNoPostsMessage ? (
@@ -175,9 +265,9 @@ const Perfil = ({ navigation, route }) => {
         <View style={[globalStyles.centerContainer, {justifyContent:"flex-start", backgroundColor: 'rgba(0, 0, 0, 0.2)',}]}>
           <View style={styles.modalContainer}>
           <View style={styles.delimitador}></View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={EditProfile}>
               <View style={styles.containerConfigButtons}>
-                <Text style={styles.textConfigButtons}>Actualizar perfil</Text>
+                <Text style={styles.textConfigButtons}>Editar perfil</Text>
               </View>
           </TouchableOpacity>
           <View style={styles.delimitador}></View>
@@ -290,8 +380,10 @@ const styles = StyleSheet.create({
     margin: 7,
     marginRight: 5,
     marginLeft: 10,
-    width: wp("30%"),
-    height: hp("15%"),
+    width: 120,
+    height: 120,
+    // width: wp("30%"),
+    // height: hp("15%"),
   },
   textTitle:{
     fontSize: 20,
@@ -356,6 +448,10 @@ const styles = StyleSheet.create({
     height: 0.4, 
     width: "100%", 
     backgroundColor: "grey"
+  },
+  activityIndicator:{
+    transform: [{ scale: 4.5 }],
+    marginLeft: "5%",
   },
 });
 
