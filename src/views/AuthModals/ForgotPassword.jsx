@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {globalStyles} from '../../../globalStyles';
+import AlertModal from '../../components/AlertModal';
 // firebase
 import {FIREBASE_AUTH} from '../../../Firebase';
 import {sendPasswordResetEmail} from 'firebase/auth';
@@ -15,18 +16,19 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ForgotPassword = () => {
   const [correo, setCorreo] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const recoveryEmail = async () => {
-    sendPasswordResetEmail(FIREBASE_AUTH, correo)
-      .then(Response => {
-        console.log(Response);
-        
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(error);
-      });
+    setModalVisible(true);
+    // sendPasswordResetEmail(FIREBASE_AUTH, correo)
+    //   .then(Response => {
+    //     console.log(Response);
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     console.log(error);
+    //   });
   };
 
   return (
@@ -54,6 +56,9 @@ const ForgotPassword = () => {
             <Text style={globalStyles.txtBoton}>Enviar</Text>
           </View>
         </TouchableOpacity>
+
+        <AlertModal visible={modalVisible} onClose={() => setModalVisible(false)} message={'Pacoo'} />
+
       </View>
     </SafeAreaView>
   );
@@ -72,7 +77,6 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: '#575757',
-
     padding: 5,
   },
 });
