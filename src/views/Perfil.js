@@ -156,7 +156,7 @@ const Perfil = ({ navigation}) => {
             &&<Image source={{ uri: currentUser.photoURL }} style={styles.image} /> }
             </>
           )}
-        {downloadedDescription.description=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción</Text>}  
+        {downloadedDescription.description=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción.</Text>}  
         {downloadedDescription.description!='' &&  <Text style={styles.textDescription}>{downloadedDescription.description}</Text>}  
        
       </View>
@@ -289,6 +289,8 @@ const styles = StyleSheet.create({
    marginLeft: 5,
    marginRight: 4,
    textAlign: "justify",
+   width:"62%",
+   height: "93%"
   },
   imageStyle: {
     width: wp("28%"),

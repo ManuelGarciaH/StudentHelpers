@@ -125,8 +125,8 @@ const EditProfile = ({navigation, route}) => {
                     onChangeText={(text) => onChange(text)}
                     style={styles.inputName}
                 />
-                {errors.description && <Text style={globalStyles.errorMessage}>{errors.description.message}</Text>}
-                {!errors.description && <Text style={globalStyles.showInfoSelected}></Text>}
+                {errors.name && <Text style={globalStyles.errorMessage}>{errors.name.message}</Text>}
+                {!errors.name && <Text style={globalStyles.showInfoSelected}></Text>}
                 </>
             )}
         />
@@ -137,8 +137,8 @@ const EditProfile = ({navigation, route}) => {
             rules={{ 
                 required: "Campo requerido",
                 maxLength:{
-                value: 150,
-                message: "La descripción no pueden pasar de 150 caracteres"
+                value: 310,
+                message: "La descripción no pueden pasar de 310 caracteres"
                 },
                 minLength:{
                 value: 5,
@@ -148,7 +148,7 @@ const EditProfile = ({navigation, route}) => {
             defaultValue=""
             render={({ field: { onChange, value } }) => (
                 <>
-                <TextInput multiline={true} numberOfLines={3}
+                <TextInput multiline={true} numberOfLines={6}
                     value={value}
                     onChangeText={(text) => onChange(text)}
                     style={styles.inputDecription}
