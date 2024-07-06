@@ -24,6 +24,7 @@ const Perfil = ({ navigation}) => {
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalConfiguration, setModalConfiguration] = useState(false)
   const [currentUser, setCurrentUser] = useState(getAuth().currentUser);
+  const [reloadPhoto, setReloadPhoto] = useState(true)
 
   // const userName = "Manuel Antonio Garcia";
   const userName = currentUser.displayName;
@@ -86,7 +87,7 @@ const Perfil = ({ navigation}) => {
           description: doc.data().description,
           
         };
-        setDownloadedDescription(postData.description);
+        setDownloadedDescription(postData);
       }
     }, (error) => {
       console.error("Error al obtener documentos:", error);
@@ -125,48 +126,15 @@ const Perfil = ({ navigation}) => {
 
   const EditProfile = () => {
     setModalConfiguration(false)
-    navigation.navigate("EditProfile", {description: downloadedDescription})
+    navigation.navigate("EditProfile", {description: downloadedDescription.description, id: downloadedDescription.id})
   }
-  //Eliminar
-  const clearPhotoURL = async () => {
-    const auth = getAuth();
-    updateProfile(auth.currentUser, {
-        photoURL: "null"
-    }).then(() => {
-        // Profile updated!
-        console.log("Limpiado")
-        // ...
-    }).catch((error) => {
-        // An error occurred
-        console.log("Error")
-        // ...
-    });
-    setReloadPhoto(false)
-    setTimeout(() => {
-      setReloadPhoto(true)
-    }, 1000);
-  };
-  const [reloadPhoto, setReloadPhoto] = useState(true)
+
   useFocusEffect(
     React.useCallback(() => {
-        const oldPhoto = currentUser.photoURL
-        let newPhoto
-        let auth
-        setTimeout(() => {
-          auth = getAuth();
-          newPhoto = auth.currentUser.photoURL
-          if(oldPhoto!=newPhoto && oldPhoto){
-              setReloadPhoto(false)
-              // console.log("adentro")
-              // console.log(oldPhoto)
-              // console.log(newPhoto)
-              setTimeout(() => {
-                setReloadPhoto(true)
-              }, 200);
-            }
-        }, 1000);
-        // console.log(oldPhoto)
-        // console.log(newPhoto)
+      setReloadPhoto(false)
+      setTimeout(() => {
+        setReloadPhoto(true)
+      }, 500);
     }, [])
   );
 
@@ -188,8 +156,8 @@ const Perfil = ({ navigation}) => {
             &&<Image source={{ uri: currentUser.photoURL }} style={styles.image} /> }
             </>
           )}
-        {downloadedDescription=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción</Text>}  
-        {downloadedDescription!='' &&  <Text style={styles.textDescription}>{downloadedDescription}</Text>}  
+        {downloadedDescription.description=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción</Text>}  
+        {downloadedDescription.description!='' &&  <Text style={styles.textDescription}>{downloadedDescription.description}</Text>}  
        
       </View>
       <Text style={styles.titleName}>Publicaciones</Text>
@@ -205,8 +173,6 @@ const Perfil = ({ navigation}) => {
       </View>
 
       <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
-      <Button style={{padding: 5, backgroundColor: "red"}} onPress={clearPhotoURL}>Clear foto</Button>
-
 
       {showNoPostsMessage ? (
         <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { globalStyles } from '../../globalStyles';
 import { TextInput } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
@@ -7,19 +7,23 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { getAuth, updateProfile } from "firebase/auth";
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
 
 const EditProfile = ({navigation, route}) => {
   const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
   const userData = getAuth().currentUser
   const [imageUri, setImageUri] = useState(userData.photoURL || null);
   const storage = getStorage();
-  const {description} = route.params
+  const {description, id} = route.params
+  const [update, setUpdate] = useState(false)
 
   useEffect(() => {
+    setValue("name", userData.displayName)
+    trigger("name")
     if(description){
       setValue("description", description)
       trigger("description")
+      setUpdate(true)
     }
   }, [])
   // Función para abrir el selector de imágenes y recortar
@@ -76,8 +80,16 @@ const EditProfile = ({navigation, route}) => {
   updateData = async(data) =>{
     if (Object.keys(errors).length === 0) {
       const newData = { description: data.description, id_usuario: userData.uid};
-
-      await addDoc(collection(FIREBASE_DB, 'descriptions'), newData);
+      if(update){
+        const descriptionsDocs = collection(FIREBASE_DB, 'descriptions');
+        const docRef = doc(descriptionsDocs, id);
+        await updateDoc(docRef, {
+          ...newData,
+          description: newData.description  // Asegúrate de actualizar el título
+        });
+      }else{
+        await addDoc(collection(FIREBASE_DB, 'descriptions'), newData);
+      }
       reset();
   } else {
       console.log(errors);
@@ -94,8 +106,31 @@ const EditProfile = ({navigation, route}) => {
   };
   return (
     <View style={globalStyles.mainContainer}>
-      <Text>EditProfile</Text>
-      <Text>Descripción de tu perfil</Text>
+      <Text style={styles.textActual}>Nombre de Perfil Actual</Text>
+      <Controller
+            name="name"
+            control={control}
+            rules={{ 
+              required: "Campo requerido",
+              pattern: {
+                  value: /([A-Z][a-z])*/,
+                  message: "El nombre no puede llevar numeros o caracteres especiales"
+              }
+          }}
+            defaultValue=""
+            render={({ field: { onChange, value } }) => (
+                <>
+                <TextInput
+                    value={value}
+                    onChangeText={(text) => onChange(text)}
+                    style={styles.inputName}
+                />
+                {errors.description && <Text style={globalStyles.errorMessage}>{errors.description.message}</Text>}
+                {!errors.description && <Text style={globalStyles.showInfoSelected}></Text>}
+                </>
+            )}
+        />
+      <Text style={styles.textActual}>Descripción de Perfil Actual</Text>
       <Controller
             name="description"
             control={control}
@@ -123,28 +158,64 @@ const EditProfile = ({navigation, route}) => {
                 </>
             )}
         />
-        <Button title="Seleccionar imagen" onPress={openImagePicker} />
-        {(imageUri && imageUri!="null") && (
+      <Text style={styles.textActual}>Foto de perfil</Text>
+        {(imageUri && imageUri!="null") ? (
             <>
             <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-            <Button title="Aceptar y subir" onPress={handleSubmit(onSubmit)} />
             </>
+        ): (
+          <>
+            <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.imagePreview}/>
+          </>
         )}
-      
+        <View style={{marginVertical:1}}></View>
+        <Button color="#0ABEDC" title='Seleccionar Foto' onPress={openImagePicker}></Button>
+        <View style={{marginVertical:4}}></View>
+
+        <View style={{marginVertical:8}}></View>
+        <Button color="#0ABEDC" title='Actualizar Información' onPress={handleSubmit(onSubmit)}></Button>
     </View>
   )
 }
 
 styles = StyleSheet.create({
-    inputDecription:{
-        marginTop: 5,
-        width: "90%",
-    },
-    imagePreview: {
-      width: 240,
-      height: 240,
-      marginTop: 20
-    }
+  inputDecription:{
+      marginTop: 5,
+      width: "95%",
+  },
+  inputName:{
+      marginTop: 5,
+      width: "95%",
+  },
+  imagePreview: {
+    width: 240,
+    height: 240,
+    marginTop: 10
+  },
+  textActual:{
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+    width:"95%",
+  },
+  dataActual:{
+    fontSize: 14,
+    fontWeight: "bold",
+    width:"95%",
+    marginBottom: "1%"
+  },
+  button: {
+    padding: 10,
+    elevation: 2,
+    marginLeft: 20,
+    marginRight: 10,
+    backgroundColor: '#0ABEDC',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 })
 
 export default EditProfile
