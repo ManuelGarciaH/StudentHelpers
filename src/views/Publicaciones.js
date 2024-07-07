@@ -40,6 +40,7 @@ const Publicaciones = ({ navigation}) => {
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
+            idUser: doc.data().id_usuario,
             title: doc.data().titulo,
             details: doc.data().detalles,
             cost: doc.data().costo,

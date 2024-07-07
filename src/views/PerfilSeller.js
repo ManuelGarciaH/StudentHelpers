@@ -2,22 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import PerfilHeader from '../components/PerfilHeader';
-import CreatePostModal from './ProfileModals/CreatePostModal';
 import ModalLoading from '../components/ModalLoading';
 
 import { FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
-import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
 
 const ProfileSeller  = ({ navigation, route }) => {
-const { userName } = route.params;
+const { userName, idUser } = route.params;
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+  const [downloadedUsers, setDownloadedUsers] = useState('');
+
+  useEffect(() => {
+    setDownloadedUsers('');
+    const usuariosTable = collection(FIREBASE_DB, "usuarios");
+    const postsQuery = query(usuariosTable, where("id_usuario", "==", idUser));
+
+    const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
+      if (snapshot.empty) {
+        console.log("No hay documentos en la colección 'usuarios'");
+      } else {
+        const doc = snapshot.docs[0];
+        const postData = {
+          id: doc.id,
+          description: doc.data().description,
+          name: doc.data().nombre,
+          url_photo: doc.data().url_foto,
+        };
+        setDownloadedUsers(postData);
+      }
+    }, (error) => {
+      console.error("Error al obtener documentos:", error);
+    });
+
+    // Cleanup function to unsubscribe from the listener when the component unmounts
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     setDownloadedPosts([]);
@@ -34,6 +57,7 @@ const { userName } = route.params;
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
+            idUser: doc.data().id_usuario,
             title: doc.data().titulo,
             details: doc.data().detalles,
             cost: doc.data().costo,
@@ -88,11 +112,13 @@ const { userName } = route.params;
     <View style={globalStyles.mainContainer}>
       <Text style={styles.titleName}>{userName}</Text>
       <View style={styles.descriptionContainer}>
-        <Image
-          source={require("../../Img/Sin-foto-Perfil.png")}
-          style={styles.image}
-        />
-        <Text style={styles.textDescription}>In et ullamco consectetur minim exercitation officia proident aliquip tempor voluptate ut anim sunt velit. Elit et eiusmod sunt proident. Do ad aute proident non aute consequat consectetur irure fugiat dolor.</Text>
+        {(!downloadedUsers.url_photo || downloadedUsers.url_photo=="null") 
+            && <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.image}/>}
+          
+        {(downloadedUsers.url_photo && downloadedUsers.url_photo!="null") 
+            &&<Image source={{ uri: downloadedUsers.url_photo }} style={styles.image} /> }
+        {downloadedUsers.description=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción.</Text>}  
+        {downloadedUsers.description!='' &&  <Text style={styles.textDescription}>{downloadedUsers.description}</Text>} 
       </View>
       <Text style={styles.titleName}>Publicaciones</Text>
       <View style={[styles.descriptionContainer, {marginBottom: 5, borderWidth: 0.5}]}>
@@ -164,6 +190,8 @@ const styles = StyleSheet.create({
    marginLeft: 5,
    marginRight: 4,
    textAlign: "justify",
+   width:"62%",
+   height: "93%"
   },
   imageStyle: {
     width: wp("28%"),

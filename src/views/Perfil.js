@@ -20,7 +20,7 @@ const Perfil = ({ navigation}) => {
   //States for modals
   const [modalCreatePost, setModalCreatePost] = useState(false);
   const [downloadedPosts, setDownloadedPosts] = useState([]);
-  const [downloadedDescription, setDownloadedDescription] = useState('');
+  const [downloadedUsers, setDownloadedUsers] = useState('');
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalConfiguration, setModalConfiguration] = useState(false)
   const [currentUser, setCurrentUser] = useState(getAuth().currentUser);
@@ -45,6 +45,7 @@ const Perfil = ({ navigation}) => {
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
+            idUser: doc.data().id_usuario,
             title: doc.data().titulo,
             details: doc.data().detalles,
             cost: doc.data().costo,
@@ -72,22 +73,23 @@ const Perfil = ({ navigation}) => {
   }, [userName]);
 
   useEffect(() => {
-    setDownloadedDescription('');
+    setDownloadedUsers('');
     console.log(currentUser.uid)
-    const descriptionsTable = collection(FIREBASE_DB, "descriptions");
-    const postsQuery = query(descriptionsTable, where("id_usuario", "==", currentUser.uid));
+    const usuariosTable = collection(FIREBASE_DB, "usuarios");
+    const postsQuery = query(usuariosTable, where("id_usuario", "==", currentUser.uid));
 
     const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
       if (snapshot.empty) {
-        console.log("No hay documentos en la colección 'descriptions'");
+        console.log("No hay documentos en la colección 'usuarios'");
       } else {
         const doc = snapshot.docs[0];
         const postData = {
           id: doc.id,
           description: doc.data().description,
-          
+          name: doc.data().nombre,
+          url_photo: doc.data().url_foto,
         };
-        setDownloadedDescription(postData);
+        setDownloadedUsers(postData);
       }
     }, (error) => {
       console.error("Error al obtener documentos:", error);
@@ -126,38 +128,28 @@ const Perfil = ({ navigation}) => {
 
   const EditProfile = () => {
     setModalConfiguration(false)
-    navigation.navigate("EditProfile", {description: downloadedDescription.description, id: downloadedDescription.id})
+    navigation.navigate("EditProfile", {description: downloadedUsers.description, id: downloadedUsers.id})
   }
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setReloadPhoto(false)
-      setTimeout(() => {
-        setReloadPhoto(true)
-      }, 500);
-    }, [])
-  );
 
   return (
     <View style={globalStyles.mainContainer}>
       <PerfilHeader modalConfiguration={modalConfiguration} setModalConfiguration={setModalConfiguration} />
       <Text style={styles.titleName}>{userName}</Text>
       <View style={styles.descriptionContainer}>
-        {!reloadPhoto ? (
-          <View style={[styles.image, {justifyContent: "center", alignItems: "center",}]}>
+        {!downloadedUsers ? (
+          <View style={[{justifyContent: "center", alignItems: "center", width: "100%", height: "34.3%"}]}>
             <ActivityIndicator style={styles.activityIndicator} color="#0000ff" />
           </View>
         ) : (
           <>
-          {(!currentUser.photoURL || currentUser.photoURL=="null") 
-            && <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.image}/>}
-          
-          {(currentUser.photoURL && currentUser.photoURL!="null") 
-            &&<Image source={{ uri: currentUser.photoURL }} style={styles.image} /> }
-            </>
+            {(!downloadedUsers.url_photo || downloadedUsers.url_photo=="null") 
+              && <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.image}/>}
+            {(downloadedUsers.url_photo && downloadedUsers.url_photo!="null") 
+              &&<Image source={{ uri: downloadedUsers.url_photo }} style={styles.image} /> }
+            {!downloadedUsers &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción.</Text>}  
+            {downloadedUsers.description &&  <Text style={styles.textDescription}>{downloadedUsers.description}</Text>}  
+          </>
           )}
-        {downloadedDescription.description=='' &&  <Text style={styles.textDescription}>Ingresa configuración para agregar una foto de perfil y descripción.</Text>}  
-        {downloadedDescription.description!='' &&  <Text style={styles.textDescription}>{downloadedDescription.description}</Text>}  
        
       </View>
       <Text style={styles.titleName}>Publicaciones</Text>
@@ -172,7 +164,7 @@ const Perfil = ({ navigation}) => {
         </View>
       </View>
 
-      <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} />
+      <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} id={currentUser.uid}/>
 
       {showNoPostsMessage ? (
         <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>

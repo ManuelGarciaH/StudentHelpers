@@ -23,6 +23,7 @@ const EditProfile = ({navigation, route}) => {
     if(description){
       setValue("description", description)
       trigger("description")
+      console.log("s")
       setUpdate(true)
     }
   }, [])
@@ -50,9 +51,8 @@ const EditProfile = ({navigation, route}) => {
         await uploadBytes(storageRef, blob);
     try {
       const downloadURL = await getDownloadURL(storageRef);
-      
-      trigger("image");
       setValue("image", downloadURL); 
+      trigger("image");
       return downloadURL;
     } catch (e) {
       console.error(e);
@@ -79,16 +79,17 @@ const EditProfile = ({navigation, route}) => {
 
   updateData = async(data) =>{
     if (Object.keys(errors).length === 0) {
-      const newData = { description: data.description, id_usuario: userData.uid};
+      const newData = { description: data.description, id_usuario: userData.uid, url_foto: getValues("image"), nombre: data.name};
       if(update){
-        const descriptionsDocs = collection(FIREBASE_DB, 'descriptions');
-        const docRef = doc(descriptionsDocs, id);
+        const usuariosDocs = collection(FIREBASE_DB, 'usuarios');
+        const docRef = doc(usuariosDocs, id);
         await updateDoc(docRef, {
           ...newData,
           description: newData.description  // Asegúrate de actualizar el título
         });
       }else{
-        await addDoc(collection(FIREBASE_DB, 'descriptions'), newData);
+        console.log(newData)
+        await addDoc(collection(FIREBASE_DB, 'usuarios'), newData);
       }
       reset();
   } else {
