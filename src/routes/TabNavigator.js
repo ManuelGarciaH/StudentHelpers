@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {  StyleSheet } from 'react-native';
 import BuscadorHeader from '../components/BuscadorHeader.js';
 import PerfilHeader from '../components/PerfilHeader.js';
+import ServiceHeader from '../components/ServiceHeader.js';
 import Header from '../components/Header.js';
 
 const Tab = createBottomTabNavigator();
@@ -63,10 +64,16 @@ function TabNavigator({navigation}) {
         }}/>
       <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
-            headerShown:false,
-            tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="shopping-bag" color={color} size={size} />
-            ),
+          tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
+              <Icon name="shopping-bag" color={color} size={size} />
+          ),
+          headerTitle: () => null, // Esto ocultará el título del encabezado
+          headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
+          headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
+          headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
+          headerRight: () => (
+            <ServiceHeader/>
+          ),
         }}/>
       <Tab.Screen name="Menu" component={MENU} 
         options={{

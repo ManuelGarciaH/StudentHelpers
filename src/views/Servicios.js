@@ -2,8 +2,7 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'rea
 import React from 'react';
 import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-
+import { FIREBASE_DB } from '../../Firebase';
 
 const serviciosData = [
   { 
@@ -32,7 +31,7 @@ const serviciosData = [
   },
   { 
     nombre: 'Enfermeria', 
-    descripcion: 'El Centro Universitario de Ciencias Exactas e Ingenierías ofrece a su comunidad servicios de salud integral dentro de sus instalaciones, ubicadas en el módulo “L”, dentro del sub-almacén. Servicios de medicina general, psicología y nutrición con un horario de atención de ', 
+    descripcion: 'Servicios medicos y de enfermeria', 
     telefono: 'Telefono: (33) 1378 5900 ext. 27603',
     coreo: 'Área médica: psocucei@cucei.udg.mx\n Área nutricional: Nutripso-cucei@cucei.udg.mx \nÁrea psicológica: Psicopso-cucei@cucei.udg.mx',
     horario: '8:00 a 20:00 horas.',
@@ -49,22 +48,86 @@ const serviciosData = [
 ];
 
 const Servicios = () => {
+  // const [downloadedPosts, setDownloadedPosts] = useState([]);
+  // const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+
+  // useEffect(() => {
+  //   const postsCollection = collection(FIREBASE_DB, "publicaciones");
+  //   const postsQuery = query(postsCollection, where("category", "==", "Viaje"));
+
+  //   const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+  //     console.log("A");
+  //     setDownloadedPosts([]);
+  //     if (querySnapshot.empty) {
+  //       console.log("No hay documentos en la colección 'modulos'");
+  //       setShowNoPostsMessage(true);
+  //     } else {
+  //       const newPosts = [];
+  //       querySnapshot.forEach((doc) => {
+  //         console.log("Datos del documento:", doc.data());
+  //         const postData = {
+  //           id: doc.id,
+  //           nombre: doc.data().title,
+  //           descripcion: doc.data().description,
+  //           coreo: doc.data().mail,
+  //           horaio: doc.data().schedule,
+  //           telefono: doc.data().phone,
+  //           images: doc.data().image 
+  //         };
+  //         newPosts.push(postData);
+  //       });
+  //       console.log(newPosts);
+  //       setDownloadedPosts(newPosts);
+  //       setShowNoPostsMessage(false);
+  //     }
+  //   }, (error) => {
+  //     console.error("Error al obtener documentos:", error);
+  //   });
+
+  //   return () => unsubscribe(); // Cleanup on unmount
+  // }, []);
+
+  //   const verPublicacion = (item) => {
+  //     navigation.navigate("VerPublicacion", { datos: item })
+  //   };
+
+  //   useEffect(() => {
+  //     const timeout = setTimeout(() => {
+  //       mostrar()
+  //     }, 5000);
+  //     return () => clearTimeout(timeout);
+  //   });
+
+  //   const mostrar = () => {
+  //     if (downloadedPosts.length === 0) {
+  //       setShowNoPostsMessage(true);
+  //     }else{
+  //       setShowNoPostsMessage(false);
+  //     }
+  //     console.log("algo")
+  //   }
   return (
     <View style={styles.scrollContainer}>
       <ScrollView >
+
         <View style={styles.content}>
           <Text style={styles.titulo}>Servicios Generales</Text>
           {serviciosData.map((servicio, index) => (
             <View key={index} style={styles.cuadro}>
               <TouchableOpacity style={styles.itemConteiner} >
-                <View style={styles.contenido}>
-                  <Text style={styles.nombre}>{servicio.nombre}</Text>
-                  <Text>{servicio.descripcion}</Text>
-                  <Text>{servicio.telefono}</Text>
-                  <Text>{servicio.coreo}</Text>
-                  <Text>{servicio.horario}</Text>
-                </View>
-                <Image source={servicio.imagen} style={styles.imagen} />
+                  <View style={styles.contenido}>
+                    <Text style={styles.nombre}>{servicio.nombre}</Text>
+                    <Text>{servicio.descripcion}</Text>
+                    <Text>{servicio.telefono}</Text>
+                    <Text>{servicio.coreo}</Text>
+                    <Text>{servicio.horario}</Text>
+                  </View>
+                  <View style={styles.imageButton} >
+                    <Image source={servicio.imagen} style={styles.imagen} />
+                    <View style={styles.buttonUbication} >
+                      <Icon name="map-marker" style={styles.dataIcon}/>
+                    </View>
+                  </View>
               </TouchableOpacity>
             </View>
           ))}
@@ -76,6 +139,18 @@ const Servicios = () => {
 
 
 const styles = StyleSheet.create({
+  buttonUbication: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    backgroundColor: '#A7DBCB',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginLeft: 20,
+    height: 50,
+    width: 50,
+  },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#A7DBCB',
@@ -124,6 +199,16 @@ const styles = StyleSheet.create({
     height: 80,
     marginLeft: 20,
     borderRadius: 5,
+  },
+  dataIcon:{
+    color: "white",
+    fontSize: 20,
+    marginRight: 0,
+  },
+  imageButton:{
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 
