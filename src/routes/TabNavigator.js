@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PUBLICACIONES from '../views/Publicaciones.js';
-import VIAJES from '../views/Viajes.js';
 import LIST_PROFILE from '../views/ListProfiles.js';
 import PERFIL from '../views/Perfil.js';
 import MENU from '../views/Menu.js';
@@ -50,22 +49,6 @@ function TabNavigator({navigation}) {
         }}
         
       />
-      {/* <Tab.Screen name="Viajes" component={VIAJES}
-        options={{
-            tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="map" color={color} size={size} />
-            ),
-            headerTitle: () => null, // Esto ocultará el título del encabezado
-            headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
-            headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
-            headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
-            header: () => (
-              <Header navigation={navigation}/>
-            ),
-            
-        }}
-        
-      /> */}
       <Tab.Screen name="Perfil" component={PERFIL} 
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función

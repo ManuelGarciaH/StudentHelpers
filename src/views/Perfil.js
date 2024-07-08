@@ -74,7 +74,6 @@ const Perfil = ({ navigation}) => {
 
   useEffect(() => {
     setDownloadedUsers('');
-    console.log(currentUser.uid)
     const usuariosTable = collection(FIREBASE_DB, "usuarios");
     const postsQuery = query(usuariosTable, where("id_usuario", "==", currentUser.uid));
 

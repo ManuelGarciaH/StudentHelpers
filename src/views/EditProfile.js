@@ -25,7 +25,6 @@ const EditProfile = ({navigation, route}) => {
       trigger("description")
       setValue("carrera", carrer)
       trigger("carrera")
-      console.log("s")
       setUpdate(true)
     }
   }, [])
@@ -36,7 +35,6 @@ const EditProfile = ({navigation, route}) => {
       height: 120,
       cropping: true // Habilita el recorte
     }).then(image => {
-      console.log(image);
       setImageUri(image.path); // Guarda la URI de la imagen recortada en el estado
     }).catch(error => {
       console.log(error);
@@ -90,7 +88,6 @@ const EditProfile = ({navigation, route}) => {
           description: newData.description  // Asegúrate de actualizar el título
         });
       }else{
-        console.log(newData)
         await addDoc(collection(FIREBASE_DB, 'usuarios'), newData);
       }
       reset();
@@ -102,8 +99,7 @@ const EditProfile = ({navigation, route}) => {
   const onSubmit = async (data) => {
     const photoURL = await uploadImageToFirebase();
     await updatePhotoURL(photoURL);
-    console.log('Imagen subida exitosamente:', photoURL);
-    console.log(getValues("image"))
+    console.log('Imagen subida exitosamente:');
     await updateData(data)
     navigation.goBack();
   };

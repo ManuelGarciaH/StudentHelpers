@@ -31,7 +31,6 @@ const ListProfiles = ({navigation}) => {
             };
             newPosts.push(postData);
             });
-            console.log(newPosts)
             setDownloadedPosts(newPosts);
             setShowNoPostsMessage(false);
         }

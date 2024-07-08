@@ -67,7 +67,6 @@ const VerPublicacion = ({navigation, route}) => {
 
     const [loading, setLoading] = useState(true)
     useEffect(() => {
-        console.log(datos)
         const timeout = setTimeout(() => {
             waiting()
         }, 1500);
@@ -95,7 +94,6 @@ const VerPublicacion = ({navigation, route}) => {
     const handleWhatsAppPress = () => {
         // const phoneNumber = '3319708970';
         const phoneNumber = datos.contact;
-        console.log(datos.contact)
     
         // Construye la URL de WhatsApp con el número de teléfono
         const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;

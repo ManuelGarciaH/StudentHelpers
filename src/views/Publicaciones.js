@@ -112,7 +112,6 @@ const Publicaciones = ({ navigation}) => {
       setSelectedCategory(category)
       setOpen(false)
       setModalLoading(true)
-      console.log(category)
     };
     return (
       <MenuDrawer

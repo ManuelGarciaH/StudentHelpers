@@ -101,7 +101,6 @@ const { userName, idUser } = route.params;
     }else{
       setShowNoPostsMessage(false);
     }
-    console.log("algo")
   }
 
   const openUpdatePosts = (item)=>{
