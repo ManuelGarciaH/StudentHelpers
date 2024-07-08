@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PUBLICACIONES from '../views/Publicaciones.js';
 import LIST_PROFILE from '../views/ListProfiles.js';
 import PERFIL from '../views/Perfil.js';
-import MENU from '../views/Menu.js';
 import SERVICIOS from '../views/Servicios.js';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconFontisto from 'react-native-vector-icons/Fontisto';
@@ -68,13 +67,6 @@ function TabNavigator({navigation}) {
             headerShown:false,
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
                 <Icon name="shopping-bag" color={color} size={size} />
-            ),
-        }}/>
-      <Tab.Screen name="Menu" component={MENU} 
-        options={{
-            headerShown:false,
-            tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="menu" color={color} size={size} />
             ),
         }}/>
     </Tab.Navigator>
