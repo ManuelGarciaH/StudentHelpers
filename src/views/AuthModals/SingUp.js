@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Alert, Platform} from 'react-native'
 import React, { useState } from 'react';
 import {globalStyles} from '../../../globalStyles';
+import validErrorCodes from '../../helpers/errorCodes';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 // firebase
 import { FIREBASE_AUTH } from '../../../Firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
@@ -30,13 +32,14 @@ const SingUp = ({ navigation }) => {
                     // Error al actualizar el perfil
                     console.error("Error al actualizar el nombre:", error);
                 });
-                // ...
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                Alert.alert(`${errorCode}: ${errorMessage}`)
-                // ..
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Email fallido',
+                    textBody: validErrorCodes(error.code),
+                    autoClose: 3000,
+                  })
             });
     };
 
@@ -46,7 +49,7 @@ const SingUp = ({ navigation }) => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
             style={{flex: 1}}
         >
-
+            <AlertNotificationRoot/>
             <View style={globalStyles.form}>
                 <Text style={globalStyles.txtBasic}>Nombre</Text>
                 <Controller

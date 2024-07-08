@@ -4,11 +4,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import {globalStyles} from '../../../globalStyles';
-import AlertModal from '../../components/AlertModal';
+import validErrorCodes from '../../helpers/errorCodes';
 // firebase
 import {FIREBASE_AUTH} from '../../../Firebase';
 import {sendPasswordResetEmail} from 'firebase/auth';
@@ -16,23 +16,30 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const ForgotPassword = () => {
   const [correo, setCorreo] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
 
   const recoveryEmail = async () => {
-    setModalVisible(true);
-    // sendPasswordResetEmail(FIREBASE_AUTH, correo)
-    //   .then(Response => {
-    //     console.log(Response);
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.log(error);
-    //   });
+    sendPasswordResetEmail(FIREBASE_AUTH, correo)
+      .then( () => {
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Email enviado',
+          textBody: 'Email para restablecer contraseña enviado correctamente',
+          autoClose: 3000,
+        })
+      })
+      .catch((error) => {
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Email fallido',
+          textBody: validErrorCodes(error.code),
+          autoClose: 3000,
+        })
+      });
   };
 
   return (
     <SafeAreaView>
+      <AlertNotificationRoot/>
       <View style={[globalStyles.form]}>
         <Text style={styles.title}>Restablecer tu contraseña</Text>
         <Text style={styles.txt}>
@@ -50,14 +57,12 @@ const ForgotPassword = () => {
             inputMode="email"></TextInput>
         </View>
 
-        <TouchableOpacity
-          style={{alignSelf: 'center'}} onPress={recoveryEmail}>
-          <View style={globalStyles.boton}>
-            <Text style={globalStyles.txtBoton}>Enviar</Text>
-          </View>
-        </TouchableOpacity>
-
-        <AlertModal visible={modalVisible} onClose={() => setModalVisible(false)} message={'Pacoo'} />
+          <TouchableOpacity
+            style={{alignSelf: 'center'}} onPress={recoveryEmail}>
+            <View style={globalStyles.boton}>
+              <Text style={globalStyles.txtBoton}>Enviar</Text>
+            </View>
+          </TouchableOpacity>
 
       </View>
     </SafeAreaView>
