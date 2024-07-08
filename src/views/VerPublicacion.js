@@ -67,6 +67,7 @@ const VerPublicacion = ({navigation, route}) => {
 
     const [loading, setLoading] = useState(true)
     useEffect(() => {
+        console.log(datos)
         const timeout = setTimeout(() => {
             waiting()
         }, 1500);

@@ -86,6 +86,7 @@ const Perfil = ({ navigation}) => {
         const postData = {
           id: doc.id,
           description: doc.data().description,
+          carrer: doc.data().carrer,
           name: doc.data().nombre,
           url_photo: doc.data().url_foto,
         };
@@ -128,7 +129,7 @@ const Perfil = ({ navigation}) => {
 
   const EditProfile = () => {
     setModalConfiguration(false)
-    navigation.navigate("EditProfile", {description: downloadedUsers.description, id: downloadedUsers.id})
+    navigation.navigate("EditProfile", {description: downloadedUsers.description, id: downloadedUsers.id, carrer: downloadedUsers.carrer})
   }
 
   return (

@@ -19,56 +19,84 @@ const Publicaciones = ({ navigation}) => {
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Tendencias')
   const [modalLoading, setModalLoading] = useState(true)
+  console.log("publicacion")
 
   const showPosts = async (category) => {
-    const postsCollection = collection(FIREBASE_DB, "publicaciones");
-    let postsQuery
-    if(category=="Tendencias"){
-      postsQuery = query(postsCollection, where("category", "!=", " "));
-    }else{
-      postsQuery = query(postsCollection, where("category", "==", category));
-    }
+    if(category!="Perfiles"){
+      const postsCollection = collection(FIREBASE_DB, "publicaciones");
+      let postsQuery
+      if(category=="Tendencias"){
+        postsQuery = query(postsCollection, where("category", "!=", "Viaje"));
+        }else{
+          postsQuery = query(postsCollection, where("category", "==", category));
+        }
 
-    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
-      setDownloadedPosts([]);
-      if (querySnapshot.empty) {
-        console.log("No hay documentos en la colección 'modulos'");
-        setShowNoPostsMessage(true);
-      } else {
-        const newPosts = [];
-        querySnapshot.forEach((doc) => {
-          const postData = {
-            id: doc.id,
-            userName: doc.data().nombreUsuario,
-            idUser: doc.data().id_usuario,
-            title: doc.data().titulo,
-            details: doc.data().detalles,
-            cost: doc.data().costo,
-            maxCost: doc.data().costoMaximo,
-            cantidad: doc.data().cantidad,
-            category: doc.data().category,
-            schedule: doc.data().horario,
-            scheduleEnd: doc.data().horarioFin,
-            coordinates: doc.data().coordenadas,
-            location: doc.data().lugar,
-            days: doc.data().dias,
-            contact: doc.data().contacto,
-            images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
-          };
-          newPosts.push(postData);
-        });
-        setDownloadedPosts(newPosts);
-        setShowNoPostsMessage(false);
-        setTimeout(() => {
-          setModalLoading(false)
-        }, 600);
-      }
-      
-    }, (error) => {
-      // console.error("Error al obtener documentos:", error);
-    });
-    
-    return () => unsubscribe(); // Cleanup on unmount
+      const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+        setDownloadedPosts([]);
+        if (querySnapshot.empty) {
+          console.log("No hay documentos en la colección 'modulos'");
+          setShowNoPostsMessage(true);
+        } else {
+          const newPosts = [];
+          querySnapshot.forEach((doc) => {
+            const postData = {
+              id: doc.id,
+              userName: doc.data().nombreUsuario,
+              idUser: doc.data().id_usuario,
+              title: doc.data().titulo,
+              details: doc.data().detalles,
+              cost: doc.data().costo,
+              maxCost: doc.data().costoMaximo,
+              cantidad: doc.data().cantidad,
+              category: doc.data().category,
+              schedule: doc.data().horario,
+              scheduleEnd: doc.data().horarioFin,
+              location: doc.data().lugar,
+              days: doc.data().dias,
+              contact: doc.data().contacto,
+              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+            };
+            newPosts.push(postData);
+          });
+          setDownloadedPosts(newPosts);
+          setShowNoPostsMessage(false);
+          setTimeout(() => {
+            setModalLoading(false);
+          }, 500);
+        }
+      }, (error) => {
+        // console.error("Error al obtener documentos:", error);
+      });
+      return () => unsubscribe(); // Cleanup on unmount
+    }else{
+      const usuariosCollection = collection(FIREBASE_DB, "usuarios");
+      const unsubscribe = onSnapshot(usuariosCollection, (querySnapshot) => {
+        setDownloadedPosts([]);
+        if (querySnapshot.empty) {
+          console.log("No hay documentos en la colección 'usuarios'");
+          setShowNoPostsMessage(true);
+        } else {
+          const newPosts = [];
+          querySnapshot.forEach((doc) => {
+            const postData = {
+              id: doc.id,
+              userName: doc.data().nombre,
+              url_photo: doc.data().url_foto,
+            };
+            newPosts.push(postData);
+          });
+          console.log(newPosts)
+          setDownloadedPosts(newPosts);
+          setShowNoPostsMessage(false);
+          setTimeout(() => {
+            setModalLoading(false);
+          }, 700);
+        }
+      }, (error) => {
+        // console.error("Error al obtener documentos:", error);
+      });
+      return () => unsubscribe(); // Cleanup on unmount
+    }
   }
 
   useEffect(() => {
@@ -82,18 +110,11 @@ const Publicaciones = ({ navigation}) => {
     return () => clearTimeout(timeout);
   });
 
-    const verPublicacion = (item) => {
-      if(!open){
-        navigation.navigate("VerPublicacion", { datos: item })
-      }
-    };
-
-    useEffect(() => {
-      const timeout = setTimeout(() => {
-        mostrar()
-      }, 5000);
-      return () => clearTimeout(timeout);
-    });
+  const verPublicacion = (item) => {
+    if(!open){
+      navigation.navigate("VerPublicacion", { datos: item })
+    }
+  };
 
     const mostrar = () => {
       if (downloadedPosts.length === 0) {
@@ -109,10 +130,12 @@ const Publicaciones = ({ navigation}) => {
       setOpen(!open);
     };
     const handleCategoryChange = (category) => {
-      setSelectedCategory(category)
-      setOpen(false)
-      setModalLoading(true)
-      console.log(category)
+      if(selectedCategory != category){
+        setModalLoading(true);
+        setSelectedCategory(category)
+        setOpen(false)
+        showPosts(category)
+      }
     };
     return (
       <MenuDrawer
@@ -135,8 +158,7 @@ const Publicaciones = ({ navigation}) => {
             <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
           ) : (
           <>
-          {modalLoading ? (
-            // <ActivityIndicator size="large" color="#0000ff" />
+          {downloadedPosts > 0  || modalLoading ? (
               <ModalLoading visible={true}/>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -146,22 +168,35 @@ const Publicaciones = ({ navigation}) => {
                 {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                      <View style={styles.imageContainer}>
-                        <Image
-                          source={{ uri: item.images[0] }}
-                          style={styles.image}
-                        />
-                      </View>
-                      
-                      <View  style={styles.dataContainer}>
-                        <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
-                        {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
-                        <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
-                        {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
-                        {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        {item.category=="Viaje" && <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>}
-                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
-                      </View>
+                      {selectedCategory != "Perfiles" ? (
+                        <>
+                          <View style={styles.imageContainer}>
+                            <Image
+                              source={{ uri: item.images[0] }}
+                              style={styles.image}
+                            />
+                          </View>
+                          <View  style={styles.dataContainer}>
+                            <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
+                            <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                            <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
+                            {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
+                          </View>
+                        </>
+                      ) : (
+                        <>
+                          <View style={styles.imageContainer}>
+                            <Image
+                              source={{ uri: item.url_photo }}
+                              style={styles.image}
+                            />
+                          </View>
+                          <View  style={styles.dataContainer}>
+                            <Text style={styles.textUserName}>{item.userName}</Text>
+                            <Text style={styles.textCarrer}>Ingenieria en Computación</Text>
+                          </View>
+                        </>
+                      )}
                     </TouchableOpacity>
                   </View>
                 ))}
@@ -208,7 +243,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     // borderWidth: 4,
-    marginTop: 5,
+    // marginTop: 5,
     flex: 1,
   },
   image: {
@@ -257,6 +292,15 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: "black",
     fontWeight:"bold",
+  },
+  textUserName:{
+    fontSize: 20,
+    color: "black",
+    fontWeight: "600",
+  },
+  textCarrer:{
+    fontSize: 18,
+    color: "black",
   },
 });
 

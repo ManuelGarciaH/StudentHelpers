@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { globalStyles } from '../../globalStyles';
 import { TextInput } from 'react-native-paper';
 import { Controller, useForm } from 'react-hook-form';
@@ -14,7 +14,7 @@ const EditProfile = ({navigation, route}) => {
   const userData = getAuth().currentUser
   const [imageUri, setImageUri] = useState(userData.photoURL || null);
   const storage = getStorage();
-  const {description, id} = route.params
+  const {description, id, carrer} = route.params
   const [update, setUpdate] = useState(false)
 
   useEffect(() => {
@@ -23,6 +23,8 @@ const EditProfile = ({navigation, route}) => {
     if(description){
       setValue("description", description)
       trigger("description")
+      setValue("carrera", carrer)
+      trigger("carrera")
       console.log("s")
       setUpdate(true)
     }
@@ -79,7 +81,7 @@ const EditProfile = ({navigation, route}) => {
 
   updateData = async(data) =>{
     if (Object.keys(errors).length === 0) {
-      const newData = { description: data.description, id_usuario: userData.uid, url_foto: getValues("image"), nombre: data.name};
+      const newData = { description: data.description, id_usuario: userData.uid, url_foto: getValues("image"), nombre: data.name, carrer: data.carrera};
       if(update){
         const usuariosDocs = collection(FIREBASE_DB, 'usuarios');
         const docRef = doc(usuariosDocs, id);
@@ -107,74 +109,104 @@ const EditProfile = ({navigation, route}) => {
   };
   return (
     <View style={globalStyles.mainContainer}>
-      <Text style={styles.textActual}>Nombre de Perfil Actual</Text>
-      <Controller
-            name="name"
-            control={control}
-            rules={{ 
+      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+        <Text style={styles.textActual}>Nombre</Text>
+        <Controller
+          name="name"
+          control={control}
+          rules={{ 
+            required: "Campo requerido",
+            pattern: {
+                value: /([A-Z][a-z])*/,
+                message: "El nombre no puede llevar numeros o caracteres especiales"
+            }
+          }}
+          defaultValue=""
+          render={({ field: { onChange, value } }) => (
+              <>
+              <TextInput
+                  value={value}
+                  onChangeText={(text) => onChange(text)}
+                  style={styles.inputName}
+              />
+              {errors.name && <Text style={globalStyles.errorMessage}>{errors.name.message}</Text>}
+              {!errors.name && <Text style={globalStyles.showInfoSelected}></Text>}
+              </>
+          )}
+        />
+        <Text style={styles.textActual}>Descripción</Text>
+        <Controller
+          name="description"
+          control={control}
+          rules={{ 
               required: "Campo requerido",
-              pattern: {
-                  value: /([A-Z][a-z])*/,
-                  message: "El nombre no puede llevar numeros o caracteres especiales"
+              maxLength:{
+              value: 310,
+              message: "La descripción no pueden pasar de 310 caracteres"
+              },
+              minLength:{
+              value: 5,
+              message: "La descripción debe contener al menos 5 caracteres"
               }
           }}
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-                <>
-                <TextInput
-                    value={value}
-                    onChangeText={(text) => onChange(text)}
-                    style={styles.inputName}
-                />
-                {errors.name && <Text style={globalStyles.errorMessage}>{errors.name.message}</Text>}
-                {!errors.name && <Text style={globalStyles.showInfoSelected}></Text>}
-                </>
-            )}
+          defaultValue=""
+          render={({ field: { onChange, value } }) => (
+              <>
+              <TextInput multiline={true} numberOfLines={6}
+                  value={value}
+                  onChangeText={(text) => onChange(text)}
+                  style={styles.inputDecription}
+              />
+              {errors.description && <Text style={globalStyles.errorMessage}>{errors.description.message}</Text>}
+              {!errors.description && <Text style={globalStyles.showInfoSelected}></Text>}
+              </>
+          )}
         />
-      <Text style={styles.textActual}>Descripción de Perfil Actual</Text>
-      <Controller
-            name="description"
-            control={control}
-            rules={{ 
-                required: "Campo requerido",
-                maxLength:{
-                value: 310,
-                message: "La descripción no pueden pasar de 310 caracteres"
-                },
-                minLength:{
-                value: 5,
-                message: "La descripción debe contener al menos 5 caracteres"
-                }
-            }}
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-                <>
-                <TextInput multiline={true} numberOfLines={6}
-                    value={value}
-                    onChangeText={(text) => onChange(text)}
-                    style={styles.inputDecription}
-                />
-                {errors.description && <Text style={globalStyles.errorMessage}>{errors.description.message}</Text>}
-                {!errors.description && <Text style={globalStyles.showInfoSelected}></Text>}
-                </>
-            )}
+        <Text style={styles.textActual}>Carrera</Text>
+        <Controller
+          name="carrera"
+          control={control}
+          rules={{ 
+            required: "Campo requerido",
+            maxLength:{
+            value: 50,
+            message: "La carrera no pueden pasar de 50 caracteres"
+            },
+            minLength:{
+            value: 5,
+            message: "La carrera debe contener al menos 5 caracteres"
+            }
+          }}
+          defaultValue=""
+          render={({ field: { onChange, value } }) => (
+              <>
+              <TextInput
+                  value={value}
+                  onChangeText={(text) => onChange(text)}
+                  style={styles.inputName}
+              />
+              {errors.carrera && <Text style={globalStyles.errorMessage}>{errors.carrera.message}</Text>}
+              {!errors.carrera && <Text style={globalStyles.showInfoSelected}></Text>}
+              </>
+          )}
         />
-      <Text style={styles.textActual}>Foto de perfil</Text>
+        <Text style={styles.textActual}>Foto de perfil</Text>
         {(imageUri && imageUri!="null") ? (
-            <>
+          <>
             <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-            </>
+          </>
         ): (
           <>
             <Image source={require("../../Img/Sin-foto-Perfil.png")} style={styles.imagePreview}/>
           </>
         )}
-        <View style={{marginVertical:1}}></View>
+        <View style={{marginVertical:3}}></View>
         <Button color="#0ABEDC" title='Seleccionar Foto' onPress={openImagePicker}></Button>
-        <View style={{marginVertical:4}}></View>
+        <View style={{marginVertical:5}}></View>
 
-        <View style={{marginVertical:8}}></View>
         <Button color="#0ABEDC" title='Actualizar Información' onPress={handleSubmit(onSubmit)}></Button>
+        <View style={{marginVertical:4}}></View>
+      </ScrollView>
     </View>
   )
 }
@@ -182,20 +214,21 @@ const EditProfile = ({navigation, route}) => {
 styles = StyleSheet.create({
   inputDecription:{
       marginTop: 5,
-      width: "95%",
+      width: "100%",
   },
   inputName:{
       marginTop: 5,
-      width: "95%",
+      width: "100%",
   },
   imagePreview: {
     width: 240,
     height: 240,
-    marginTop: 10
+    marginTop: 10,
+    alignSelf: "center",
   },
   textActual:{
     color: "black",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     width:"95%",
   },
@@ -216,6 +249,12 @@ styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  scrollView:{
+    // borderWidth: 4,
+    // marginTop: 5,
+    flex: 1,
+    padding: 6,
   },
 })
 
