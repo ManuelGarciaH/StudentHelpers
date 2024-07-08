@@ -1,42 +1,40 @@
 import React from 'react';
-import { TextInput, Image, TouchableOpacity, ImageBackground, View, StyleSheet } from 'react-native';
+import { ImageBackground, View, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { globalStyles } from './globalStyles';
-import { Searchbar } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
-const PerfilHeader = () => {
-  return (
-    <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.editarPerfil}>
-                <Icon name="edit" size={50} color="white" />
-            </TouchableOpacity>
-        </View>
-    </ImageBackground>
+const PerfilHeader = ({ modalConfiguration, setModalConfiguration }) => {
+    const openModalConfiguration = () => {
+        setModalConfiguration(true);
+    };
 
-    // <View style={styles.container}>
-    //     <TouchableOpacity style={styles.editarPerfil}>
-    //         <Icon name="edit" size={50} color="white" />
-    //     </TouchableOpacity>
-    // </View>
-  )
-}
+    return (
+        <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
+            <View style={styles.container}>
+                <TouchableOpacity style={styles.editarPerfil} onPress={openModalConfiguration}>
+                    <Icon name="gear" size={50} color="black" />
+                </TouchableOpacity>
+            </View>
+        </ImageBackground>
+    );
+};
 
 const styles = StyleSheet.create({
-    imgBackGround:{
+    imgBackGround: {
         width: wp('100%'),
         height: hp('7.5%'),
     },
     container: {
+        flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-end',
+        alignItems:"flex-end",
+        marginRight:"1.5%",
     },
-    editarPerfil:{
+    editarPerfil: {
         alignItems: "center",
-        justifyContent: "flex-end",
+        justifyContent: "center",
+        height: "100%",
     },
 });
 
-export default PerfilHeader
+export default PerfilHeader;

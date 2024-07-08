@@ -5,6 +5,7 @@ import IconCom from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import IconFontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
+import IconFontisto from 'react-native-vector-icons/Fontisto';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const DrawerCategory = ({ setVisible, selectedCategory, handleCategoryChange}) => {
@@ -64,6 +65,15 @@ const DrawerCategory = ({ setVisible, selectedCategory, handleCategoryChange}) =
         </View>
           
       </TouchableOpacity>
+
+      <View style={styles.delimitador}></View>
+
+      <TouchableOpacity onPress={() => handleCategoryChange("Viaje")}>
+          <View style={[styles.containerCategory, selectedCategory === 'Viaje' && styles.selectedCategory]}>
+            <Icon name="map" color={"black"} size={28} style={styles.icon} />
+            <Text style={styles.textCategories}>Viajes</Text>
+          </View>
+      </TouchableOpacity>
       
       <View style={styles.delimitador}></View>
 
@@ -75,9 +85,6 @@ const DrawerCategory = ({ setVisible, selectedCategory, handleCategoryChange}) =
       </TouchableOpacity>
 
       <View style={styles.delimitador}></View>
-      <TouchableOpacity onPress={closeDrawer} style={styles.animatedBox}>
-        <Text>Close</Text>
-      </TouchableOpacity>
     </View>
   );
 };

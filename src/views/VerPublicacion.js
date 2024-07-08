@@ -78,7 +78,7 @@ const VerPublicacion = ({navigation, route}) => {
     }
 
     const watchSellerProfile = () => {
-        navigation.navigate("ProfileSeller", {userName: datos.userName})
+        navigation.navigate("ProfileSeller", {userName: datos.userName, idUser: datos.idUser})
     }
 
     const openModal = (image, index) => {
@@ -92,9 +92,8 @@ const VerPublicacion = ({navigation, route}) => {
         setSelectedImage(null);
     }
     const handleWhatsAppPress = () => {
-        const phoneNumber = '3319708970';
-        // const phoneNumber = datos.contact;
-        console.log(datos.contact)
+        // const phoneNumber = '3319708970';
+        const phoneNumber = datos.contact;
     
         // Construye la URL de WhatsApp con el número de teléfono
         const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;

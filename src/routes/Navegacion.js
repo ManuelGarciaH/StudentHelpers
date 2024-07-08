@@ -13,6 +13,7 @@ import LOGIN from '../views/AuthModals/Login.js';
 import VERPUBLICACION from '../views/VerPublicacion.js';
 import PROFILE from '../views/Perfil.js';
 import PROFILE_SELLER from '../views/PerfilSeller.js';
+import EDIT_PROFILE from '../views/EditProfile.js';
 import PUBLICACIONES from '../views/Publicaciones.js';
 import TAB_NAVIGATOR from '../routes/TabNavigator.js';
 import UPDATE_POSTS from '../views/UpdatePosts.js'
@@ -40,6 +41,17 @@ function InsideView({navigation}) {
       <Stack.Screen name="Publicaciones" component={PUBLICACIONES}/>
       <Stack.Screen name="Profile" component={PROFILE} />
       <Stack.Screen name="ProfileSeller" component={PROFILE_SELLER} 
+        options={{
+          headerTitle: () => null, // Esto ocultará el título del encabezado
+          headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
+          headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
+          headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
+          header: () => (
+            <Header navigation={navigation} back={true}/>
+          ),
+        }} />
+        
+      <Stack.Screen name="EditProfile" component={EDIT_PROFILE} 
         options={{
           headerTitle: () => null, // Esto ocultará el título del encabezado
           headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
