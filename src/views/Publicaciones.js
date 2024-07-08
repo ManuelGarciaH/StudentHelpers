@@ -19,6 +19,7 @@ const Publicaciones = ({ navigation}) => {
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Tendencias')
   const [modalLoading, setModalLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('');
 
   const showPosts = async (category) => {
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
@@ -110,9 +111,15 @@ const Publicaciones = ({ navigation}) => {
     };
     const handleCategoryChange = (category) => {
       setSelectedCategory(category)
+      setSearchQuery("")
       setOpen(false)
       setModalLoading(true)
     };
+    const filteredPosts = downloadedPosts.filter((item) => 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      // item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      // item.location.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     return (
       <MenuDrawer
         open={open}
@@ -124,7 +131,7 @@ const Publicaciones = ({ navigation}) => {
         opacity={1}
       >
         <View style={globalStyles.mainContainer}>
-          <BuscadorHeader visible={open} setVisible={setOpen}/>
+        <BuscadorHeader visible={open} setVisible={setOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} showDrawer={true}/>
           {open && (
             <TouchableWithoutFeedback onPress={toggleOpen}>
               <View style={styles.overlay} />
@@ -142,7 +149,7 @@ const Publicaciones = ({ navigation}) => {
                 <View style={styles.categoryContainer}>
                   <Text style={styles.textCategoryTitle}>{selectedCategory}</Text>
                 </View>
-                {downloadedPosts.map((item, index) => (
+                {filteredPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                       <View style={styles.imageContainer}>
@@ -250,9 +257,10 @@ const styles = StyleSheet.create({
   },
   categoryContainer:{
     marginBottom:"1%",
-    width:"100%"
+    width: wp("95%"),
   },
   textCategoryTitle:{
+    textAlign:"left",
     fontSize: 36,
     color: "black",
     fontWeight:"bold",

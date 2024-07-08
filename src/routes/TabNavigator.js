@@ -44,7 +44,7 @@ function TabNavigator({navigation}) {
             header: () => (
               <Header navigation={navigation}/>
             ),
-            
+            headerShown: false,
         }}
         
       />

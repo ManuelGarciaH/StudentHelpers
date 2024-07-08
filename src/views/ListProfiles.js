@@ -7,11 +7,13 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, onSnapshot } from "firebase/firestore";
+import BuscadorHeader from '../components/BuscadorHeader';
 
 const ListProfiles = ({navigation}) => {
     const [downloadedPosts, setDownloadedPosts] = useState([]);
     const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
     const [modalLoading, setModalLoading] = useState(true)
+    const [searchQuery, setSearchQuery] = useState('');
   
     const showPosts = async () => {
         const usuariosCollection = collection(FIREBASE_DB, "usuarios");
@@ -67,9 +69,12 @@ const ListProfiles = ({navigation}) => {
     const watchSellerProfile = (item) => {
         navigation.navigate("ProfileSeller", {userName: item.userName, idUser: item.idUser})
     }
+    const filteredPosts = downloadedPosts.filter((item) => 
+      item.userName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
       return (
         <View style={globalStyles.mainContainer}>
-        {/* <BuscadorHeader visible={open} setVisible={setOpen}/> */}
+        <BuscadorHeader visible={open} setVisible={setOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} showDrawer={false}/>
             {showNoPostsMessage ? (
                 <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
             ) : (
@@ -82,7 +87,7 @@ const ListProfiles = ({navigation}) => {
                     <View style={styles.categoryContainer}>
                         <Text style={styles.textCategoryTitle}>Perfiles</Text>
                     </View>
-                    {downloadedPosts.map((item, index) => (
+                    {filteredPosts.map((item, index) => (
                     <View key={index} style={styles.cuadro}> 
                         <TouchableOpacity style={styles.itemConteiner} onPress={() => watchSellerProfile(item)}>
                         <View style={styles.imageContainer}>
@@ -164,7 +169,7 @@ const styles = StyleSheet.create({
     },
     categoryContainer:{
       marginBottom:"1%",
-      width:"100%"
+      width: wp("95%"),
     },
     textCategoryTitle:{
       fontSize: 36,

@@ -6,11 +6,9 @@ import { globalStyles } from './globalStyles';
 import { Searchbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const BuscadorHeader = ({visible, setVisible,}) => {
-  const [searchQuery, setSearchQuery] = useState('');
+const BuscadorHeader = ({ visible, setVisible, searchQuery, setSearchQuery, showDrawer}) => {
 
   const handleSearch = (query) => {
-    console.log(query); // Imprime el texto en la consola
     setSearchQuery(query); // Actualiza el estado del texto de búsqueda
   };
 
@@ -21,9 +19,12 @@ const BuscadorHeader = ({visible, setVisible,}) => {
   return (
     <ImageBackground style={styles.imgBackGround} source={require("../../Img/background.jpeg")}>
         <View style={styles.container}>
-            <TouchableOpacity onPress={openDrawer}>
+            {showDrawer && <TouchableOpacity onPress={openDrawer}>
                 <Icon name="menu" color={"black"} size={46} style={styles.icon}/>
-            </TouchableOpacity>
+            </TouchableOpacity>}
+            {!showDrawer && <View style={{width:"12.8%"}}>
+                
+            </View>}
             <Searchbar
                 placeholder="Search"
                 onChangeText={handleSearch}
