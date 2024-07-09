@@ -5,23 +5,36 @@ import { globalStyles } from '../../../globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useState } from 'react';
 import { FIREBASE_DB } from '../../../Firebase';
-import { collection, doc, deleteDoc} from "firebase/firestore";
-import { getStorage, ref, deleteObject} from "firebase/storage";
+import { collection, doc, deleteDoc, query, where, getDocs} from "firebase/firestore";
+import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
+import ModalLoading from '../../components/ModalLoading';
 
 
 const DeleteConfirmModal = ({userName, item}) => {
 const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
+const [loading, setLoading] = useState(false)
 
   const onCancel = () => {
     onClose();
   };
   async function deleteDocument(idDocument) {
     try {
+      const qualificationCollection = collection(FIREBASE_DB, "calificacion");
+      const querySnapshot = await getDocs(query(qualificationCollection, where("id_publicacion", "==", idDocument)));
+      const document = querySnapshot.docs[0];
+
+      const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
+      const docQualificacionRef = doc(deleteQualificationCollection, document.id);
+      await deleteDoc(docQualificacionRef);
+      console.log('Calificacion eliminada exitosamente');
+
       const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
       const docRef = doc(publicacionesCollection, idDocument);
       await deleteDoc(docRef);
-
       console.log('Documento eliminado exitosamente');
+
+      
+
     } catch (error) {
       console.error('Error al eliminar el documento: ', error);
     }
@@ -30,15 +43,23 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
   async function deleteDirectory(title) {
     try {
       const storage = getStorage();
-      const directoryRef = ref(storage, `publicaciones/${userName}/${title}/image_0.png`);
-      await deleteObject(directoryRef);
+      const directoryRef = ref(storage, `publicaciones/${userName}/${title}`);
+      // List all items (files) and directories in this directory
+      const listResult = await listAll(directoryRef);
+
+      // Iterate through each file and delete it
+      listResult.items.forEach(async (fileRef) => {
+        await deleteObject(fileRef);
+        console.log(`Archivo ${fileRef.name} eliminado exitosamente`);
+      });
+      // await deleteObject(directoryRef);
       console.log('Directorio eliminado exitosamente');
     } catch (error) {
       console.error('Error al eliminar el directorio: ', error);
     }
   }
   const confirmButton = () => {
-    console.log(item.id)
+    setLoading(true)
     deleteDocument(item.id)
     deleteDirectory(item.title)
     onClose();
@@ -47,6 +68,7 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
     setModalDeleteConfirm(true);
   }
   const onClose=() => {
+    setLoading(false)
     setModalDeleteConfirm(false)
   }
 
@@ -63,6 +85,7 @@ const [modalDeleteConfirm, setModalDeleteConfirm] = useState(false);
         onClose()
         }}>
             <View style={globalStyles.centerContainer}>
+              {loading && <ModalLoading visible={true}/>}
                 <View style={styles.modalContainer}>
                     <Text style={styles.textAsk}>¿Estás seguro de que quieres borrar la publicación?</Text>
                     <View style={styles.buttonContainer}>

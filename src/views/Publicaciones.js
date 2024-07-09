@@ -1,65 +1,92 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, 
-  ScrollView, Image, ActivityIndicator} from 'react-native'
+  ScrollView, Image, ActivityIndicator,
+  DrawerLayoutAndroid,
+  TouchableWithoutFeedback} from 'react-native'
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import BuscadorHeader from '../components/BuscadorHeader';
+import DrawerCategory from '../components/DrawerCategory';
+import MenuDrawer from 'react-native-side-drawer';
+import { overlay } from 'react-native-paper';
 
-const Publicaciones = ({ navigation }) => {
+const Publicaciones = ({ navigation}) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('Tendencias')
+  const [modalLoading, setModalLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const showPosts = async (category) => {
+    const postsCollection = collection(FIREBASE_DB, "publicaciones");
+    let postsQuery
+    if(category=="Tendencias"){
+      postsQuery = query(postsCollection, where("category", "!=", " "));
+    }else{
+      postsQuery = query(postsCollection, where("category", "==", category));
+    }
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      setDownloadedPosts([]);
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'modulos'");
+        setShowNoPostsMessage(true);
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          const postData = {
+            id: doc.id,
+            userName: doc.data().nombreUsuario,
+            idUser: doc.data().id_usuario,
+            title: doc.data().titulo,
+            details: doc.data().detalles,
+            cost: doc.data().costo,
+            maxCost: doc.data().costoMaximo,
+            cantidad: doc.data().cantidad,
+            category: doc.data().category,
+            schedule: doc.data().horario,
+            scheduleEnd: doc.data().horarioFin,
+            coordinates: doc.data().coordenadas,
+            location: doc.data().lugar,
+            days: doc.data().dias,
+            contact: doc.data().contacto,
+            images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
+          };
+          newPosts.push(postData);
+        });
+        setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
+        setTimeout(() => {
+          setModalLoading(false)
+        }, 600);
+      }
+      
+    }, (error) => {
+      // console.error("Error al obtener documentos:", error);
+    });
+    
+    return () => unsubscribe(); // Cleanup on unmount
+  }
 
   useEffect(() => {
-    const showPosts = async () => {
-      console.log("A")
-      console.log(downloadedPosts);
-      setDownloadedPosts([]);
-      try {
-        const postsCollection = collection(FIREBASE_DB, "publicaciones");
-        const querySnapshot = await getDocs(query(postsCollection, where("category", "!=", "Viaje")));
-        // const querySnapshot = await getDocs(query(postsCollection, where("category", "==", "Accesorio")));
-        console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
-        
-        if (querySnapshot.empty) {
-          console.log("No hay documentos en la colección 'modulos'");
-        } else {
-          const newPosts = [];
-          querySnapshot.forEach(async (doc) => {
-            console.log("Datos del documento:", doc.data());
-            const postData = {
-              id: doc.id,
-              userName: doc.data().nombreUsuario,
-              title: doc.data().titulo,
-              details: doc.data().detalles,
-              cost: doc.data().costo,
-              maxCost: doc.data().costoMaximo,
-              cantidad: doc.data().cantidad,
-              category: doc.data().category,
-              schedule: doc.data().horario,
-              scheduleEnd: doc.data().horarioFin,
-              location: doc.data().lugar,
-              days: doc.data().dias,
-              contact: doc.data().contacto,
-              images: doc.data().image // Agregar las URLs de las imágenes al objeto postD
-            };
-            newPosts.push(postData);
-          });
-          console.log(newPosts);
-          setDownloadedPosts(newPosts);
-        }
-      } catch (error) {
-        console.error("Error al obtener documentos:", error);
-      }
-    }
-    
-    showPosts();
-  }, []); // Se ejecuta solo una vez al montar el componente
+    showPosts(selectedCategory);
+  }, [selectedCategory]); // Se ejecuta solo una vez al montar el componente
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      mostrar()
+    }, 5000);
+    return () => clearTimeout(timeout);
+  });
 
     const verPublicacion = (item) => {
-      navigation.navigate("VerPublicacion", { datos: item })
+      if(!open){
+        navigation.navigate("VerPublicacion", { datos: item })
+      }
     };
 
     useEffect(() => {
@@ -72,24 +99,57 @@ const Publicaciones = ({ navigation }) => {
     const mostrar = () => {
       if (downloadedPosts.length === 0) {
         setShowNoPostsMessage(true);
+        setModalLoading(true);
       }else{
         setShowNoPostsMessage(false);
+        setModalLoading(false);
       }
-      console.log("algo")
     }
-
+    const [open, setOpen] = useState(false)
+    toggleOpen = () => {
+      setOpen(!open);
+    };
+    const handleCategoryChange = (category) => {
+      setSelectedCategory(category)
+      setSearchQuery("")
+      setOpen(false)
+      setModalLoading(true)
+    };
+    const filteredPosts = downloadedPosts.filter((item) => 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      // item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      // item.location.toLowerCase().includes(searchQuery.toLowerCase())
+    );
     return (
-      <View style={globalStyles.mainContainer}>
+      <MenuDrawer
+        open={open}
+        position={'left'}
+        drawerContent={<DrawerCategory setVisible={setOpen} selectedCategory={selectedCategory} handleCategoryChange={handleCategoryChange}/>}
+        drawerPercentage={70}
+        animationTime={200}
+        overlay={true}
+        opacity={1}
+      >
+        <View style={globalStyles.mainContainer}>
+        <BuscadorHeader visible={open} setVisible={setOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} showDrawer={true}/>
+          {open && (
+            <TouchableWithoutFeedback onPress={toggleOpen}>
+              <View style={styles.overlay} />
+            </TouchableWithoutFeedback>
+          )}
           {showNoPostsMessage ? (
             <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
           ) : (
           <>
-          {downloadedPosts.length === 0 ? (
+          {modalLoading ? (
             // <ActivityIndicator size="large" color="#0000ff" />
               <ModalLoading visible={true}/>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-                {downloadedPosts.map((item, index) => (
+                <View style={styles.categoryContainer}>
+                  <Text style={styles.textCategoryTitle}>{selectedCategory}</Text>
+                </View>
+                {filteredPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                       <View style={styles.imageContainer}>
@@ -101,11 +161,12 @@ const Publicaciones = ({ navigation }) => {
                       
                       <View  style={styles.dataContainer}>
                         <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
-                        <Text style={styles.textEmail}>Lugar: {item.location}</Text>
+                        {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                         {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                         {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>
+                        {item.category=="Viaje" && <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>}
+                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -114,10 +175,22 @@ const Publicaciones = ({ navigation }) => {
             )}
             </>
           )}
-      </View>
+        </View>
+      </MenuDrawer>
     );
 }
 const styles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Cambia el color y la opacidad aquí
+    flex: 1,
+    zIndex: 1,
+  },
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
@@ -181,6 +254,16 @@ const styles = StyleSheet.create({
   },
   dataContainer:{
     width: wp("58%")
+  },
+  categoryContainer:{
+    marginBottom:"1%",
+    width: wp("95%"),
+  },
+  textCategoryTitle:{
+    textAlign:"left",
+    fontSize: 36,
+    color: "black",
+    fontWeight:"bold",
   },
 });
 

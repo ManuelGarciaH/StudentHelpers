@@ -36,7 +36,7 @@ const LocationButton = ({ control, errors, name, setValue, trigger }) => {
   }, [])
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={() => setModalLocation(true)}>
           <View style={globalStyles.dataButton}>
             <Icon name="map-marker" style={globalStyles.dataIcon}/>

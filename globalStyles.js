@@ -8,6 +8,7 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
     },
     centrar:{
+        // flex: 1,
         alignItems: 'center', // Esto centra horizontalmente el contenido
         textAlignVertical: "center"
     },
@@ -107,7 +108,7 @@ export const globalStyles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         padding: 3,
-        paddingTop: 5,
+        paddingTop: 0,
         alignItems: "center",
         backgroundColor: '#A7DBCB',
     },

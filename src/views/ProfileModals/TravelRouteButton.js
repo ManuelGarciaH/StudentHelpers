@@ -104,7 +104,6 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
 
   const handleSelectAddress = (data, details = null) => {
     // Guardar las coordenadas de destino seleccionadas por el usuario
-    console.log("select")
     setDestination({
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
@@ -126,7 +125,7 @@ const TravelRouteButton = ({ control, errors, name, setValue, trigger, getValues
   };
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={() => {getCoordinates()}}>
           <View style={globalStyles.dataButton}>
             <Icon name="map-marker" style={globalStyles.dataIcon}/>

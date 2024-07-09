@@ -17,11 +17,9 @@ const ImageButton = ({ control, errors, name, setValue, trigger, getValues, setI
 
     const openImageButton = () =>{
         const values = getValues("image");
-        console.log(values)
         if (values!="") {
             // Si ya es un array, no es necesario concatenar
             setImageUris(values);
-            console.log("a")
         }
         setModalImage(true);
     }
@@ -70,7 +68,7 @@ const ImageButton = ({ control, errors, name, setValue, trigger, getValues, setI
     };
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={openImageButton}>
           <View style={globalStyles.dataButton}>
               <Icon name="image" style={globalStyles.dataIcon}/>

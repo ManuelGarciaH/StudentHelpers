@@ -21,7 +21,14 @@ const Login = ({ navigation }) => {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                navigation.navigate('TabNavigator');
+                const userData = {
+                    uid: user.uid,
+                    email: user.email,
+                    photoURL: user.photoURL,
+                    displayName: user.displayName,
+                    // Agrega aquí cualquier otro dato que necesites y sea serializable
+                  };
+                navigation.navigate('TabNavigator',  {userData: userData });
                 // ...
             })
             .catch((error) => {

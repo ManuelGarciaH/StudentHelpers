@@ -43,7 +43,7 @@ const DaysButton = ({ control, errors, name, setValue, trigger, isUpdate, getVal
   }, [])
 
   return (
-    <View style={globalStyles.centrar}>
+    <View style={[globalStyles.centrar, {flex: 1}]}>
         <TouchableOpacity onPress={() => setModalDays(true)}>
           <View style={globalStyles.dataButton}>
             <Icon name="calendar" style={globalStyles.dataIcon}/>
