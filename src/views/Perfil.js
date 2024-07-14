@@ -34,7 +34,7 @@ const Perfil = ({ navigation}) => {
     setCurrentUser(getAuth().currentUser)
 
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
-    const postsQuery = query(postsCollection, where("nombreUsuario", "==", userName));
+    const postsQuery = query(postsCollection, where("id_usuario", "==", currentUser.uid));
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
       if (querySnapshot.empty) {
@@ -94,7 +94,9 @@ const Perfil = ({ navigation}) => {
     }, (error) => {
       console.error("Error al obtener documentos:", error);
     });
-
+    setTimeout(() => {
+      setReloadPhoto(false)
+    }, 3000);
     // Cleanup function to unsubscribe from the listener when the component unmounts
     return () => unsubscribe();
   }, [userName]);
@@ -102,7 +104,7 @@ const Perfil = ({ navigation}) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       mostrar()
-    }, 5000);
+    }, 4000);
     return () => clearTimeout(timeout);
   });
 
@@ -130,13 +132,17 @@ const Perfil = ({ navigation}) => {
     setModalConfiguration(false)
     navigation.navigate("EditProfile", {description: downloadedUsers.description, id: downloadedUsers.id, carrer: downloadedUsers.carrer})
   }
+  const ChangePassword = () => {
+    setModalConfiguration(false)
+    navigation.navigate("ChangePassword")
+  }
 
   return (
     <View style={globalStyles.mainContainer}>
       <PerfilHeader modalConfiguration={modalConfiguration} setModalConfiguration={setModalConfiguration} />
-      <Text style={styles.titleName}>{userName}</Text>
+      <Text style={styles.titleName}>{currentUser.displayName}</Text>
       <View style={styles.descriptionContainer}>
-        {!downloadedUsers ? (
+        {!downloadedUsers && reloadPhoto ? (
           <View style={[{justifyContent: "center", alignItems: "center", width: "100%", height: "34.3%"}]}>
             <ActivityIndicator style={styles.activityIndicator} color="#0000ff" />
           </View>
@@ -164,7 +170,7 @@ const Perfil = ({ navigation}) => {
         </View>
       </View>
 
-      <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={userName} id={currentUser.uid}/>
+      <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={currentUser.displayName} id={currentUser.uid}/>
 
       {showNoPostsMessage ? (
         <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
@@ -202,7 +208,7 @@ const Perfil = ({ navigation}) => {
                     </TouchableOpacity>
                     <View style={styles.verticalSeparator}></View>
 
-                    <DeleteConfirmModal userName={userName} item={item}/>
+                    <DeleteConfirmModal userName={currentUser.displayName} item={item}/>
 
                   </View>
                 </View>
@@ -229,11 +235,11 @@ const Perfil = ({ navigation}) => {
               </View>
           </TouchableOpacity>
           <View style={styles.delimitador}></View>
-          <TouchableOpacity>
+          {/* <TouchableOpacity onPress={ChangePassword}>
               <View style={styles.containerConfigButtons}>
                 <Text style={styles.textConfigButtons}>Cambiar contraseña</Text>
               </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.delimitador}></View>
           <TouchableOpacity onPress={closeModalConfiguration}>
               <View style={styles.containerConfigButtons}>
