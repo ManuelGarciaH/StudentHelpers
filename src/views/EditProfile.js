@@ -95,7 +95,7 @@ const EditProfile = ({navigation, route}) => {
         console.log(errors);
     }
   }
-  const updateTitlePost = async(data) => {
+  const updateUserNamePost = async(data) => {
   
     if (Object.keys(errors).length === 0) {
       if (update) {
@@ -132,7 +132,7 @@ const EditProfile = ({navigation, route}) => {
     await updatePhotoURL(photoURL, data.name);
     console.log('Imagen subida exitosamente:');
     await updateData(data)
-    await updateTitlePost(data)
+    await updateUserNamePost(data)
     navigation.goBack();
   };
   return (
