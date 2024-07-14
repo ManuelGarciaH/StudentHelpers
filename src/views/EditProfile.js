@@ -7,7 +7,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { getAuth, updateProfile } from "firebase/auth";
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, query, getDocs, where } from "firebase/firestore";
 
 const EditProfile = ({navigation, route}) => {
   const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
@@ -62,10 +62,11 @@ const EditProfile = ({navigation, route}) => {
 
     }
   };
-  const updatePhotoURL = async (photoURL) => {
+  const updatePhotoURL = async (photoURL, displayName) => {
     const auth = getAuth();
     updateProfile(auth.currentUser, {
-        photoURL: photoURL
+      displayName: displayName,
+      photoURL: photoURL
     }).then(() => {
         // Profile updated!
         console.log("Actualizado")
@@ -85,22 +86,53 @@ const EditProfile = ({navigation, route}) => {
         const docRef = doc(usuariosDocs, id);
         await updateDoc(docRef, {
           ...newData,
-          description: newData.description  // Asegúrate de actualizar el título
+          description: newData.description
         });
       }else{
         await addDoc(collection(FIREBASE_DB, 'usuarios'), newData);
       }
-      reset();
-  } else {
+    } else {
+        console.log(errors);
+    }
+  }
+  const updateTitlePost = async(data) => {
+  
+    if (Object.keys(errors).length === 0) {
+      if (update) {
+        try {
+          // Crear una referencia a la colección de publicaciones
+          const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
+          
+          // Crear una consulta para obtener todos los documentos con el mismo userData.uuid
+          const q = query(publicacionesCollection, where("id_usuario", "==", userData.uid));
+          
+          // Obtener todos los documentos que coincidan con la consulta
+          const querySnapshot = await getDocs(q);
+          
+          // Actualizar el título de cada documento
+          querySnapshot.forEach(async (doc) => {
+            const docRef = doc.ref;
+            await updateDoc(docRef, {
+              nombreUsuario: data.name
+            });
+          });
+          
+          reset();
+        } catch (error) {
+          console.error("Error actualizando documentos: ", error);
+        }
+      }
+    } else {
       console.log(errors);
-  }
-  }
+    }
+  };
 
   const onSubmit = async (data) => {
     const photoURL = await uploadImageToFirebase();
-    await updatePhotoURL(photoURL);
+    await updatePhotoURL(photoURL, data.name);
     console.log('Imagen subida exitosamente:');
     await updateData(data)
+    await updateTitlePost(data)
     navigation.goBack();
   };
   return (
@@ -251,6 +283,7 @@ styles = StyleSheet.create({
     // marginTop: 5,
     flex: 1,
     padding: 6,
+    width:"100%",
   },
 })
 

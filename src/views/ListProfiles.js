@@ -30,6 +30,7 @@ const ListProfiles = ({navigation}) => {
                 userName: doc.data().nombre,
                 idUser: doc.data().id_usuario,
                 url_photo: doc.data().url_foto,
+                carrer: doc.data().carrer,
             };
             newPosts.push(postData);
             });
@@ -98,7 +99,7 @@ const ListProfiles = ({navigation}) => {
                         </View>
                         <View style={styles.dataContainer}>
                             <Text style={styles.textUserName}>{item.userName}</Text>
-                            <Text style={styles.textCarrer}>Ingenieria en Computación</Text>
+                            <Text style={styles.textCarrer}>{item.carrer}</Text>
                         </View>
                         </TouchableOpacity>
                     </View>
