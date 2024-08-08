@@ -22,6 +22,7 @@ import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import {Controller, useForm} from 'react-hook-form';
 import PasswordInput from '../../components/PasswordInput';
 import ImagePicker from 'react-native-image-crop-picker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SingUp = ({navigation}) => {
   const [nombre, setNombre] = useState('');
@@ -84,7 +85,7 @@ const SingUp = ({navigation}) => {
 
   return (
     <KeyboardAvoidingView
-      keyboardVerticalOffset={'10%'}
+      keyboardVerticalOffset={200}
       style={{height: '100%', backgroundColor: '#A7DBCB'}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -222,7 +223,12 @@ const SingUp = ({navigation}) => {
             <Text style={styles.title}>Perfil</Text>
           </View>
 
-          <Text style={globalStyles.txtBasic}>Carrera</Text>
+          <View style={styles.infoText}>
+            <Text style={globalStyles.txtBasic}>Carrera</Text>
+            <TouchableOpacity style={styles.infoButton}>
+              <Icon name={"help"} size={15} color="black" /> 
+            </TouchableOpacity>
+          </View>
           <Controller
             name="carrera"
             control={control}
@@ -252,7 +258,12 @@ const SingUp = ({navigation}) => {
             )}
           />
 
-          <Text style={globalStyles.txtBasic}>Descripción</Text>
+          <View style={styles.infoText}>
+            <Text style={globalStyles.txtBasic}>Descripción</Text>
+            <TouchableOpacity style={styles.infoButton}>
+              <Icon name={"help"} size={15} color="black" /> 
+            </TouchableOpacity>
+          </View>
           <Controller
             name="descripcion"
             control={control}
@@ -283,7 +294,12 @@ const SingUp = ({navigation}) => {
               </>
             )}
           />
-          <Text style={globalStyles.txtBasic}>Foto de perfil</Text>
+          <View style={styles.infoText}>
+            <Text style={globalStyles.txtBasic}>Foto de perfil</Text>
+            <TouchableOpacity style={styles.infoButton}>
+              <Icon name={"help"} size={15} color="black" /> 
+            </TouchableOpacity>
+          </View>
           <View style={globalStyles.centrar}>
             <TouchableOpacity style={{width: 260}} onPress={openImagePicker}>
               {imageUri != null ? (
@@ -346,6 +362,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignSelf: 'center',
   },
+  infoText: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+  },
+  infoButton: {
+    padding: 5,
+    paddingTop: 15,
+    alignItems: 'center',
+    justifyContent: "center",
+  }
 });
 
 export default SingUp;
