@@ -3,11 +3,53 @@ import React, {useState, useEffect} from 'react';
 import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FIREBASE_DB } from '../../Firebase';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import {globalStyles} from '../../globalStyles';
+import BuscadorHeader from '../components/BuscadorHeader';
+import ModalLoading from '../components/ModalLoading';
 
 const Servicios = ({navigation}) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalLoading, setModalLoading] = useState(true)
+  
+  const showPosts = async (category) => {
+    const postsCollection = collection(FIREBASE_DB, "servicios");
+    let postsQuery
+    postsQuery = query(postsCollection);
+    console.log(postsQuery)
+    
+
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      setDownloadedPosts([]);
+      if (querySnapshot.empty) {
+        console.log("No hay documentos en la colección 'modulos'");
+        setShowNoPostsMessage(true);
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          console.log("Datos del documento:", doc.data());
+          const postData = {
+            id: doc.id,
+            title: doc.data().title,
+            details: doc.data().description,
+            schedule: doc.data().schedule,
+            location: doc.data().ubication,
+            images: doc.data().image
+          };
+          newPosts.push(postData);
+        });
+        console.log(newPosts);
+        setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
+      }
+      
+    }, (error) => {
+      // console.error("Error al obtener documentos:", error);
+    });
+    
+    return () => unsubscribe(); // Cleanup on unmount
+  }
   
 
     useEffect(() => {
@@ -26,6 +68,7 @@ const Servicios = ({navigation}) => {
         setModalLoading(false);
       }
       console.log("servicios")
+      console.log(downloadedPosts)
     }
 
     const [open, setOpen] = useState(false)
@@ -33,9 +76,9 @@ const Servicios = ({navigation}) => {
       setOpen(!open);
     };
 
-    const verUbicacion = (item) => {
+    const verPublicacion = (item) => {
       if(!open){
-        navigation.navigate("VerUbicacion", { datos: item })
+        navigation.navigate("VerPublicacion", { datos: item })
       }
     };
 
@@ -44,52 +87,51 @@ const Servicios = ({navigation}) => {
       setLoading(true);
       setModalSeeRouteTravel(true);
     };
-
-  return (
-    <View style={styles.scrollContainer}>
-      <ScrollView >
-      <Text style={styles.titulo}>Servicios Generales</Text>
-        {downloadedPosts.map((item, index) => (
-          <View style={styles.content}>
-            <Text style={styles.titulo}>Servicios Generales</Text>
-            {downloadedPosts.map((servicio, index) => (
-              <View key={index} style={styles.cuadro}>
-                <TouchableOpacity style={styles.itemConteiner} >
-                    <View style={styles.contenido}>
-                      <Text style={styles.nombre}>{servicio.nombre}</Text>
-                      <Text>{servicio.descripcion}</Text>
-                      <Text>{servicio.telefono}</Text>
-                      <Text>{servicio.coreo}</Text>
-                      <Text>{servicio.horario}</Text>
-                    </View>
-                    <View style={styles.imageButton} >
-                      <Image source={servicio.imagen} style={styles.imagen} />
-                      <Image
-                        source={{ uri: item.images[0] }}
-                        style={styles.imagen}
-                      />
-                      <View style={styles.buttonUbication} >
-                        <Icon name="map-marker" style={styles.dataIcon}/>
+    return (
+        <View style={globalStyles.mainContainer}>
+          {showNoPostsMessage ? (
+            <Text style={styles.noPostsMessage}>No hay servicios disponibles.</Text>
+          ) : (
+          <>
+          {modalLoading ? (
+              <ModalLoading visible={true}/>
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+                {downloadedPosts.map((item, index) => (
+                  <View key={index} style={styles.cuadro}> 
+                    <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={{ uri: item.images[0] }}
+                          style={styles.image}
+                        />
                       </View>
-                    </View>
-                    <TouchableOpacity onPress={() => {getCoordinates()}}>
-                      <View >
-                          <Icon name="map-marker" style={styles.dataIcon}/>
-                          <Text >Ver ruta</Text>
+                      
+                      <View  style={styles.dataContainer}>
+                        <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
+                        {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
+                        {/* <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text> */}
+                        {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
+                        {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
+                        {item.category=="Viaje" && <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>}
+                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                       </View>
                     </TouchableOpacity>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-  );
-};
-
-
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+            </>
+          )}
+        </View>
+    );
+}
 const styles = StyleSheet.create({
+  scrollView: {
+    // borderWidth: 4,
+    marginTop: 5,
+    flex: 1,
+  },
   buttonUbication: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -160,6 +202,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+  },
+  noPostsMessage: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
   },
 });
 

@@ -19,13 +19,12 @@ const Publicaciones = ({ navigation}) => {
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('Tendencias')
   const [modalLoading, setModalLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('');
 
   const showPosts = async (category) => {
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
     let postsQuery
     if(category=="Tendencias"){
-      postsQuery = query(postsCollection, where("category", "!=", " "));
+      postsQuery = query(postsCollection, where("category", "!=", "Viaje"));
     }else{
       postsQuery = query(postsCollection, where("category", "==", category));
     }
@@ -38,10 +37,10 @@ const Publicaciones = ({ navigation}) => {
       } else {
         const newPosts = [];
         querySnapshot.forEach((doc) => {
+          console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
             userName: doc.data().nombreUsuario,
-            idUser: doc.data().id_usuario,
             title: doc.data().titulo,
             details: doc.data().detalles,
             cost: doc.data().costo,
@@ -50,7 +49,6 @@ const Publicaciones = ({ navigation}) => {
             category: doc.data().category,
             schedule: doc.data().horario,
             scheduleEnd: doc.data().horarioFin,
-            coordinates: doc.data().coordenadas,
             location: doc.data().lugar,
             days: doc.data().dias,
             contact: doc.data().contacto,
@@ -58,11 +56,9 @@ const Publicaciones = ({ navigation}) => {
           };
           newPosts.push(postData);
         });
+        console.log(newPosts);
         setDownloadedPosts(newPosts);
         setShowNoPostsMessage(false);
-        setTimeout(() => {
-          setModalLoading(false)
-        }, 600);
       }
       
     }, (error) => {
@@ -73,6 +69,7 @@ const Publicaciones = ({ navigation}) => {
   }
 
   useEffect(() => {
+    console.log("b")
     showPosts(selectedCategory);
   }, [selectedCategory]); // Se ejecuta solo una vez al montar el componente
 
@@ -104,22 +101,20 @@ const Publicaciones = ({ navigation}) => {
         setShowNoPostsMessage(false);
         setModalLoading(false);
       }
+      console.log("algo")
+      console.log(downloadedPosts)
     }
     const [open, setOpen] = useState(false)
     toggleOpen = () => {
       setOpen(!open);
     };
     const handleCategoryChange = (category) => {
-      setSelectedCategory(category)
-      setSearchQuery("")
-      setOpen(false)
-      setModalLoading(true)
+      if(selectedCategory != category){
+        setSelectedCategory(category)
+        setOpen(false)
+        showPosts(category)
+      }
     };
-    const filteredPosts = downloadedPosts.filter((item) => 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      // item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      // item.location.toLowerCase().includes(searchQuery.toLowerCase())
-    );
     return (
       <MenuDrawer
         open={open}
@@ -131,7 +126,7 @@ const Publicaciones = ({ navigation}) => {
         opacity={1}
       >
         <View style={globalStyles.mainContainer}>
-        <BuscadorHeader visible={open} setVisible={setOpen} searchQuery={searchQuery} setSearchQuery={setSearchQuery} showDrawer={true}/>
+          <BuscadorHeader visible={open} setVisible={setOpen}/>
           {open && (
             <TouchableWithoutFeedback onPress={toggleOpen}>
               <View style={styles.overlay} />
@@ -146,10 +141,7 @@ const Publicaciones = ({ navigation}) => {
               <ModalLoading visible={true}/>
             ) : (
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-                <View style={styles.categoryContainer}>
-                  <Text style={styles.textCategoryTitle}>{selectedCategory}</Text>
-                </View>
-                {filteredPosts.map((item, index) => (
+                {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                       <View style={styles.imageContainer}>
@@ -161,11 +153,10 @@ const Publicaciones = ({ navigation}) => {
                       
                       <View  style={styles.dataContainer}>
                         <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
-                        {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
+                        <Text style={styles.textEmail}>Lugar: {item.location}</Text>
                         <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text>
                         {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
                         {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        {item.category=="Viaje" && <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>}
                         {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
                       </View>
                     </TouchableOpacity>
@@ -254,16 +245,6 @@ const styles = StyleSheet.create({
   },
   dataContainer:{
     width: wp("58%")
-  },
-  categoryContainer:{
-    marginBottom:"1%",
-    width: wp("95%"),
-  },
-  textCategoryTitle:{
-    textAlign:"left",
-    fontSize: 36,
-    color: "black",
-    fontWeight:"bold",
   },
 });
 
