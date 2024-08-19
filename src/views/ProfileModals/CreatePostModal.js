@@ -17,7 +17,7 @@ import ImageButton from './ImageButton';
 import TravelRouteButton from './TravelRouteButton';
 import ModalLoading from '../../components/ModalLoading';
 
-const CreatePostModal = ({ visible, onClose, userName}) => {
+const CreatePostModal = ({ visible, onClose, userName, id}) => {
     const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
     const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
     const [imageUploaded, setImageUploaded] = useState(false);
@@ -62,7 +62,7 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
         setLoading(true)
         if (Object.keys(errors).length === 0) {
             const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
-            const newData = { ...data, image: newImagePaths, nombreUsuario: userName};
+            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id};
 
             await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
             reset();
@@ -187,8 +187,8 @@ const CreatePostModal = ({ visible, onClose, userName}) => {
                     rules={{ 
                       required: "Campo requerido",
                       maxLength:{
-                        value: 37,
-                        message: "Los detalles no pueden pasar de 120 caracteres"
+                        value: 250,
+                        message: "Los detalles no pueden pasar de 250 caracteres"
                       },
                       minLength:{
                         value: 5,

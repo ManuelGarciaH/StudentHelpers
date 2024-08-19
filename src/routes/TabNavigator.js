@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import PUBLICACIONES from '../views/Publicaciones.js';
-import VIAJES from '../views/Viajes.js';
+import LIST_PROFILE from '../views/ListProfiles.js';
 import PERFIL from '../views/Perfil.js';
-import MENU from '../views/Menu.js';
 import SERVICIOS from '../views/Servicios.js';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import IconFontisto from 'react-native-vector-icons/Fontisto';
 import {  StyleSheet } from 'react-native';
 import BuscadorHeader from '../components/BuscadorHeader.js';
 import PerfilHeader from '../components/PerfilHeader.js';
@@ -33,10 +33,10 @@ function TabNavigator({navigation}) {
         }}
         
       />
-      <Tab.Screen name="Viajes" component={VIAJES}
+      <Tab.Screen name="Vendedores" component={LIST_PROFILE}
         options={{
             tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="map" color={color} size={size} />
+                <IconFontisto name="persons" color={color} size={size} />
             ),
             headerTitle: () => null, // Esto ocultará el título del encabezado
             headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
@@ -45,7 +45,7 @@ function TabNavigator({navigation}) {
             header: () => (
               <Header navigation={navigation}/>
             ),
-            
+            headerShown: false,
         }}
         
       />
@@ -58,9 +58,10 @@ function TabNavigator({navigation}) {
             headerStyle: styles.headerStyle, // Aplica el estilo de fondo del encabezado
             headerTintColor: styles.headerTintColor, // Aplica el color del texto del encabezado
             headerTitleStyle: styles.headerTitleStyle, // Aplica el estilo del título del encabezado
-            headerRight: () => (
-              <PerfilHeader/>
-            ),
+            // headerRight: () => (
+            //   <PerfilHeader/>
+            // ),
+            headerShown: false,
         }}/>
       <Tab.Screen name="Servicios" component={SERVICIOS} 
         options={{
@@ -74,13 +75,6 @@ function TabNavigator({navigation}) {
           headerRight: () => (
             <ServiceHeader/>
           ),
-        }}/>
-      <Tab.Screen name="Menu" component={MENU} 
-        options={{
-            headerShown:false,
-            tabBarIcon:({ color, size }) => ( // Define el icono dentro de una función
-                <Icon name="menu" color={color} size={size} />
-            ),
         }}/>
     </Tab.Navigator>
   );

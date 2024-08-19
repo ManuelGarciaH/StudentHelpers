@@ -80,24 +80,27 @@ const UpdatePosts = ({navigation, route}) => {
     setUpdate(true)
     try {
       if (Object.keys(errors).length === 0) {
-        const existingImageUris = data.image || []; // URLs de imágenes existentes
-        const newImageUris = data.newImages || []; // Nuevas imágenes seleccionadas desde el teléfono
+        // const existingImageUris = datos.images; // URLs de imágenes existentes
+        const newImageUris = data.image || []; // Nuevas imágenes seleccionadas desde el teléfono
   
         // Subir nuevas imágenes si hay alguna
-        let newImagePaths = [];
-        if (newImageUris.length > 0 || data.titulo !== datos.title) {
-          newImagePaths = await subirImagenesNuevasABaseDeDatos(newImageUris, data.titulo);
-        }
-        let allImagePaths = [...existingImageUris, ...newImagePaths];
+        // const existingImageSet = new Set(existingImageUris);
+        // const newImagePaths = newImageUris.filter(uri => !existingImageSet.has(uri));
+        let uploadedImagePaths = [];
+        // if (newImageUris.length > 0 || data.titulo !== datos.title) {
+        //   uploadedImagePaths  = await subirImagenesNuevasABaseDeDatos(newImagePaths, data.titulo);
+        // }
+        uploadedImagePaths  = await subirImagenesNuevasABaseDeDatos(newImageUris, data.titulo);
+        // let allImagePaths = [...existingImageUris, ...uploadedImagePaths ];
         // Eliminar imágenes antiguas si hay cambio de título
         if (data.titulo !== datos.title) {
-          allImagePaths = await subirImagenesNuevasABaseDeDatos(allImagePaths, data.titulo);
+          uploadedImagePaths = await subirImagenesNuevasABaseDeDatos(uploadedImagePaths, data.titulo);
           await deleteOldImages(userName, datos.title);
         }
   
         // Combinar las URLs de las imágenes existentes con las nuevas URLs
         // allImagePaths = [...existingImageUris, ...newImagePaths];
-        const newData = { ...data, image: allImagePaths, nombreUsuario: userName };
+        const newData = { ...data, image: uploadedImagePaths, nombreUsuario: userName };
   
         // Actualizar el documento existente en Firestore
         const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
@@ -106,7 +109,7 @@ const UpdatePosts = ({navigation, route}) => {
         // Actualizar el documento con los nuevos datos, incluido el nuevo título
         await updateDoc(docRef, {
           ...newData,
-          title: data.titulo  // Asegúrate de actualizar el título
+          titulo: data.titulo  // Asegúrate de actualizar el título
         });
   
         onCancel();
@@ -147,7 +150,6 @@ const UpdatePosts = ({navigation, route}) => {
     trigger("horarioFin")
     //coordinates
     if(datos.coordinates!=undefined && datos.category=="Viaje"){
-        console.log(datos.coordinates)
         setValue("coordenadas", datos.coordinates)
         trigger("coordenadas")
     }
@@ -299,8 +301,8 @@ const UpdatePosts = ({navigation, route}) => {
                 rules={{ 
                   required: "Campo requerido",
                   maxLength:{
-                    value: 37,
-                    message: "Los detalles no pueden pasar de 120 caracteres"
+                    value: 250,
+                    message: "Los detalles no pueden pasar de 250 caracteres"
                   },
                   minLength:{
                     value: 5,

@@ -40,7 +40,6 @@ const TraceRouteBotton = ({modulo}) => {
     if(!permissionDenied){
       setLoading(true);
       try {
-        console.log("Realizando consulta a la colección 'modulos'");
         const modulesCollection = collection(FIREBASE_DB, "modulos");
         const querySnapshot = await getDocs(query(modulesCollection, where("nombre", "==", modulo)));
         console.log("Consulta completada. Documentos obtenidos:", querySnapshot.docs.length);
@@ -49,7 +48,6 @@ const TraceRouteBotton = ({modulo}) => {
         } else {
           // Solo estamos obteniendo un documento, por lo que no necesitamos iterar
           const doc = querySnapshot.docs[0];
-          console.log("Datos del documento:", doc.data());
           const newCoordinate = {
             id: doc.id,
             latitude: doc.data().latitud,
@@ -128,7 +126,7 @@ const centerMapOnUser = () => {
 return (
     <View>
       <TouchableOpacity onPress={() => {getCoordinates()}}>
-          <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose]}>
+          <View style={[globalStyles.dataButton,  styles.buttonGetModule, styles.buttonClose, ]}>
               <Icon name="map-marker" style={globalStyles.dataIcon}/>
               <Text style={globalStyles.dataTxtButton}>Llegar</Text>
           </View>
@@ -250,10 +248,12 @@ const styles = StyleSheet.create({
   buttonGetModule:{
     padding: 9,
     elevation: 1,
+    borderRadius: 0,
     // alignSelf: "center",
-    width: wp("95%"),
-    marginTop: 10,
-    marginBottom: 30,
+    width: wp("94.4%"),
+    marginTop: 5,
+    marginBottom: 1,
+    alignSelf: "center",
     // marginLeft: 20,
     // marginRight: 10,
   }
