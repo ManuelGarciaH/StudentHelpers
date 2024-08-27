@@ -21,6 +21,7 @@ import {FIREBASE_AUTH} from '../../../Firebase';
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
 import {Controller, useForm} from 'react-hook-form';
 import PasswordInput from '../../components/PasswordInput';
+import LabelInfo from '../../components/LabelInfo';
 import ImagePicker from 'react-native-image-crop-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -223,12 +224,12 @@ const SingUp = ({navigation}) => {
             <Text style={styles.title}>Perfil</Text>
           </View>
 
-          <View style={styles.infoText}>
-            <Text style={globalStyles.txtBasic}>Carrera</Text>
-            <TouchableOpacity style={styles.infoButton}>
-              <Icon name={"help"} size={15} color="black" /> 
-            </TouchableOpacity>
-          </View>
+          <LabelInfo
+            value={'Carrera'}
+            message={
+              'No es obligartorio agregar tu carrera pero esto le dara mas confianza a los compradores y vendedores de interactuar contigo.'
+            }
+          />
           <Controller
             name="carrera"
             control={control}
@@ -261,7 +262,7 @@ const SingUp = ({navigation}) => {
           <View style={styles.infoText}>
             <Text style={globalStyles.txtBasic}>Descripción</Text>
             <TouchableOpacity style={styles.infoButton}>
-              <Icon name={"help"} size={15} color="black" /> 
+              <Icon name={'help'} size={15} color="black" />
             </TouchableOpacity>
           </View>
           <Controller
@@ -297,7 +298,7 @@ const SingUp = ({navigation}) => {
           <View style={styles.infoText}>
             <Text style={globalStyles.txtBasic}>Foto de perfil</Text>
             <TouchableOpacity style={styles.infoButton}>
-              <Icon name={"help"} size={15} color="black" /> 
+              <Icon name={'help'} size={15} color="black" />
             </TouchableOpacity>
           </View>
           <View style={globalStyles.centrar}>
@@ -363,15 +364,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   infoText: {
-    flexDirection: 'row', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   infoButton: {
     padding: 5,
     paddingTop: 15,
     alignItems: 'center',
-    justifyContent: "center",
-  }
+    justifyContent: 'center',
+  },
 });
 
 export default SingUp;
