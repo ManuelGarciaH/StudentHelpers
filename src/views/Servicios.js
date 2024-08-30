@@ -13,7 +13,7 @@ const Servicios = ({navigation}) => {
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalLoading, setModalLoading] = useState(true)
   
-  const showPosts = async (category) => {
+  const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
     let postsQuery
     postsQuery = query(postsCollection);
@@ -35,7 +35,9 @@ const Servicios = ({navigation}) => {
             details: doc.data().description,
             schedule: doc.data().schedule,
             location: doc.data().ubication,
-            images: doc.data().image
+            phone: doc.data().phone,
+            mail: doc.data().mail,
+            image: doc.data().image
           };
           newPosts.push(postData);
         });
@@ -50,6 +52,11 @@ const Servicios = ({navigation}) => {
     
     return () => unsubscribe(); // Cleanup on unmount
   }
+
+  useEffect(() => {
+    console.log("aqui")
+    showPosts();
+  }, []);
   
 
     useEffect(() => {
@@ -100,21 +107,20 @@ const Servicios = ({navigation}) => {
                 {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
-                      <View style={styles.imageContainer}>
+                      <View style={styles.imageButton}>
                         <Image
-                          source={{ uri: item.images[0] }}
-                          style={styles.image}
-                        />
+                          source={{ uri: item.image[0] }}
+                          style={styles.imagen}
+                        /> 
                       </View>
                       
-                      <View  style={styles.dataContainer}>
-                        <Text style={styles.textTitle} numberOfLines={2}>{item.title}</Text>
-                        {item.category!="Viaje" && <Text style={styles.textEmail}>Lugar: {item.location}</Text>}
-                        {/* <Text style={styles.textEmail}>Días: {item.days.join('-')}</Text> */}
-                        {/* <Text style={styles.textEmail}>Horario: {item.schedule} - {item.scheduleEnd}</Text> */}
-                        {/* <Text style={styles.textEmail}>Contacto Externo: {item.contact}</Text> */}
-                        {item.category=="Viaje" && <Text style={styles.textEmail}>Asientos: {item.cantidad}</Text>}
-                        {item.category!="Intercambio" && <Text style={styles.textCost}>$ {item.cost} - $ {item.maxCost}</Text>}
+                      <View  style={styles.contenido}>
+                        <Text style={styles.nombre} numberOfLines={2}>{item.title}</Text>
+                        <Text >{item.details}</Text>
+                        <Text >{item.schedule}</Text>
+                        <Text >{item.phone}</Text>
+                        <Text >{item.mail}</Text>
+                        <Text >Lugar: {item.location}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
