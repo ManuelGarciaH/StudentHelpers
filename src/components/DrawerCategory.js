@@ -24,7 +24,7 @@ const DrawerCategory = ({ setVisible, selectedCategory, handleCategoryChange}) =
       <TouchableOpacity  onPress={() => handleCategoryChange("Tendencias")}>
           <View style={[styles.containerCategory, selectedCategory === 'Tendencias' && styles.selectedCategory]}>
             <IconFontAwesome5 name="fire-alt" color={"black"} size={30} style={styles.icon} />
-            <Text style={styles.textCategories}>Todos o tendencias</Text>
+            <Text style={styles.textCategories}>Tendencias</Text>
           </View>
       </TouchableOpacity>
 
