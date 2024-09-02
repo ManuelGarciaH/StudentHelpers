@@ -5,21 +5,22 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function LabelInfo(props) {
   const [visibility, setVisibility] = useState(false);
-  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef(null);
+  const modalRef = useRef(null);
 
-  const toggleModal = () => {
-    (visibility) ? setVisibility(false) : setVisibility(true);
-  };
 
   const handleButtonPress = () => {
     // Medir la posición del botón antes de mostrar el modal
-    console.log('toggle')
-    buttonRef.current.measure((fx, fy, width, height, px, py) => {
-      setButtonPosition({ x: px, y: py + height });
-      toggleModal();
-    });
+    buttonRef.current.measure((b_fx, b_fy, b_width, b_height, b_px, b_py) => {
+      buttonRef.current.measure((m_fx, m_fy, m_width, m_height, m_px, m_py) => {
+        setModalPosition({ x: 10, y: b_py + b_height });
+        setVisibility(true);
+      });
+  });
+    setTimeout(() => {setVisibility(false)}, 3000);
   };
+
 
   return (
     <View style={styles.container}>
@@ -28,8 +29,8 @@ export default function LabelInfo(props) {
             <Icon name={"help"} size={15} color="black" /> 
         </TouchableOpacity>
         <View style={styles.modalContainer}>
-          <Modal animationType='fade' visible={visibility} transparent={true} style={styles.modal}>
-              <View style={styles.content}>
+          <Modal animationType='fade' visible={visibility} transparent={true} style={styles.modal} ref={modalRef}>
+              <View style={[styles.content, { top: modalPosition.y, left: modalPosition.x }]}>
                 <Text style={styles.messageText}>{props.message}</Text>
               </View>
           </Modal>

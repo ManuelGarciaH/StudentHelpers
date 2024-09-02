@@ -86,12 +86,12 @@ const SingUp = ({navigation}) => {
 
   return (
     <KeyboardAvoidingView
-      keyboardVerticalOffset={200}
+      keyboardVerticalOffset={400}
       style={{height: '100%', backgroundColor: '#A7DBCB'}}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingBottom: 400,
+          paddingBottom: 420,
           backgroundColor: '#A7DBCB',
         }}>
         <AlertNotificationRoot />
@@ -136,8 +136,8 @@ const SingUp = ({navigation}) => {
             rules={{
               required: 'Campo requerido',
               pattern: {
-                value: /^[a-z]+\.[a-z]+\d{4}@alumnos\.udg\.mx$/,
-                message: 'El correo debe ser un correo instucional de la udg',
+                value: /^[a-z]+\.[a-z]+\d{4}?@(alumnos|academicos)\.udg\.mx$/,
+                message: 'El correo debe ser un correo de alumnos o academicos',
               },
             }}
             defaultValue=""
@@ -227,7 +227,8 @@ const SingUp = ({navigation}) => {
           <LabelInfo
             value={'Carrera'}
             message={
-              'No es obligartorio agregar tu carrera pero esto le dara mas confianza a los compradores y vendedores de interactuar contigo.'
+              "No es obligartorio agregar tu carrera pero le daras más\n" +
+              "confianza a los compradores y vendedores de interactuar contigo."
             }
           />
           <Controller
@@ -259,12 +260,13 @@ const SingUp = ({navigation}) => {
             )}
           />
 
-          <View style={styles.infoText}>
-            <Text style={globalStyles.txtBasic}>Descripción</Text>
-            <TouchableOpacity style={styles.infoButton}>
-              <Icon name={'help'} size={15} color="black" />
-            </TouchableOpacity>
-          </View>
+          <LabelInfo
+            value={'Descripción'}
+            message={
+              "No es obligartorio agregar tu descripción pero le daras más\n" +
+              "confianza a los compradores y vendedores de interactuar contigo."
+            }
+          />
           <Controller
             name="descripcion"
             control={control}
@@ -295,12 +297,13 @@ const SingUp = ({navigation}) => {
               </>
             )}
           />
-          <View style={styles.infoText}>
-            <Text style={globalStyles.txtBasic}>Foto de perfil</Text>
-            <TouchableOpacity style={styles.infoButton}>
-              <Icon name={'help'} size={15} color="black" />
-            </TouchableOpacity>
-          </View>
+          <LabelInfo
+            value={'Foto de perfil'}
+            message={
+              "No es obligartorio agregar tu foto pero le daras más\n" +
+              "confianza a los compradores y vendedores de interactuar contigo."
+            }
+          />
           <View style={globalStyles.centrar}>
             <TouchableOpacity style={{width: 260}} onPress={openImagePicker}>
               {imageUri != null ? (
