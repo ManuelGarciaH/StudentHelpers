@@ -17,19 +17,24 @@ import {
   Toast,
 } from 'react-native-alert-notification';
 // firebase
-import {FIREBASE_AUTH} from '../../../Firebase';
+import {FIREBASE_AUTH, FIREBASE_DB} from '../../../Firebase';
+// firebase authentication
 import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
+// firebase storege and store
+import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {collection, addDoc } from 'firebase/firestore';
+
 import {Controller, useForm} from 'react-hook-form';
 import PasswordInput from '../../components/PasswordInput';
 import LabelInfo from '../../components/LabelInfo';
 import ImagePicker from 'react-native-image-crop-picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SingUp = ({navigation}) => {
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const storage = getStorage();
   const [imageUri, setImageUri] = useState(null);
   const {
     handleSubmit,
@@ -40,33 +45,68 @@ const SingUp = ({navigation}) => {
     trigger,
   } = useForm();
 
-  const createUser = async () => {
-    createUserWithEmailAndPassword(FIREBASE_AUTH, correo, password)
-      .then(userCredential => {
-        // Signed up
-        const user = userCredential.user;
-        updateProfile(user, {
-          displayName: nombre,
-          photoURL: null,
-        })
-          .then(() => {
-            // Actualización de perfil exitosa
-            console.log('Nombre actualizado correctamente:', nombre);
-            console.log('Usuario actualizado:', user);
-          })
-          .catch(error => {
-            // Error al actualizar el perfil
-            console.error('Error al actualizar el nombre:', error);
-          });
-      })
-      .catch(error => {
-        Toast.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Email fallido',
-          textBody: validErrorCodes(error.code),
-          autoClose: 3000,
-        });
+  const createUser = async data => {
+    console.log(data);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        FIREBASE_AUTH,
+        correo,
+        password,
+      );
+      const user = userCredential.user;
+
+      const photoURL = await uploadImageToFirebase(user.uid);
+      console.log(photoURL);
+      await updateProfile(user, {
+        displayName: nombre,
+        photoURL: photoURL,
       });
+      await updateData(data, user.uid, photoURL)
+
+      // Actualización de perfil exitosa
+      console.log('Usuario agregado:', user);
+    } catch (error) {
+      console.error('Error al crear usuario o actualizar el perfil:', error);
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Error al crear usuario o el perfil',
+        textBody: validErrorCodes(error.code),
+        autoClose: 3000,
+      });
+    }
+  };
+
+  updateData = async (data, userId, photoURL) => {
+    console.log(data);
+    const newData = {
+      description: data.descripcion || null,
+      id_usuario: userId,
+      url_foto: photoURL || null,
+      nombre: data.nombre,
+      carrer: data.carrera || null,
+    };
+    const docRef = await addDoc(collection(FIREBASE_DB, 'usuarios'), newData);
+    console.log('Documento añadido exitosamente:', docRef);
+  };
+
+  const uploadImageToFirebase = async id => {
+    if (!imageUri || imageUri == null) return null;
+    const storageRef = ref(storage, `profilePictures/${id}/ProfilePicture_0`);
+
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    // Subir la imagen a Firebase Storage
+    await uploadBytes(storageRef, blob);
+    try {
+      const downloadURL = await getDownloadURL(storageRef);
+      setValue('image', downloadURL);
+      trigger('image');
+      return downloadURL;
+    } catch (e) {
+      console.error(e);
+      Alert.alert('Error', 'La imagen no se pudo subir. Inténtalo de nuevo.');
+      return null;
+    }
   };
 
   // Función para abrir el selector de imágenes y recortar
@@ -227,8 +267,8 @@ const SingUp = ({navigation}) => {
           <LabelInfo
             value={'Carrera'}
             message={
-              "No es obligartorio agregar tu carrera pero le daras más\n" +
-              "confianza a los compradores y vendedores de interactuar contigo."
+              'No es obligartorio agregar tu carrera pero le daras más\n' +
+              'confianza a los compradores y vendedores de interactuar contigo.'
             }
           />
           <Controller
@@ -240,7 +280,7 @@ const SingUp = ({navigation}) => {
                 message: 'La carrera no pueden pasar de 50 caracteres',
               },
               minLength: {
-                value: 5,
+                value: 4,
                 message: 'La carrera debe contener al menos 5 caracteres',
               },
             }}
@@ -263,8 +303,8 @@ const SingUp = ({navigation}) => {
           <LabelInfo
             value={'Descripción'}
             message={
-              "No es obligartorio agregar tu descripción pero le daras más\n" +
-              "confianza a los compradores y vendedores de interactuar contigo."
+              'No es obligartorio agregar tu descripción pero le daras más\n' +
+              'confianza a los compradores y vendedores de interactuar contigo.'
             }
           />
           <Controller
@@ -300,8 +340,8 @@ const SingUp = ({navigation}) => {
           <LabelInfo
             value={'Foto de perfil'}
             message={
-              "No es obligartorio agregar tu foto pero le daras más\n" +
-              "confianza a los compradores y vendedores de interactuar contigo."
+              'No es obligartorio agregar tu foto pero le daras más\n' +
+              'confianza a los compradores y vendedores de interactuar contigo.'
             }
           />
           <View style={globalStyles.centrar}>
