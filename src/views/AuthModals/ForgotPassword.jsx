@@ -4,10 +4,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import {globalStyles} from '../../../globalStyles';
+import validErrorCodes from '../../helpers/errorCodes';
 // firebase
 import {FIREBASE_AUTH} from '../../../Firebase';
 import {sendPasswordResetEmail} from 'firebase/auth';
@@ -18,19 +19,27 @@ const ForgotPassword = () => {
 
   const recoveryEmail = async () => {
     sendPasswordResetEmail(FIREBASE_AUTH, correo)
-      .then(Response => {
-        console.log(Response);
-        
+      .then( () => {
+        Toast.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Email enviado',
+          textBody: 'Email para restablecer contraseña enviado correctamente',
+          autoClose: 3000,
+        })
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(error);
+        Toast.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Email fallido',
+          textBody: validErrorCodes(error.code),
+          autoClose: 3000,
+        })
       });
   };
 
   return (
     <SafeAreaView>
+      <AlertNotificationRoot/>
       <View style={[globalStyles.form]}>
         <Text style={styles.title}>Restablecer tu contraseña</Text>
         <Text style={styles.txt}>
@@ -48,12 +57,13 @@ const ForgotPassword = () => {
             inputMode="email"></TextInput>
         </View>
 
-        <TouchableOpacity
-          style={{alignSelf: 'center'}} onPress={recoveryEmail}>
-          <View style={globalStyles.boton}>
-            <Text style={globalStyles.txtBoton}>Enviar</Text>
-          </View>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={{alignSelf: 'center'}} onPress={recoveryEmail}>
+            <View style={globalStyles.boton}>
+              <Text style={globalStyles.txtBoton}>Enviar</Text>
+            </View>
+          </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
@@ -72,7 +82,6 @@ const styles = StyleSheet.create({
   },
   txt: {
     color: '#575757',
-
     padding: 5,
   },
 });

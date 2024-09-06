@@ -19,6 +19,7 @@
     "react": "18.2.0",
     "react-hook-form": "^7.51.2",
     "react-native": "0.72.4",
+    "react-native-alert-notification": "^0.4.0",
     "react-native-date-picker": "^5.0.0",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-google-places-autocomplete": "^2.5.6",
