@@ -1,81 +1,142 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { FIREBASE_DB } from '../../Firebase';
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import {globalStyles} from '../../globalStyles';
+import ModalLoading from '../components/ModalLoading';
 
+const Servicios = ({navigation}) => {
+  const [downloadedPosts, setDownloadedPosts] = useState([]);
+  const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
+  const [modalLoading, setModalLoading] = useState(true)
+  
+  const showPosts = async () => {
+    const postsCollection = collection(FIREBASE_DB, "servicios");
+    let postsQuery
+    postsQuery = query(postsCollection);    
 
+    const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
+      setDownloadedPosts([]);
+      if (querySnapshot.empty) {
+        setShowNoPostsMessage(true);
+      } else {
+        const newPosts = [];
+        querySnapshot.forEach((doc) => {
+          const postData = {
+            id: doc.id,
+            title: doc.data().title,
+            details: doc.data().description,
+            schedule: doc.data().schedule,
+            location: doc.data().ubication,
+            phone: doc.data().phone,
+            mail: doc.data().mail,
+            image: doc.data().image
+          };
+          newPosts.push(postData);
+        });
+        setDownloadedPosts(newPosts);
+        setShowNoPostsMessage(false);
+      }
+      
+    });    
+    return () => unsubscribe(); // Cleanup on unmount
+  }
 
-const serviciosData = [
-  { 
-    nombre: 'Biblioteca', 
-    descripcion: 'Biblioteca del Centro Universitario de Ciencias Exactas e Ingenierías (CUCEI)',
-    telefono: 'Telefono: (33) 13785900 ext. 27489',
-    coreo: 'ubiblio@cucei.udg.mx',
-    horario: '8:00 a 19:45 horas, de lunes a viernes y los sábados de 8:00 a 13:45 horas',
-    imagen: require('../../Img/biblioteca.png') 
-  },
-  { 
-    nombre: 'Rectoria', 
-    descripcion: 'Dr. Marco Antonio Pérez Cisneros', 
-    telefono: 'Telefono:  33 1378 5900, Ext: 27402, 27405 y 27429 m',
-    coreo: 'rector@cucei.udg.mx',
-    horario: '9:a.m.-5:p.m.',
-    imagen: require('../../Img/rectoria.png') 
-  },
-  { 
-    nombre: 'Complejo Deportivo Universitario (CDU)', 
-    descripcion: 'Descripción del CDU', 
-    telefono: 'Telefono: (33)13785900 ext. 27424.',
-    coreo: 'cdext.deportes@red.cucei.udg.mx',
-    horario: '8:00 a 19:45 horas, de lunes a viernes y los sábados de 8:00 a 13:45 horas',
-    imagen: require('../../Img/cdu.png') 
-  },
-  { 
-    nombre: 'Enfermeria', 
-    descripcion: 'El Centro Universitario de Ciencias Exactas e Ingenierías ofrece a su comunidad servicios de salud integral dentro de sus instalaciones, ubicadas en el módulo “L”, dentro del sub-almacén. Servicios de medicina general, psicología y nutrición con un horario de atención de ', 
-    telefono: 'Telefono: (33) 1378 5900 ext. 27603',
-    coreo: 'Área médica: psocucei@cucei.udg.mx\n Área nutricional: Nutripso-cucei@cucei.udg.mx \nÁrea psicológica: Psicopso-cucei@cucei.udg.mx',
-    horario: '8:00 a 20:00 horas.',
-    imagen: require('../../Img/enfermeria.png') 
-  },
-  { 
-    nombre: 'Coordinacion INCO (Ingenieria en Computacion)', 
-    descripcion: 'Descripción de la coordinación INCO', 
-    telefono: 'Telefono: (33) 13785900 ext. 27489',
-    coreo: 'ubiblio@cucei.udg.mx',
-    horario: '8:00 a 19:45 horas, de lunes a viernes y los sábados de 8:00 a 13:45 horas',
-    imagen: require('../../Img/inco.png') 
-  },
-];
+  useEffect(() => {
+    showPosts();
+  }, []);
+  
 
-const Servicios = () => {
-  return (
-    <View style={styles.scrollContainer}>
-      <ScrollView >
-        <View style={styles.content}>
-          <Text style={styles.titulo}>Servicios Generales</Text>
-          {serviciosData.map((servicio, index) => (
-            <View key={index} style={styles.cuadro}>
-              <TouchableOpacity style={styles.itemConteiner} >
-                <View style={styles.contenido}>
-                  <Text style={styles.nombre}>{servicio.nombre}</Text>
-                  <Text>{servicio.descripcion}</Text>
-                  <Text>{servicio.telefono}</Text>
-                  <Text>{servicio.coreo}</Text>
-                  <Text>{servicio.horario}</Text>
-                </View>
-                <Image source={servicio.imagen} style={styles.imagen} />
-              </TouchableOpacity>
-            </View>
-          ))}
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        mostrar()
+      }, 5000);
+      return () => clearTimeout(timeout);
+    });
+
+    const mostrar = () => {
+      if (downloadedPosts.length === 0) {
+        setShowNoPostsMessage(true);
+        setModalLoading(true);
+      }else{
+        setShowNoPostsMessage(false);
+        setModalLoading(false);
+      }
+    }
+
+    const [open, setOpen] = useState(false)
+    toggleOpen = () => {
+      setOpen(!open);
+    };
+
+    const verPublicacion = (item) => {
+      if(!open){
+        navigation.navigate("VerPublicacion", { datos: item })
+      }
+    };
+
+    const getCoordinates = async () => {
+      handleShowRoute();
+      setLoading(true);
+      setModalSeeRouteTravel(true);
+    };
+    return (
+        <View style={globalStyles.mainContainer}>
+          {showNoPostsMessage ? (
+            <Text style={styles.noPostsMessage}>No hay servicios disponibles.</Text>
+          ) : (
+          <>
+          {modalLoading ? (
+              <ModalLoading visible={true}/>
+            ) : (
+              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+                {downloadedPosts.map((item, index) => (
+                  <View key={index} style={styles.cuadro}> 
+                    <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                      <View style={styles.imageButton}>
+                        <Image
+                          source={{ uri: item.image[0] }}
+                          style={styles.imagen}
+                        /> 
+                      </View>
+                      
+                      <View  style={styles.contenido}>
+                        <Text style={styles.nombre} numberOfLines={2}>{item.title}</Text>
+                        <Text >{item.details}</Text>
+                        <Text >{item.schedule}</Text>
+                        <Text >{item.phone}</Text>
+                        <Text >{item.mail}</Text>
+                        <Text >Lugar: {item.location}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+            </>
+          )}
         </View>
-      </ScrollView>
-    </View>
-  );
-};
-
-
+    );
+}
 const styles = StyleSheet.create({
+  scrollView: {
+    // borderWidth: 4,
+    marginTop: 5,
+    flex: 1,
+  },
+  buttonUbication: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', 
+    backgroundColor: '#A7DBCB',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginLeft: 20,
+    height: 50,
+    width: 50,
+  },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#A7DBCB',
@@ -124,6 +185,21 @@ const styles = StyleSheet.create({
     height: 80,
     marginLeft: 20,
     borderRadius: 5,
+  },
+  dataIcon:{
+    color: "white",
+    fontSize: 20,
+    marginRight: 0,
+  },
+  imageButton:{
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noPostsMessage: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
   },
 });
 
