@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert} from 'react-native'
 import React, { useState } from 'react';
 import {globalStyles} from '../../../globalStyles';
+import validErrorCodes from '../../helpers/errorCodes';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 // firebase
 import { FIREBASE_AUTH } from '../../../Firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -30,12 +32,17 @@ const Login = ({ navigation }) => {
                 // ...
             })
             .catch((error) => {
-                const errorMessage = error.message;
-                Alert.alert(`${errorMessage}`)
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Log-in fallido',
+                    textBody: validErrorCodes(error.code),
+                    autoClose: 3000,
+                  })
             });
         }
         return (
             <SafeAreaView>
+                <AlertNotificationRoot/>
                 <View style={[globalStyles.form, ]}>
                     <Text style={globalStyles.txtBasic}>Correo Institucional</Text>
                     <View style={globalStyles.input}>

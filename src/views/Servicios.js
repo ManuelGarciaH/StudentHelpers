@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {globalStyles} from '../../globalStyles';
@@ -15,8 +14,7 @@ const Servicios = ({navigation}) => {
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
     let postsQuery
-    postsQuery = query(postsCollection);
-    
+    postsQuery = query(postsCollection);    
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
       setDownloadedPosts([]);
@@ -41,8 +39,8 @@ const Servicios = ({navigation}) => {
         setShowNoPostsMessage(false);
       }
       
-    });
-    return () => unsubscribe();
+    });    
+    return () => unsubscribe(); // Cleanup on unmount
   }
 
   useEffect(() => {
