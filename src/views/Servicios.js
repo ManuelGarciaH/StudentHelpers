@@ -1,11 +1,9 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {globalStyles} from '../../globalStyles';
-import BuscadorHeader from '../components/BuscadorHeader';
 import ModalLoading from '../components/ModalLoading';
 
 const Servicios = ({navigation}) => {
@@ -16,19 +14,15 @@ const Servicios = ({navigation}) => {
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
     let postsQuery
-    postsQuery = query(postsCollection);
-    console.log(postsQuery)
-    
+    postsQuery = query(postsCollection);    
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
       setDownloadedPosts([]);
       if (querySnapshot.empty) {
-        console.log("No hay documentos en la colección 'modulos'");
         setShowNoPostsMessage(true);
       } else {
         const newPosts = [];
         querySnapshot.forEach((doc) => {
-          console.log("Datos del documento:", doc.data());
           const postData = {
             id: doc.id,
             title: doc.data().title,
@@ -41,20 +35,15 @@ const Servicios = ({navigation}) => {
           };
           newPosts.push(postData);
         });
-        console.log(newPosts);
         setDownloadedPosts(newPosts);
         setShowNoPostsMessage(false);
       }
       
-    }, (error) => {
-      // console.error("Error al obtener documentos:", error);
-    });
-    
+    });    
     return () => unsubscribe(); // Cleanup on unmount
   }
 
   useEffect(() => {
-    console.log("aqui")
     showPosts();
   }, []);
   
@@ -74,8 +63,6 @@ const Servicios = ({navigation}) => {
         setShowNoPostsMessage(false);
         setModalLoading(false);
       }
-      console.log("servicios")
-      console.log(downloadedPosts)
     }
 
     const [open, setOpen] = useState(false)
