@@ -7,7 +7,6 @@ import { globalStyles } from '../../../globalStyles';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -16,6 +15,7 @@ import ContactButton from './ContactButton';
 import ImageButton from './ImageButton';
 import TravelRouteButton from './TravelRouteButton';
 import ModalLoading from '../../components/ModalLoading';
+import { PhoneAuthProvider } from 'firebase/auth';
 
 const CreatePostModal = ({ visible, onClose, userName, id}) => {
     const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
@@ -37,7 +37,7 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
         await Promise.all(
           imageUris.map(async (uri, index) => {
             // Obtener la referencia de almacenamiento para la imagen
-            const storageRef = ref(storage, `publicaciones/${userName}/${title}/image_${index}.png`);
+            const storageRef = ref(storage, `publicaciones/${id}/${title}/image_${index}.png`);
     
             // Convertir la imagen a bytes
             const response = await fetch(uri);
@@ -60,15 +60,15 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
 
     const onSubmit = async (data) => {
         setLoading(true)
-        if (Object.keys(errors).length === 0) {
+          if (Object.keys(errors).length === 0) {
             const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
-            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id};
+            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id, popularidad: 1};
 
             await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
             reset();
             onClose();
-        } else {
-            console.log(errors);
+          } else {
+              console.log(errors);
         }
         setLoading(false)
     };

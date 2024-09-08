@@ -116,9 +116,10 @@ const Publicaciones = ({ navigation}) => {
       setModalLoading(true)
     };
     const filteredPosts = downloadedPosts.filter((item) => 
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-      // item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      // item.location.toLowerCase().includes(searchQuery.toLowerCase())
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.details.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.toLowerCase())
     );
     return (
       <MenuDrawer

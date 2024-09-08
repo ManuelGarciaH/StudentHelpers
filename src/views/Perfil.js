@@ -11,7 +11,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import DeleteConfirmModal from './ProfileModals/DeleteConfirmModal';
-import { Button } from 'react-native-paper';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import { getAuth, reload, updateProfile } from "firebase/auth";
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
@@ -25,14 +25,27 @@ const Perfil = ({ navigation}) => {
   const [modalConfiguration, setModalConfiguration] = useState(false)
   const [currentUser, setCurrentUser] = useState(getAuth().currentUser);
   const [reloadPhoto, setReloadPhoto] = useState(true)
+  const [showAlert, setShowAlert] = useState(false);
 
   // const userName = "Manuel Antonio Garcia";
   const userName = currentUser.displayName;
 
+  const validPhoto = () => {
+    if (currentUser.photoURL) {
+      setModalCreatePost(true);
+    } else{
+      Toast.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Error al crear publicación',
+        textBody: 'Necesitas una foto para publicar',
+        autoClose: 3000,
+      })
+    }
+  }
+
   useEffect(() => {
     setDownloadedPosts([]);
     setCurrentUser(getAuth().currentUser)
-
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
     const postsQuery = query(postsCollection, where("id_usuario", "==", currentUser.uid));
 
@@ -161,7 +174,7 @@ const Perfil = ({ navigation}) => {
       <Text style={styles.titleName}>Publicaciones</Text>
       <View style={[styles.descriptionContainer, {marginBottom: 5}]}>
         <View style={[globalStyles.centrar, {flex: 1}]}>
-          <TouchableOpacity onPress={() => setModalCreatePost(true)}>
+          <TouchableOpacity onPress={validPhoto}>
             <View style={styles.buttonCreatePost}>
               <Icon name="plus" style={styles.iconCreatePost}/>
               <Text style={styles.txtButton}>Crear Publicación</Text>
@@ -171,9 +184,13 @@ const Perfil = ({ navigation}) => {
       </View>
 
       <CreatePostModal visible={modalCreatePost} onClose={() => setModalCreatePost(false)} userName={currentUser.displayName} id={currentUser.uid}/>
-
       {showNoPostsMessage ? (
-        <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+        <View style={{width: wp("100%")}}>
+          <View style={{alignItems: 'center'}}>
+            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+          </View>
+          <AlertNotificationRoot/>
+        </View>
       ) : (
         <>
           {downloadedPosts.length === 0 ? (
