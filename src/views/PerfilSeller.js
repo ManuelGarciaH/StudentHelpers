@@ -70,7 +70,8 @@ const { userName, idUser } = route.params;
             coordinates: doc.data().coordenadas,
             days: doc.data().dias,
             contact: doc.data().contacto,
-            images: doc.data().image // Agregar las URLs de las imágenes al objeto postData
+            images: doc.data().image, // Agregar las URLs de las imágenes al objeto postD
+            popularity: doc.data().popularidad
           };
           newPosts.push(postData);
         });
