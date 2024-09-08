@@ -225,7 +225,7 @@ const Perfil = ({ navigation}) => {
                     </TouchableOpacity>
                     <View style={styles.verticalSeparator}></View>
 
-                    <DeleteConfirmModal userName={currentUser.displayName} item={item}/>
+                    <DeleteConfirmModal userName={currentUser.uid} item={item}/>
 
                   </View>
                 </View>

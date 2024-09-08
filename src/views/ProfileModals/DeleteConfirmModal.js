@@ -22,10 +22,11 @@ const [loading, setLoading] = useState(false)
       const qualificationCollection = collection(FIREBASE_DB, "calificacion");
       const querySnapshot = await getDocs(query(qualificationCollection, where("id_publicacion", "==", idDocument)));
       const document = querySnapshot.docs[0];
-
-      const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
-      const docQualificacionRef = doc(deleteQualificationCollection, document.id);
-      await deleteDoc(docQualificacionRef);
+      if (document) {
+        const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
+        const docQualificacionRef = doc(deleteQualificationCollection, document.id);
+        await deleteDoc(docQualificacionRef);
+      }
       console.log('Calificacion eliminada exitosamente');
 
       const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');

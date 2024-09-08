@@ -7,6 +7,7 @@ import { globalStyles } from '../../../globalStyles';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import  { addProductToAlgolia } from "../../services/algoliaCRUD.js"; 
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -15,7 +16,6 @@ import ContactButton from './ContactButton';
 import ImageButton from './ImageButton';
 import TravelRouteButton from './TravelRouteButton';
 import ModalLoading from '../../components/ModalLoading';
-import { PhoneAuthProvider } from 'firebase/auth';
 
 const CreatePostModal = ({ visible, onClose, userName, id}) => {
     const { handleSubmit, control, reset, setValue, getValues, formState: { errors }, trigger } = useForm();
@@ -62,9 +62,19 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
         setLoading(true)
           if (Object.keys(errors).length === 0) {
             const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
-            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id, popularidad: 1};
+            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id, total_views: 0};
 
-            await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            const docRef = await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            addProductToAlgolia({
+              objectID: docRef.id,
+              titulo: docRef.titulo,
+              description: docRef.detalles,
+              costo: `$${docRef.costo} - $${docRef.costoMaximo}`,
+              category: docRef.category,
+              autor: id,
+              total_views: 0,
+              image: newImagePaths[0]
+            })
             reset();
             onClose();
           } else {
@@ -130,9 +140,9 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
                         </View>
 
                         <View style={[styles.buttonContainer, {marginBottom: 5}]}>
-                          <TouchableOpacity  onPress={() => handleCategoryChange("Intercambio")}>
-                            <View style={[styles.notSelectedButton, value === 'Intercambio' && styles.selectedButton]}>
-                              <Text style={styles.txtButton}>Intercambio</Text>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Producto")}>
+                            <View style={[styles.notSelectedButton, value === 'Producto' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Productos</Text>
                             </View>
                           </TouchableOpacity>
                           <TouchableOpacity  onPress={() => handleCategoryChange("Asesorías")}>

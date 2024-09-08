@@ -71,7 +71,7 @@ const { userName, idUser } = route.params;
             days: doc.data().dias,
             contact: doc.data().contacto,
             images: doc.data().image, // Agregar las URLs de las imágenes al objeto postD
-            popularity: doc.data().popularidad
+            total_views: doc.data().total_views
           };
           newPosts.push(postData);
         });

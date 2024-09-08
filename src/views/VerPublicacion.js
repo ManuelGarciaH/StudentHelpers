@@ -71,21 +71,13 @@ const VerPublicacion = ({navigation, route}) => {
       }, []);
 
     useEffect(() => {
-        if (average == 0) {
+        if (!isOwner) {
             const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
             const docRef = doc(publicacionesCollection, datos.id);
 
-            // Actualizar popularidad
+            // Actualizar numero de vistas
             updateDoc(docRef, {
-             popularidad: datos.popularity + 1
-            });
-        } else {
-            const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
-            const docRef = doc(publicacionesCollection, datos.id);
-
-            // Actualizar popularidad
-            updateDoc(docRef, {
-             popularidad: datos.popularity + average
+                total_views: datos.total_views + 1
             });
         }
         if (datos.id) {
