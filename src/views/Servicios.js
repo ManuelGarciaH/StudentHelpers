@@ -6,11 +6,21 @@ import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
+import Swiper from 'react-native-swiper';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
-const Servicios = ({navigation}) => {
+const Servicios = ({navigation, route}) => {
+  // const { datos } = route.params;
+
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
   const [modalLoading, setModalLoading] = useState(true)
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  // const imagenes = datos.images.map(image => ({ uri: image }));
   
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
@@ -67,22 +77,49 @@ const Servicios = ({navigation}) => {
       }
     }
 
+    const openMapModal = () => {
+      setModalVisible(true);
+    }
+
+    const openModal = (image, index) => {
+      setSelectedImage(image);
+      setSelectedIndex(index);
+      setModalVisible(true);
+    } 
+
+    const closeModal = () => {
+      setModalVisible(false);
+      setSelectedImage(null);
+    }
+
     const [open, setOpen] = useState(false)
     toggleOpen = () => {
       setOpen(!open);
     };
 
-    const verPublicacion = (item) => {
-      if(!open){
-        navigation.navigate("VerPublicacion", { datos: item })
-      }
+    const openMap = () => {
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: $LATITUDE$,
+            longitude: $LONGITUDE$,
+            latitudeDelta: $LATITUDE_DELTA$,
+            longitudeDelta: $LONGITUDE_DELTA$,
+          }}>
+          <MapView.Marker
+            coordinate={{
+              latitude: $MARKER_LATITUDE$,
+              longitude: $MARKER_LONGITUDE$,
+            }}
+            title="Location"
+            description="This is the location"
+            onPress={() => openMap(item.location)}
+          />
+        </MapView>
     };
 
-    const getCoordinates = async () => {
-      handleShowRoute();
-      setLoading(true);
-      setModalSeeRouteTravel(true);
-    };
+
+
     return (
         <View style={globalStyles.mainContainer}>
           {showNoPostsMessage ? (
@@ -95,15 +132,30 @@ const Servicios = ({navigation}) => {
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
-                    <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                    <TouchableOpacity style={styles.itemConteiner}>
                       <View style={styles.imageButton}>
                         <Image
                           source={{ uri: item.image[0] }}
                           style={styles.imagen}
                         />
-                        <TouchableOpacity style={styles.buttonUbication} onPress={() => getCoordinates()}>
+                        <TouchableOpacity style={styles.buttonUbication} >
                           <Icon name="map-marker" style={styles.dataIcon}/>
+                          
                         </TouchableOpacity> 
+                        {/* <View style={styles.contendorImagenes}>
+                          <Swiper style={styles.wrapper} showsButtons={false} 
+                              loop={false}
+                              loopClonesPerSide={1}
+                              index={selectedIndex}>
+                              {imagenes.map((imagen, index) => (
+                                  <TouchableOpacity key={index} onPress={() => openMapModal()} style={styles.slide}>
+                                      <View>
+                                          <Image source={imagen} style={styles.image} />
+                                      </View>
+                                  </TouchableOpacity>
+                              ))}
+                          </Swiper>
+                        </View> */}
                       </View>
                       
                       <View  style={styles.contenido}>
