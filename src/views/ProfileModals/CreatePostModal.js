@@ -65,12 +65,13 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
             const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id, total_views: 0};
 
             const docRef = await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            console.log(docRef)
             addProductToAlgolia({
               objectID: docRef.id,
-              titulo: docRef.titulo,
-              description: docRef.detalles,
-              costo: `$${docRef.costo} - $${docRef.costoMaximo}`,
-              category: docRef.category,
+              titulo: data.titulo,
+              description: data.detalles,
+              costo: `$${data.costo} - $${data.costoMaximo}`,
+              category: data.category,
               autor: id,
               total_views: 0,
               image: newImagePaths[0]

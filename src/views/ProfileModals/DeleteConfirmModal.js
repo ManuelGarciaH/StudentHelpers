@@ -8,6 +8,7 @@ import { FIREBASE_DB } from '../../../Firebase';
 import { collection, doc, deleteDoc, query, where, getDocs} from "firebase/firestore";
 import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
 import ModalLoading from '../../components/ModalLoading';
+import  { removeProductFromAlgolia } from "../../services/algoliaCRUD.js"; 
 
 
 const DeleteConfirmModal = ({userName, item}) => {
