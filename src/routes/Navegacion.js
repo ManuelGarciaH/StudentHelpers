@@ -121,7 +121,6 @@ const Navegacion = () =>{
   const [user, setUser] = useState(null);
   useState(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log('user: ', user);
       setUser(user);
     })
   })

@@ -7,7 +7,7 @@ import { globalStyles } from '../../../globalStyles';
 import { FIREBASE_DB } from '../../../Firebase';
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import  { addProductToAlgolia } from "../../services/algoliaCRUD.js"; 
 
 import ScheduleButton from './ScheduleButton';
 import LocationButton from './LocationButton';
@@ -37,7 +37,7 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
         await Promise.all(
           imageUris.map(async (uri, index) => {
             // Obtener la referencia de almacenamiento para la imagen
-            const storageRef = ref(storage, `publicaciones/${userName}/${title}/image_${index}.png`);
+            const storageRef = ref(storage, `publicaciones/${id}/${title}/image_${index}.png`);
     
             // Convertir la imagen a bytes
             const response = await fetch(uri);
@@ -60,15 +60,26 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
 
     const onSubmit = async (data) => {
         setLoading(true)
-        if (Object.keys(errors).length === 0) {
+          if (Object.keys(errors).length === 0) {
             const newImagePaths = await subirImagenesABaseDeDatos(data.image, data.titulo);
-            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id};
+            const newData = { ...data, image: newImagePaths, nombreUsuario: userName, id_usuario: id, total_views: 0};
 
-            await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            const docRef = await addDoc(collection(FIREBASE_DB, 'publicaciones'), newData);
+            console.log(docRef)
+            addProductToAlgolia({
+              objectID: docRef.id,
+              titulo: data.titulo,
+              description: data.detalles,
+              costo: `$${data.costo} - $${data.costoMaximo}`,
+              category: data.category,
+              autor: id,
+              total_views: 0,
+              image: newImagePaths[0]
+            })
             reset();
             onClose();
-        } else {
-            console.log(errors);
+          } else {
+              console.log(errors);
         }
         setLoading(false)
     };
@@ -130,9 +141,9 @@ const CreatePostModal = ({ visible, onClose, userName, id}) => {
                         </View>
 
                         <View style={[styles.buttonContainer, {marginBottom: 5}]}>
-                          <TouchableOpacity  onPress={() => handleCategoryChange("Intercambio")}>
-                            <View style={[styles.notSelectedButton, value === 'Intercambio' && styles.selectedButton]}>
-                              <Text style={styles.txtButton}>Intercambio</Text>
+                          <TouchableOpacity  onPress={() => handleCategoryChange("Producto")}>
+                            <View style={[styles.notSelectedButton, value === 'Producto' && styles.selectedButton]}>
+                              <Text style={styles.txtButton}>Productos</Text>
                             </View>
                           </TouchableOpacity>
                           <TouchableOpacity  onPress={() => handleCategoryChange("Asesorías")}>

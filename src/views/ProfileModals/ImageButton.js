@@ -83,7 +83,7 @@ const ImageButton = ({ control, errors, name, setValue, trigger, getValues, setI
             render={({field:{value}})=> (
             <>
                 {(!errors[name] && value.length===0) && <Text style={globalStyles.showInfoSelected}></Text>}
-                {(!errors[name] && value.length>0) && <Text style={globalStyles.showInfoSelected}>Imagines cargas: {value.length}</Text>}
+                {(!errors[name] && value.length>0) && <Text style={globalStyles.showInfoSelected}>Imagenes cargas: {value.length}</Text>}
                 {errors[name] && <Text style={globalStyles.errorMessage}>{errors[name].message}</Text>}
             </>
         )}
