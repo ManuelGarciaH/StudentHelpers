@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
+import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
+import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -9,8 +10,9 @@ import ModalLoading from '../components/ModalLoading';
 import Swiper from 'react-native-swiper';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 
+
 const Servicios = ({navigation, route}) => {
-  // const { datos } = route.params;
+  //const { datos } = route.params;
 
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
@@ -19,6 +21,13 @@ const Servicios = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [locationModalVisible, setLocationModalVisible] = useState(false);
+  const [coordinatesParkingStudents, setCoordinatesParkingStudents] = useState({
+    latitude: 20.65415556282134,
+    longitude: -103.3246397431702,
+    title: "Estacionamiento de estudiantes",
+    descripcion : "Algo",
+  });
 
   // const imagenes = datos.images.map(image => ({ uri: image }));
   
@@ -92,6 +101,10 @@ const Servicios = ({navigation, route}) => {
       setSelectedImage(null);
     }
 
+    const toggleLocationModal = () => {
+      setLocationModalVisible(!locationModalVisible);
+    };
+
     const [open, setOpen] = useState(false)
     toggleOpen = () => {
       setOpen(!open);
@@ -101,15 +114,13 @@ const Servicios = ({navigation, route}) => {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: $LATITUDE$,
-            longitude: $LONGITUDE$,
-            latitudeDelta: $LATITUDE_DELTA$,
-            longitudeDelta: $LONGITUDE_DELTA$,
+            latitude: 20.65415556282134,
+            longitude: -103.3246397431702,
           }}>
           <MapView.Marker
             coordinate={{
-              latitude: $MARKER_LATITUDE$,
-              longitude: $MARKER_LONGITUDE$,
+              latitude: 20.65415556282134,
+              longitude: -103.3246397431702,
             }}
             title="Location"
             description="This is the location"
@@ -138,24 +149,11 @@ const Servicios = ({navigation, route}) => {
                           source={{ uri: item.image[0] }}
                           style={styles.imagen}
                         />
-                        <TouchableOpacity style={styles.buttonUbication} >
+                        <TouchableOpacity style={styles.buttonUbication} onPress={openMap}>
+                          {/* <SeeRouteTravel location={item.coordinates} /> */}
+                          <TraceRouteBotton modulo={item.location} />
                           <Icon name="map-marker" style={styles.dataIcon}/>
-                          
                         </TouchableOpacity> 
-                        {/* <View style={styles.contendorImagenes}>
-                          <Swiper style={styles.wrapper} showsButtons={false} 
-                              loop={false}
-                              loopClonesPerSide={1}
-                              index={selectedIndex}>
-                              {imagenes.map((imagen, index) => (
-                                  <TouchableOpacity key={index} onPress={() => openMapModal()} style={styles.slide}>
-                                      <View>
-                                          <Image source={imagen} style={styles.image} />
-                                      </View>
-                                  </TouchableOpacity>
-                              ))}
-                          </Swiper>
-                        </View> */}
                       </View>
                       
                       <View  style={styles.contenido}>
