@@ -34,8 +34,7 @@ const Servicios = ({navigation, route}) => {
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
     let postsQuery
-    postsQuery = query(postsCollection);
-    
+    postsQuery = query(postsCollection);    
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
       setDownloadedPosts([]);
@@ -60,8 +59,8 @@ const Servicios = ({navigation, route}) => {
         setShowNoPostsMessage(false);
       }
       
-    });
-    return () => unsubscribe();
+    });    
+    return () => unsubscribe(); // Cleanup on unmount
   }
 
   useEffect(() => {
