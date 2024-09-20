@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import PerfilHeader from '../components/PerfilHeader';
 import CreatePostModal from './ProfileModals/CreatePostModal';
 import ModalLoading from '../components/ModalLoading';
+import FastImage from 'react-native-fast-image';
 
 import { FIREBASE_AUTH, FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
@@ -201,9 +202,13 @@ const Perfil = ({ navigation}) => {
                 <View key={index} style={styles.cuadro}>
                   <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                     <View style={styles.imageContainer}> 
-                      <Image
-                        source={{ uri: item.images[0] }}
-                        style={styles.imageStyle}
+                      <FastImage
+                        source={{
+                          uri: item.images[0],
+                          priority: FastImage.priority.normal,
+                          cache: FastImage.cacheControl.web
+                        }}
+                        style={[styles.image]}
                       />
                     </View>
 
