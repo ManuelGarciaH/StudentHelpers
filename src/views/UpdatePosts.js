@@ -6,6 +6,7 @@ import { TextInput} from 'react-native-paper';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject, listAll, getStorage} from "firebase/storage";
+import { getAuth } from "firebase/auth";
 
 import { globalStyles } from '../../globalStyles'
 import ScheduleButton from './ProfileModals/ScheduleButton';
@@ -21,7 +22,7 @@ const UpdatePosts = ({navigation, route}) => {
   const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
   const [imageUploaded, setImageUploaded] = useState(false);
   const { datos } = route.params;
-  const userName = "Manuel Antonio Garcia";
+  const userName = getAuth().currentUser.uid;
 
   useEffect(()=> {
     uploadPreviousInformation()

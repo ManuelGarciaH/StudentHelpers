@@ -15,7 +15,9 @@
     "@react-navigation/bottom-tabs": "^6.5.18",
     "@react-navigation/native": "^6.1.15",
     "@react-navigation/native-stack": "^6.9.13",
+    "algoliasearch": "^4.24.0",
     "firebase": "^10.7.1",
+    "firebase-admin": "^12.4.0",
     "react": "18.2.0",
     "react-hook-form": "^7.51.2",
     "react-native": "0.72.4",
@@ -38,7 +40,8 @@
     "react-native-side-drawer": "^2.1.0",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-virtualized-view": "^1.0.0"
+    "react-native-virtualized-view": "^1.0.0",
+    "search-insights": "2.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

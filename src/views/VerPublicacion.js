@@ -13,10 +13,12 @@ import AverageStars from '../components/AverageStars';
 import QualificationModal from './seePublicationModals/QualificationModal';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { collection, doc, updateDoc, onSnapshot, query, where } from 'firebase/firestore';
 import ModalLoading from '../components/ModalLoading';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import GenerateCode from './seePublicationModals/GenerateCode';
+import useAlgoliaInsights from '../helpers/useAlgoliaInsights';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
@@ -31,6 +33,9 @@ const VerPublicacion = ({navigation, route}) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const imagenes = datos.images.map(image => ({ uri: image }));
+
+    const [average, setAverage] = useState(0);
+    const { sendProductView } = useAlgoliaInsights()
 
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(FIREBASE_DB, "calificacion"), where("id_publicacion", "==", datos.id)), (snapshot) => {
@@ -64,6 +69,21 @@ const VerPublicacion = ({navigation, route}) => {
       
         return () => unsubscribe();
       }, []);
+
+    useEffect(() => {
+        if (!isOwner) {
+            const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
+            const docRef = doc(publicacionesCollection, datos.id);
+
+            // Actualizar numero de vistas
+            updateDoc(docRef, {
+                total_views: datos.total_views + 1
+            });
+        }
+        if (datos.id) {
+            sendProductView(datos.id, getAuth().currentUser.uid)
+        }
+    }, [datos, datos.id]);
 
     const [loading, setLoading] = useState(true)
     useEffect(() => {
@@ -198,7 +218,8 @@ const VerPublicacion = ({navigation, route}) => {
 
                             <View style={styles.starsContainer}>
                                 <View style={styles.averageStarsContainer}>
-                                    <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} />
+                                    <AverageStars starsCounter={downloadedStarsCounter} total={totalStars} 
+                                    returnAverage={setAverage}/>
                                 </View>
                                 <View style={styles.barsStarsContainer}>
                                     <PorcentageBar quantity={downloadedStarsCounter[0].countFiveStars} total={totalStars} textStars={"5"}/>

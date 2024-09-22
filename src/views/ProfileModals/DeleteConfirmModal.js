@@ -8,6 +8,7 @@ import { FIREBASE_DB } from '../../../Firebase';
 import { collection, doc, deleteDoc, query, where, getDocs} from "firebase/firestore";
 import { getStorage, ref, deleteObject, listAll} from "firebase/storage";
 import ModalLoading from '../../components/ModalLoading';
+import  { removeProductFromAlgolia } from "../../services/algoliaCRUD.js"; 
 
 
 const DeleteConfirmModal = ({userName, item}) => {
@@ -22,10 +23,11 @@ const [loading, setLoading] = useState(false)
       const qualificationCollection = collection(FIREBASE_DB, "calificacion");
       const querySnapshot = await getDocs(query(qualificationCollection, where("id_publicacion", "==", idDocument)));
       const document = querySnapshot.docs[0];
-
-      const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
-      const docQualificacionRef = doc(deleteQualificationCollection, document.id);
-      await deleteDoc(docQualificacionRef);
+      if (document) {
+        const deleteQualificationCollection = collection(FIREBASE_DB, 'calificacion');
+        const docQualificacionRef = doc(deleteQualificationCollection, document.id);
+        await deleteDoc(docQualificacionRef);
+      }
       console.log('Calificacion eliminada exitosamente');
 
       const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');

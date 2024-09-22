@@ -1,15 +1,17 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import { TraceRouteBotton } from '/seePublicationModals/TraceRouteBotton.js';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
+import MapView from 'react-native-maps';
+import TraceButton from './seePublicationModals/TraceButton';
 
-const Servicios = ({navigation}) => {
+
+const Servicios = ({}) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
-  const [modalLoading, setModalLoading] = useState(true)
+  const [modalLoading, setModalLoading] = useState(true);  
   
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
@@ -65,22 +67,38 @@ const Servicios = ({navigation}) => {
       }
     }
 
+    const openModal = (image, index) => {
+      setSelectedImage(image);
+      setSelectedIndex(index);
+      setModalVisible(true);
+    } 
+
     const [open, setOpen] = useState(false)
     toggleOpen = () => {
       setOpen(!open);
     };
 
-    const verPublicacion = (item) => {
-      if(!open){
-        navigation.navigate("VerPublicacion", { datos: item })
-      }
+    const openMap = () => {
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 20.65415556282134,
+            longitude: -103.3246397431702,
+          }}>
+          <MapView.Marker
+            coordinate={{
+              latitude: 20.65415556282134,
+              longitude: -103.3246397431702,
+            }}
+            title="Location"
+            description="This is the location"
+            onPress={() => openMap(item.location)}
+          />
+        </MapView>
     };
 
-    const getCoordinates = async () => {
-      handleShowRoute();
-      setLoading(true);
-      setModalSeeRouteTravel(true);
-    };
+
+
     return (
         <View style={globalStyles.mainContainer}>
           {showNoPostsMessage ? (
@@ -93,15 +111,13 @@ const Servicios = ({navigation}) => {
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
-                    <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
+                    <TouchableOpacity style={styles.itemConteiner}>
                       <View style={styles.imageButton}>
                         <Image
                           source={{ uri: item.image[0] }}
                           style={styles.imagen}
                         />
-                        <TouchableOpacity style={styles.buttonUbication} onPress={() => getCoordinates()}>
-                          <Icon name="map-marker" style={styles.dataIcon}/>
-                        </TouchableOpacity> 
+                        <TraceButton   modulo={item.location} />
                       </View>
                       
                       <View  style={styles.contenido}>
@@ -126,32 +142,6 @@ const styles = StyleSheet.create({
   scrollView: {
     marginTop: 5,
     flex: 1,
-  },
-  buttonUbication: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', 
-    backgroundColor: '#A7DBCB',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    marginLeft: 20,
-    height: 50,
-    width: 50,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    backgroundColor: '#A7DBCB',
-  },
-  content: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'grey',
   },
   cuadro: {
     flexDirection: 'row', 
@@ -190,11 +180,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
 
   },
-  dataIcon:{
-    color: "white",
-    fontSize: 20,
-    marginRight: 0,
-  },
   imageButton:{
     flexDirection: "column",
     alignItems: "center",
@@ -204,18 +189,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
-  },
-  buttonUbication: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    marginLeft: 0,
-    marginRight: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 50,
-    width: 80,
   },
 });
 

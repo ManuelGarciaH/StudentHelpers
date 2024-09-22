@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const AverageStars = ({ starsCounter, total}) => {
+const AverageStars = ({ starsCounter, total, returnAverage}) => {
   const [averageStars, setAverageStars] = useState(0);
 
   useEffect(() => {
@@ -22,6 +22,8 @@ const AverageStars = ({ starsCounter, total}) => {
     } else {
       setAverageStars(0);
     }
+    // Pasamos el valor calculado al padre
+    returnAverage(averageStars);
   }, [starsCounter]);
 
   return (

@@ -38,6 +38,7 @@ const ScheduleButton = ({ control, errors, name,  start, getValues}) => {
         }else{
             const horarioFinal = obtenerHorasMinutos(value);
             const horarioInicial = obtenerHorasMinutos(getValues('horario'));
+
             if (horarioFinal <= horarioInicial) {
                 return 'El horario final debe ser mayor que el horario inicial'; // Mensaje de error personalizado
             }
@@ -46,6 +47,7 @@ const ScheduleButton = ({ control, errors, name,  start, getValues}) => {
     }
 
     const obtenerHorasMinutos = (hora) => {
+        console.log(hora)
         const partesHora = hora.split(':');
         const horas = parseInt(partesHora[0], 10);
         const minutos = parseInt(partesHora[1], 10);
