@@ -1,35 +1,17 @@
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import TraceRouteBotton from './seePublicationModals/TraceRouteBotton';
-import SeeRouteTravel from './seePublicationModals/SeeRouteTravel';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
-import Swiper from 'react-native-swiper';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
+import TraceButton from './seePublicationModals/TraceButton';
 
 
-const Servicios = ({navigation, route}) => {
-  //const { datos } = route.params;
-
+const Servicios = ({}) => {
   const [downloadedPosts, setDownloadedPosts] = useState([]);
   const [showNoPostsMessage, setShowNoPostsMessage] = useState(false);
-  const [modalLoading, setModalLoading] = useState(true)
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [locationModalVisible, setLocationModalVisible] = useState(false);
-  const [coordinatesParkingStudents, setCoordinatesParkingStudents] = useState({
-    latitude: 20.65415556282134,
-    longitude: -103.3246397431702,
-    title: "Estacionamiento de estudiantes",
-    descripcion : "Algo",
-  });
-
-  // const imagenes = datos.images.map(image => ({ uri: image }));
+  const [modalLoading, setModalLoading] = useState(true);  
   
   const showPosts = async () => {
     const postsCollection = collection(FIREBASE_DB, "servicios");
@@ -85,24 +67,11 @@ const Servicios = ({navigation, route}) => {
       }
     }
 
-    const openMapModal = () => {
-      setModalVisible(true);
-    }
-
     const openModal = (image, index) => {
       setSelectedImage(image);
       setSelectedIndex(index);
       setModalVisible(true);
     } 
-
-    const closeModal = () => {
-      setModalVisible(false);
-      setSelectedImage(null);
-    }
-
-    const toggleLocationModal = () => {
-      setLocationModalVisible(!locationModalVisible);
-    };
 
     const [open, setOpen] = useState(false)
     toggleOpen = () => {
@@ -148,11 +117,7 @@ const Servicios = ({navigation, route}) => {
                           source={{ uri: item.image[0] }}
                           style={styles.imagen}
                         />
-                        <TouchableOpacity style={styles.buttonUbication} onPress={openMap}>
-                          {/* <SeeRouteTravel location={item.coordinates} /> */}
-                          <TraceRouteBotton modulo={item.location} />
-                          <Icon name="map-marker" style={styles.dataIcon}/>
-                        </TouchableOpacity> 
+                        <TraceButton   modulo={item.location} />
                       </View>
                       
                       <View  style={styles.contenido}>
@@ -177,32 +142,6 @@ const styles = StyleSheet.create({
   scrollView: {
     marginTop: 5,
     flex: 1,
-  },
-  buttonUbication: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', 
-    backgroundColor: '#A7DBCB',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-    marginLeft: 20,
-    height: 50,
-    width: 50,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    backgroundColor: '#A7DBCB',
-  },
-  content: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  titulo: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'grey',
   },
   cuadro: {
     flexDirection: 'row', 
@@ -241,11 +180,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
 
   },
-  dataIcon:{
-    color: "white",
-    fontSize: 20,
-    marginRight: 0,
-  },
   imageButton:{
     flexDirection: "column",
     alignItems: "center",
@@ -255,18 +189,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
-  },
-  buttonUbication: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    marginLeft: 0,
-    marginRight: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 50,
-    width: 80,
   },
 });
 
