@@ -18,7 +18,7 @@ import { collection, doc, updateDoc, onSnapshot, query, where } from 'firebase/f
 import ModalLoading from '../components/ModalLoading';
 import GenerateCode from './seePublicationModals/GenerateCode';
 import useAlgoliaInsights from '../helpers/useAlgoliaInsights';
-import { relatedProducts } from '../services/algoliaRecommends';
+import  RelatedProducts  from '../services/algoliaRecommends';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
@@ -234,7 +234,7 @@ const VerPublicacion = ({navigation, route}) => {
                         
                     </View>
                     {!isOwner && <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />}
-                    { relatedProducts(datos.id)}
+                    <RelatedProducts productId={datos.id}/>
                 </ScrollView>
                 )}
             </View>
