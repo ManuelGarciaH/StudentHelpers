@@ -16,9 +16,9 @@ import { FIREBASE_DB } from '../../Firebase';
 import { getAuth } from "firebase/auth";
 import { collection, doc, updateDoc, onSnapshot, query, where } from 'firebase/firestore';
 import ModalLoading from '../components/ModalLoading';
-import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 import GenerateCode from './seePublicationModals/GenerateCode';
 import useAlgoliaInsights from '../helpers/useAlgoliaInsights';
+import  RelatedProducts  from '../services/algoliaRecommends';
 
 const VerPublicacion = ({navigation, route}) => {
     const { datos } = route.params;
@@ -234,6 +234,7 @@ const VerPublicacion = ({navigation, route}) => {
                         
                     </View>
                     {!isOwner && <QualificationModal datos={downloadedStarsCounter[0]} id={datos.id} />}
+                    <RelatedProducts productId={datos.id}/>
                 </ScrollView>
                 )}
             </View>
