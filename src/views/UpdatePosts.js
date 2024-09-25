@@ -7,6 +7,7 @@ import { FIREBASE_DB } from '../../Firebase';
 import { collection, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject, listAll, getStorage} from "firebase/storage";
 import { getAuth } from "firebase/auth";
+import  { addProductToAlgolia } from "../services/algoliaCRUD.js"; 
 
 import { globalStyles } from '../../globalStyles'
 import ScheduleButton from './ProfileModals/ScheduleButton';
@@ -106,12 +107,23 @@ const UpdatePosts = ({navigation, route}) => {
         // Actualizar el documento existente en Firestore
         const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
         const docRef = doc(publicacionesCollection, datos.id);
-  
+        console.log(docRef);
         // Actualizar el documento con los nuevos datos, incluido el nuevo título
         await updateDoc(docRef, {
           ...newData,
           titulo: data.titulo  // Asegúrate de actualizar el título
         });
+        // Actulizo datos en Algolia
+        addProductToAlgolia({
+          objectID: docRef.id,
+          titulo: data.titulo,
+          description: data.detalles,
+          costo: `$${data.costo} - $${data.costoMaximo}`,
+          category: data.category,
+          autor: userName,
+          total_views: 0,
+          image: uploadedImagePaths[0]
+        })
   
         onCancel();
         console.log("Documento actualizado exitosamente.");
