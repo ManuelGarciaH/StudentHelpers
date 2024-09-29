@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIn
 import {globalStyles} from '../../globalStyles';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ModalLoading from '../components/ModalLoading';
+import FastImage from 'react-native-fast-image';
 
 import { FIREBASE_DB } from '../../Firebase';
 // import { collection, getDocs, query, where } from "firebase/firestore";
@@ -136,10 +137,14 @@ const { userName, idUser } = route.params;
                 <View key={index} style={styles.cuadro}>
                   <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                     <View style={styles.imageContainer}> 
-                      <Image
-                        source={{ uri: item.images[0] }}
-                        style={styles.imageStyle}
-                      />
+                    <FastImage
+                      source={{
+                        uri: item.images[0],
+                        priority: FastImage.priority.normal,
+                        cache: FastImage.cacheControl.web
+                      }}
+                      style={[styles.image]}
+                    />
                     </View>
 
                     <View style={styles.dataContainer}>

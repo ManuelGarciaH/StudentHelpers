@@ -6,6 +6,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity,
 import {globalStyles} from '../../globalStyles';
 import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import FastImage from 'react-native-fast-image';
 
 import { FIREBASE_DB } from '../../Firebase';
 import { collection, query, where, onSnapshot } from "firebase/firestore";
@@ -155,9 +156,13 @@ const Publicaciones = ({ navigation}) => {
                   <View key={index} style={styles.cuadro}> 
                     <TouchableOpacity style={styles.itemConteiner} onPress={() => verPublicacion(item)}>
                       <View style={styles.imageContainer}>
-                        <Image
-                          source={{ uri: item.images[0] }}
-                          style={styles.image}
+                        <FastImage
+                          source={{
+                            uri: item.images[0],
+                            priority: FastImage.priority.normal,
+                            cache: FastImage.cacheControl.web
+                          }}
+                          style={[styles.image]}
                         />
                       </View>
                       
