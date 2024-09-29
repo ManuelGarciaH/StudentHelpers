@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, FlatList } from 'react-native';
-import algoliasearch from 'algoliasearch/lite';
-import { algoliarecommend  } from '@algolia/recommend'; // Importar Algolia Recommend
+import recommend from '@algolia/recommend'; // Importar Algolia Recommend
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME } from '@env';
 
 
@@ -13,22 +12,37 @@ export default function RelatedProducts({ productId }) {
   }, [productId]);
 
   const fetchRelatedProducts = async (productId) => {
-    const recommendClient = algoliarecommend ({
+    const recommendClient = recommend (
       ALGOLIA_APP_ID,
       ALGOLIA_API_KEY,
-    });
-
-    try {
-      const recommendations = await recommendClient.getRelatedProducts({
-        indexName: ALGOLIA_INDEX_NAME,  
-        objectIDs: [productId],  // Producto visto por el usuario
+    );
+    recommendClient.getRelatedProducts([
+      {
+        indexName: ALGOLIA_INDEX_NAME,
+        objectID: productId,
         maxRecommendations: 5,
+      }
+    ]).then((recommendations) =>{ 
+      const relatedProducts = recommendations.results[0].hits;
+      relatedProducts.forEach((product) => {
+        console.log('ID:', product.objectID);
+        console.log('Título:', product.titulo); // Ajusta 'title' según el campo que uses para el título en tu índice
       });
-      console.log('Related products:', recommendations);
-      setRelatedItems(recommendations.hits);
-    } catch (error) {
+    }).catch((error) => {
       console.error('Error fetching related products:', error);
-    }
+    })
+
+    // try {
+    //   const { results } = await recommendClient.getRelatedProducts([{
+    //     indexName: ALGOLIA_INDEX_NAME,  
+    //     objectIDs: [productId],  // Producto visto por el usuario
+    //     maxRecommendations: 5,
+    //   }]);
+    //   console.log('Related products:', results);
+    //   //setRelatedItems(results[0].hits);
+    // } catch (error) {
+    //   console.error('Error fetching related products:', error);
+    // }
   };
 
   const renderItem = ({ item }) => (
@@ -40,11 +54,14 @@ export default function RelatedProducts({ productId }) {
   );
 
   return (
-    <FlatList
-      data={relatedItems}
-      keyExtractor={(item) => item.objectID}
-      renderItem={renderItem}
-    />
+    <View>
+      <Text>Holaa</Text>
+    </View>
+    // <FlatList
+    //   data={relatedItems}
+    //   keyExtractor={(item) => item.objectID}
+    //   renderItem={renderItem}
+    // />
   );
 }
 
