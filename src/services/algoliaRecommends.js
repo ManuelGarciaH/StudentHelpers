@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
+import { globalStyles } from '../../globalStyles'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import recommend from '@algolia/recommend'; // Importar Algolia Recommend
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME } from '@env';
 
@@ -24,55 +26,91 @@ export default function RelatedProducts({ productId }) {
       }
     ]).then((recommendations) =>{ 
       const relatedProducts = recommendations.results[0].hits;
-      relatedProducts.forEach((product) => {
-        console.log('ID:', product.objectID);
-        console.log('Título:', product.titulo); // Ajusta 'title' según el campo que uses para el título en tu índice
-      });
+      setRelatedItems(relatedProducts);
+      // relatedProducts.forEach((product) => {
+      //   console.log('Producto:', product.image);
+      //   //console.log('ID:', product.objectID);
+      //   //console.log('Título:', product.titulo); // Ajusta 'title' según el campo que uses para el título en tu índice
+      // });
     }).catch((error) => {
       console.error('Error fetching related products:', error);
     })
-
-    // try {
-    //   const { results } = await recommendClient.getRelatedProducts([{
-    //     indexName: ALGOLIA_INDEX_NAME,  
-    //     objectIDs: [productId],  // Producto visto por el usuario
-    //     maxRecommendations: 5,
-    //   }]);
-    //   console.log('Related products:', results);
-    //   //setRelatedItems(results[0].hits);
-    // } catch (error) {
-    //   console.error('Error fetching related products:', error);
-    // }
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Text>{item.objectID}</Text>
-      <Text>{item.title}</Text>
-      <Text>{item.description}</Text>
+    <View>
+      <TouchableOpacity style={styles.itemContainer}>
+        <View>
+            <Image source={{
+              uri: item.image
+              
+            }} style={styles.image}/>
+        </View>
+        <Text style={styles.textProduct}>{item.titulo}</Text>
+        <Text style={styles.textInfo}>{item.costo}</Text>
+      </TouchableOpacity>
     </View>
   );
 
   return (
-    <View>
-      <Text>Holaa</Text>
+    <View style={{width: wp("95%")}}>
+      <View style={styles.dataContainer}>
+        <View style={styles.containerTitle}>
+          <Text style={styles.textTitle}>Productos Relacionados</Text>
+        </View>
+        <FlatList
+          data={relatedItems}
+          keyExtractor={item => item.objectID}
+          renderItem={renderItem}
+          horizontal={true}
+        />
+      </View>
     </View>
-    // <FlatList
-    //   data={relatedItems}
-    //   keyExtractor={(item) => item.objectID}
-    //   renderItem={renderItem}
-    // />
   );
 }
 
 const styles = StyleSheet.create({
   itemContainer: {
-    padding: 10,
+    width: wp("92%"),
+    elevation: 4,
     marginVertical: 5,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
+    alignItems: "center",
+  },
+  dataContainer:{
+    borderWidth: 1,
+    borderColor: "gray",
+    marginVertical: 5,
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  textTitle:{
+    fontSize: 18,
+    color: "black",
+    fontWeight: "bold",
+  },
+  containerTitle:{
+    backgroundColor: "#8CD1A9",
+    padding: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
+    borderWidth: 0.5,
+    borderColor: "gray",
+  },
+  image: {
+    width: wp("80%"),
+    height: hp("40%"),
+  },
+  textInfo:{
+    fontSize: 15,
+    color: "black",
+    textAlign: "justify",
+  },
+  textProduct:{
+    fontSize: 18,
+    color: "black",
+    fontWeight: "bold",
+    textAlign: "justify",
   },
 });

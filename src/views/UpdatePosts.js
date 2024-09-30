@@ -23,18 +23,19 @@ const UpdatePosts = ({navigation, route}) => {
   const [placeholderAmount, setPlaceholderAmount] = useState("Cantidad");
   const [imageUploaded, setImageUploaded] = useState(false);
   const { datos } = route.params;
-  const userName = getAuth().currentUser.uid;
+  const userId = getAuth().currentUser.uid;
+  const userName = getAuth().currentUser.displayName;
 
   useEffect(()=> {
     uploadPreviousInformation()
   }, [])
 
   // Eliminar imágenes antiguas antes de subir las nuevas
-  const deleteOldImages = async (userName, oldTitle) => {
+  const deleteOldImages = async (userId, oldTitle) => {
     try {
       const storage = getStorage();
       // Obtener referencia al directorio de imágenes antiguas
-      const oldImagesRef = ref(storage, `publicaciones/${userName}/${oldTitle}`);
+      const oldImagesRef = ref(storage, `publicaciones/${userId}/${oldTitle}`);
   
       // Listar y eliminar cada imagen
       const oldImagesList = await listAll(oldImagesRef);
@@ -56,7 +57,7 @@ const UpdatePosts = ({navigation, route}) => {
       await Promise.all(
         newImageUris.map(async (uri, index) => {
           // Obtener la referencia de almacenamiento para la imagen
-          const storageRef = ref(storage, `publicaciones/${userName}/${title}/image_${index}.png`);
+          const storageRef = ref(storage, `publicaciones/${userId}/${title}/image_${index}.png`);
   
           // Convertir la imagen a bytes
           const response = await fetch(uri);
@@ -97,7 +98,7 @@ const UpdatePosts = ({navigation, route}) => {
         // Eliminar imágenes antiguas si hay cambio de título
         if (data.titulo !== datos.title) {
           uploadedImagePaths = await subirImagenesNuevasABaseDeDatos(uploadedImagePaths, data.titulo);
-          await deleteOldImages(userName, datos.title);
+          await deleteOldImages(userId, datos.title);
         }
   
         // Combinar las URLs de las imágenes existentes con las nuevas URLs
@@ -120,7 +121,7 @@ const UpdatePosts = ({navigation, route}) => {
           description: data.detalles,
           costo: `$${data.costo} - $${data.costoMaximo}`,
           category: data.category,
-          autor: userName,
+          autor: userId,
           total_views: 0,
           image: uploadedImagePaths[0]
         })
