@@ -4,15 +4,20 @@ import { globalStyles } from '../../globalStyles'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import recommend from '@algolia/recommend'; // Importar Algolia Recommend
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY, ALGOLIA_INDEX_NAME } from '@env';
+import { FIREBASE_DB } from '../../Firebase';
+import { doc, getDoc } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
 
 export default function RelatedProducts({ productId }) {
   const [relatedItems, setRelatedItems] = useState([]);
+  const navigation = useNavigation();
   useEffect(() => {
     // Obtener productos relacionados cuando el componente se monta
     fetchRelatedProducts(productId);
   }, [productId]);
-
+  
   const fetchRelatedProducts = async (productId) => {
     const recommendClient = recommend (
       ALGOLIA_APP_ID,
@@ -30,20 +35,52 @@ export default function RelatedProducts({ productId }) {
       // relatedProducts.forEach((product) => {
       //   console.log('Producto:', product.image);
       //   //console.log('ID:', product.objectID);
-      //   //console.log('Título:', product.titulo); // Ajusta 'title' según el campo que uses para el título en tu índice
+      //   //console.log('Título:', product.titulo); 
       // });
     }).catch((error) => {
-      console.error('Error fetching related products:', error);
+      console.error('Error al obtener productos relacionados:', error);
     })
   };
 
+  async function verPublicacion(publicationId) {
+    const docRef = doc(FIREBASE_DB, "publicaciones", publicationId)
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const postData = {
+        id: docSnap.id,
+        userName: docSnap.data().nombreUsuario,
+        idUser: docSnap.data().id_usuario,
+        title: docSnap.data().titulo,
+        details: docSnap.data().detalles,
+        cost: docSnap.data().costo,
+        maxCost: docSnap.data().costoMaximo,
+        cantidad: docSnap.data().cantidad,
+        category: docSnap.data().category,
+        schedule: docSnap.data().horario,
+        scheduleEnd: docSnap.data().horarioFin,
+        coordinates: docSnap.data().coordenadas,
+        location: docSnap.data().lugar,
+        days: docSnap.data().dias,
+        contact: docSnap.data().contacto,
+        images: docSnap.data().image, // Agregar las URLs de las imágenes al objeto postD
+        total_views: docSnap.data().total_views
+      };
+      navigation.navigate("VerPublicacion", { datos: postData })
+    } else {
+      Toast.show({
+        message: 'Error al obtener el producto intente mas tarde',
+        type: ALERT_TYPE.ERROR,
+        duration: 3000,
+      });
+    }
+  }
+
   const renderItem = ({ item }) => (
     <View>
-      <TouchableOpacity style={styles.itemContainer}>
+      <TouchableOpacity style={styles.itemContainer} onPress={() => verPublicacion(item.objectID)}>
         <View>
             <Image source={{
               uri: item.image
-              
             }} style={styles.image}/>
         </View>
         <Text style={styles.textProduct}>{item.titulo}</Text>
