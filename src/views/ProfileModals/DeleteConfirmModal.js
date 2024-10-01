@@ -33,6 +33,7 @@ const [loading, setLoading] = useState(false)
       const publicacionesCollection = collection(FIREBASE_DB, 'publicaciones');
       const docRef = doc(publicacionesCollection, idDocument);
       await deleteDoc(docRef);
+      removeProductFromAlgolia(docRef.id);
       console.log('Documento eliminado exitosamente');
 
       

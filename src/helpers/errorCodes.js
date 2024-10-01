@@ -14,6 +14,6 @@ export default function validErrorCodes(errorCode) {
         case 'auth/invalid-password':
             return 'La contraseña proporcionada es incorrecta.';
         default:
-        return 'Ocurrió un error desconocido. Por favor, inténtalo de nuevo.';
+        return 'Ocurrió un error desconocido. Por favor, inténtalo de nuevo mas tarde.';
     }
 }

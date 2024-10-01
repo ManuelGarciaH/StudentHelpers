@@ -68,7 +68,7 @@ const Publicaciones = ({ navigation}) => {
       }
       
     }, (error) => {
-      // console.error("Error al obtener documentos:", error);
+       console.error("Error al obtener documentos:", error);
     });
     
     return () => unsubscribe(); // Cleanup on unmount
