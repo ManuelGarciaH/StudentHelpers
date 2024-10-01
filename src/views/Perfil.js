@@ -115,7 +115,6 @@ const Perfil = ({ navigation}) => {
   }, [userName]);
 
   useEffect(() => {
-    console.log(currentUser)
     const timeout = setTimeout(() => {
       mostrar()
     }, 4000);
