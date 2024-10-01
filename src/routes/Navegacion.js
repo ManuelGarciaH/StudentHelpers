@@ -119,16 +119,23 @@ function OutsideView({navigation}) {
 //Las acciones de los objetos
 const Navegacion = () =>{
   const [user, setUser] = useState(null);
+  const [email, setVerified] = useState(null);
   useState(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
+      if (user && user.emailVerified) {
+        setVerified(true);
+      } else {
+        setVerified(false);
+      }
     })
   })
 
+  console.log(email)
   return (
     <NavigationContainer>
         <Stack.Navigator initialRouteName='Inicio'>
-          {user ? (
+          {user && email ? (
             <Stack.Screen name="Inside" component={InsideView} options={{headerShown:false}}/>
           ) : (
             <Stack.Screen name="Inici" component={OutsideView} options={{headerShown:false}} />

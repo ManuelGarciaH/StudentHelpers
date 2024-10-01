@@ -38,7 +38,7 @@ export default function RelatedProducts({ productId }) {
       //   //console.log('Título:', product.titulo); 
       // });
     }).catch((error) => {
-      console.error('Error al obtener productos relacionados:', error);
+      //console.error('Error al obtener productos relacionados:', error);
     })
   };
 
@@ -95,6 +95,12 @@ export default function RelatedProducts({ productId }) {
         <View style={styles.containerTitle}>
           <Text style={styles.textTitle}>Productos Relacionados</Text>
         </View>
+        {
+          relatedItems.length === 0 &&
+          <View style={{alignItems: "center", justifyContent: "center", marginVertical: 10}}>
+            <Text style={{fontSize: 18, color: "gray"}}>No hay productos relacionados</Text>
+          </View>
+        }
         <FlatList
           data={relatedItems}
           keyExtractor={item => item.objectID}

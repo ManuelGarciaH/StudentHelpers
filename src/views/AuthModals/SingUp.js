@@ -19,7 +19,7 @@ import {
 // firebase
 import {FIREBASE_AUTH, FIREBASE_DB} from '../../../Firebase';
 // firebase authentication
-import {createUserWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import {createUserWithEmailAndPassword, updateProfile, sendEmailVerification} from 'firebase/auth';
 // firebase storege and store
 import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 import {collection, addDoc } from 'firebase/firestore';
@@ -64,7 +64,15 @@ const SingUp = ({navigation}) => {
       await updateData(data, user.uid, photoURL)
 
       // Actualización de perfil exitosa
+      await sendEmailVerification(user);
       console.log('Usuario agregado:', user);
+      Toast.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Usuario creado con exito',
+        textBody: 'Recibiras un correo para validar tu correo institucional.',
+        autoClose: 3000,
+      });
+      setTimeout (() => {navigation.navigate('Login');}, 4000);
     } catch (error) {
       console.error('Error al crear usuario o actualizar el perfil:', error);
       Toast.show({
