@@ -111,7 +111,7 @@ const Servicios = ({}) => {
               <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
                 {downloadedPosts.map((item, index) => (
                   <View key={index} style={styles.cuadro}> 
-                    <TouchableOpacity style={styles.itemConteiner}>
+                    <View style={styles.itemConteiner}>
                       <View style={styles.imageButton}>
                         <Image
                           source={{ uri: item.image[0] }}
@@ -128,7 +128,7 @@ const Servicios = ({}) => {
                         <Text >{item.mail}</Text>
                         <Text >Lugar: {item.location}</Text>
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   </View>
                 ))}
               </ScrollView>
