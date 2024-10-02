@@ -89,20 +89,22 @@ const ListProfiles = ({navigation}) => {
                         <Text style={styles.textCategoryTitle}>Perfiles</Text>
                     </View>
                     {filteredPosts.map((item, index) => (
-                    <View key={index} style={styles.cuadro}> 
-                        <TouchableOpacity style={styles.itemConteiner} onPress={() => watchSellerProfile(item)}>
-                        <View style={styles.imageContainer}>
-                            <Image
+                      (item.url_photo && item.url_photo!="null") && ( // Verifica que url_photo no sea null o undefined
+                        <View key={index} style={styles.cuadro}> 
+                          <TouchableOpacity style={styles.itemConteiner} onPress={() => watchSellerProfile(item)}>
+                            <View style={styles.imageContainer}>
+                              <Image
                                 source={{ uri: item.url_photo }}
                                 style={styles.image}
-                            />
+                              />
+                            </View>
+                            <View style={styles.dataContainer}>
+                              <Text style={styles.textUserName}>{item.userName}</Text>
+                              <Text style={styles.textCarrer}>{item.carrer}</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
-                        <View style={styles.dataContainer}>
-                            <Text style={styles.textUserName}>{item.userName}</Text>
-                            <Text style={styles.textCarrer}>{item.carrer}</Text>
-                        </View>
-                        </TouchableOpacity>
-                    </View>
+                      )
                     ))}
                 </ScrollView>
                 )}

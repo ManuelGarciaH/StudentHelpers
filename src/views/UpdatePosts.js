@@ -258,9 +258,9 @@ const UpdatePosts = ({navigation, route}) => {
                     </View>
 
                     <View style={[styles.buttonContainer, {marginBottom: 5}]}>
-                    <TouchableOpacity  onPress={() => handleCategoryChange("Intercambio")}>
-                        <View style={[styles.notSelectedButton, value === 'Intercambio' && styles.selectedButton]}>
-                        <Text style={styles.txtButton}>Intercambio</Text>
+                    <TouchableOpacity  onPress={() => handleCategoryChange("Producto")}>
+                        <View style={[styles.notSelectedButton, value === 'Producto' && styles.selectedButton]}>
+                        <Text style={styles.txtButton}>Producto</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity  onPress={() => handleCategoryChange("Asesorías")}>
