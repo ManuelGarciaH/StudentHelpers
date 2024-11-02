@@ -41,7 +41,7 @@ export const globalStyles = StyleSheet.create({
     input:{
         width: wp('90%'),
         //borderWidth: 1,
-        backgroundColor: '#AFC1BC',
+        backgroundColor: '#F2F2F2',
         //borderColor: 'black',
         borderRadius: 5,
         //marginBottom: 15,

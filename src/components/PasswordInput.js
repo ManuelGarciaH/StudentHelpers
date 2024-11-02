@@ -38,13 +38,13 @@ const styles = StyleSheet.create({
     container: {
       flexDirection: 'row', 
       alignItems: 'center', 
-      backgroundColor: '#AFC1BC',
+      backgroundColor: '#F2F2F2',
       borderRadius: 5,
     },
     input:{
         flex: 1,
         width: wp('90%'),
-        backgroundColor: '#AFC1BC',
+        backgroundColor: '#F2F2F2',
         borderRadius: 5,
         marginTop: 2,
         color: '#000000',
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       width: wp('14%'),
       height: hp('6%'),
-      backgroundColor: '#AFC1BC',
+      backgroundColor: '#F2F2F2',
       borderRadius: 5,
     }
 })

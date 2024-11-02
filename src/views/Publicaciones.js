@@ -147,7 +147,10 @@ const Publicaciones = ({ navigation}) => {
             </TouchableWithoutFeedback>
           )}
           {showNoPostsMessage ? (
-            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+            <View style={styles.center}>
+              <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+              <Image style={styles.imgHeaderLogo} source={require('../../Img/Logo.png')} />
+            </View>
           ) : (
           <>
           {modalLoading ? (
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
-    backgroundColor: '#9C9C9C',
+    backgroundColor: '#F2F2F2',
     padding: 2,
     marginBottom: 10,
     borderRadius: 10,
@@ -274,6 +277,17 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight:"bold",
   },
+  center:{
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  imgHeaderLogo:{
+        marginRight: "1%",
+        opacity: 0.5,
+        width: wp('50%'),
+        height: hp('25%'),
+    },
 });
 
 export default Publicaciones;
