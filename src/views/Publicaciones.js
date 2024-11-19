@@ -8,7 +8,7 @@ import ModalLoading from '../components/ModalLoading';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { FIREBASE_DB } from '../../Firebase';
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, orderBy, limit } from "firebase/firestore";
 import BuscadorHeader from '../components/BuscadorHeader';
 import DrawerCategory from '../components/DrawerCategory';
 import MenuDrawer from 'react-native-side-drawer';
@@ -25,9 +25,16 @@ const Publicaciones = ({ navigation}) => {
     const postsCollection = collection(FIREBASE_DB, "publicaciones");
     let postsQuery
     if(category=="Tendencias"){
-      postsQuery = query(postsCollection, where("category", "!=", " "));
+      postsQuery = query(postsCollection, 
+        orderBy("total_views", "desc"), // Ordena de mayor a menor
+        limit(10) // Limita a los primeros 20
+      );
     }else{
-      postsQuery = query(postsCollection, where("category", "==", category));
+      postsQuery = query(postsCollection, 
+        where("category", "==", category),
+        orderBy("total_views", "desc"), // Ordena de mayor a menor
+        limit(10) // Limita a los primeros 20
+      );
     }
 
     const unsubscribe = onSnapshot(postsQuery, (querySnapshot) => {
@@ -67,7 +74,7 @@ const Publicaciones = ({ navigation}) => {
       }
       
     }, (error) => {
-       console.error("Error al obtener documentos:", error);
+       //console.log("Error al obtener documentos:", error);
     });
     
     return () => unsubscribe(); // Cleanup on unmount
@@ -140,7 +147,10 @@ const Publicaciones = ({ navigation}) => {
             </TouchableWithoutFeedback>
           )}
           {showNoPostsMessage ? (
-            <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+            <View style={styles.center}>
+              <Text style={styles.noPostsMessage}>No hay publicaciones disponibles.</Text>
+              <Image style={styles.imgHeaderLogo} source={require('../../Img/Logo.png')} />
+            </View>
           ) : (
           <>
           {modalLoading ? (
@@ -196,7 +206,7 @@ const styles = StyleSheet.create({
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
-    backgroundColor: '#9C9C9C',
+    backgroundColor: '#F2F2F2',
     padding: 2,
     marginBottom: 10,
     borderRadius: 10,
@@ -267,6 +277,17 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight:"bold",
   },
+  center:{
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  imgHeaderLogo:{
+        marginRight: "1%",
+        opacity: 0.5,
+        width: wp('50%'),
+        height: hp('25%'),
+    },
 });
 
 export default Publicaciones;

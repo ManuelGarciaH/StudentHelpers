@@ -49,10 +49,10 @@ const DrawerCategory = ({ setVisible, selectedCategory, handleCategoryChange}) =
 
       <View style={styles.delimitador}></View>
 
-      <TouchableOpacity onPress={() => handleCategoryChange("Intercambio")}>
-      <View style={[styles.containerCategory, selectedCategory === 'Intercambio' && styles.selectedCategory]}>
+      <TouchableOpacity onPress={() => handleCategoryChange("Producto")}>
+      <View style={[styles.containerCategory, selectedCategory === 'Producto' && styles.selectedCategory]}>
           <IconFontAwesome5 name="hands-helping" color={"black"} size={22} style={styles.icon} />
-          <Text style={styles.textCategories}>Intercambio</Text>
+          <Text style={styles.textCategories}>Producto</Text>
         </View>
       </TouchableOpacity>
 

@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   cuadro: {
     flexDirection: 'row', 
     alignItems: 'center',
-    backgroundColor: '#9C9C9C',
+    backgroundColor: '#F2F2F2',
     padding: 2,
     marginBottom: 10,
     borderRadius: 10,

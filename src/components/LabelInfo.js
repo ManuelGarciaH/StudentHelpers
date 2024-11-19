@@ -26,7 +26,7 @@ export default function LabelInfo(props) {
     <View style={styles.container}>
         <Text style={globalStyles.txtBasic}>{props.value}</Text>
         <TouchableOpacity ref={buttonRef} style={styles.infoButton} onPress={handleButtonPress}>
-            <Icon name={"help"} size={15} color="black" /> 
+            <Icon name={"info"} size={15} color="black" /> 
         </TouchableOpacity>
         <View style={styles.modalContainer}>
           <Modal animationType='fade' visible={visibility} transparent={true} style={styles.modal} ref={modalRef}>
