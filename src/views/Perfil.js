@@ -375,6 +375,7 @@ const styles = StyleSheet.create({
   },
   textEmail:{
     fontSize: 14,
+    color: '#000000'
   },
   textCost:{
     fontSize: 16,

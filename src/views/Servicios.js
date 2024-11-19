@@ -121,12 +121,12 @@ const Servicios = ({}) => {
                       </View>
                       
                       <View  style={styles.contenido}>
-                        <Text style={styles.nombre} numberOfLines={2}>{item.title}</Text>
-                        <Text >{item.details}</Text>
-                        <Text >{item.schedule}</Text>
-                        <Text >{item.phone}</Text>
-                        <Text >{item.mail}</Text>
-                        <Text >Lugar: {item.location}</Text>
+                        <Text style={styles.nombre} >{item.title}</Text>
+                        <Text style={styles.description}>{item.details}</Text>
+                        <Text style={styles.description}>{item.schedule}</Text>
+                        <Text style={styles.description}>{item.phone}</Text>
+                        <Text style={styles.description}>{item.mail}</Text>
+                        <Text style={styles.description}>Lugar: {item.location}</Text>
                       </View>
                     </View>
                   </View>
@@ -139,6 +139,9 @@ const Servicios = ({}) => {
     );
 }
 const styles = StyleSheet.create({
+  description: {
+    color: '#000000',
+  },
   scrollView: {
     marginTop: 5,
     flex: 1,
@@ -166,6 +169,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#000000',
   },
   itemConteiner:{
     flexDirection: "row",
